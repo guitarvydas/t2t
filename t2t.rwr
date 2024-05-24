@@ -23,4 +23,6 @@ t2t {
   symbol_break [x] = ‛_break’
   symbol_other [cs+] = ‛«cs»’
   integer [ds+] = ‛«ds»’
+
+  keyword [x] = ‛«x»’
 }
