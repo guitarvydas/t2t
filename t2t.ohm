@@ -1,13 +1,20 @@
-lisp2py {
+// lisp 2 py
+t2t {
   main = tree+
   tree =
-    | "(" spaces tree* ")" spaces -- rec
+    | "(" spaces tree_first tree_rest* ")" spaces -- rec
     | string spaces -- string
-    | symbol spaces -- symbol
     | integer spaces -- integer
+    | symbol spaces -- symbol
+
+  tree_first = tree
+  tree_rest = tree
 
   string = dq (~dq any)* dq
   dq = "\""
-  symbol = (~space any)+
+  symbol =
+    | "continue" -- continue
+    | "break" -- break
+    | (~space ~"(" ~")" any)+ -- other
   integer = digit+
 }

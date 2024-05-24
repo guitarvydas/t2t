@@ -5,7 +5,11 @@
         "children": [
             {
                 "name": "t2t",
-                "id": 8
+                "id": 7
+            },
+            {
+                "name": "Read Text File",
+                "id": 11
             }
         ],
         "connections": [
@@ -17,8 +21,21 @@
                 },
                 "source_port": "",
                 "target": {
+                    "name": "Read Text File",
+                    "id": 11
+                },
+                "target_port": ""
+            },
+            {
+                "dir": 1,
+                "source": {
+                    "name": "Read Text File",
+                    "id": 11
+                },
+                "source_port": "",
+                "target": {
                     "name": "t2t",
-                    "id": 8
+                    "id": 7
                 },
                 "target_port": ""
             },
@@ -26,7 +43,7 @@
                 "dir": 2,
                 "source": {
                     "name": "t2t",
-                    "id": 8
+                    "id": 7
                 },
                 "source_port": "",
                 "target": {
@@ -39,7 +56,20 @@
                 "dir": 2,
                 "source": {
                     "name": "t2t",
-                    "id": 8
+                    "id": 7
+                },
+                "source_port": "\u2717",
+                "target": {
+                    "name": "",
+                    "id": 0
+                },
+                "target_port": "\u2717"
+            },
+            {
+                "dir": 2,
+                "source": {
+                    "name": "Read Text File",
+                    "id": 11
                 },
                 "source_port": "\u2717",
                 "target": {
