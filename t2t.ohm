@@ -1,15 +1,24 @@
-// lisp 2 py
+// swib instructions lisp 2 py
 t2t {
-  main = tree+
-  tree =
-    | "(" spaces tree_first tree_rest* ")" spaces -- rec
+  main = script+
+  script = "(" spaces "script" space+ name space+ instruction+ ")" spaces
+  instruction =
+    | "(" spaces op args* ")" spaces -- rec
+    | atom -- atom
+
+  atom =
     | string spaces -- string
     | integer spaces -- integer
     | symbol spaces -- symbol
 
-  tree_first = tree
-  tree_rest = tree
+  op = atom
+  args =
+    | "(" "✓" spaces instruction+ ")" spaces -- yes
+    | "(" "✗" spaces instruction+ ")" spaces -- no
+    | instruction spaces -- list
 
+  name = symbol
+  
   string = dq (~dq any)* dq
   dq = "\""
   symbol =

@@ -1,18 +1,25 @@
-// lisp 2 python
+// swib instructions lisp 2 python
 t2t {
-  main [tree+] = ‛«tree»’
-  tree_rec [lb ws tree_first tree_rest* rb ws2] = ‛[«ws»«tree_first»«tree_rest»]«ws2»’
-  tree_string [s ws] = ‛«s»’
-  tree_symbol [s ws] = ‛«s»’
-  tree_integer [s ws] = ‛«s»’
+  main [script+] = ‛«script»’
+  script [lb ws _script ws2+ name ws3+ instruction+ rb ws4] = ‛{«ws»«_script»«ws2»«name»«ws3»«instruction»}«ws4»’
+  instruction_rec [lb ws op args* rb ws2] = ‛[«ws»«op»«args»]«ws2»’
+  instruction_atom [a] = ‛«a»’
 
-  tree_first [tree] = ‛«tree»’
-  tree_rest [tree] = ‛, «tree»’
+  atom_string [s ws] = ‛«s»«ws»’
+  atom_symbol [s ws] = ‛«s»«ws»’
+  atom_integer [s ws] = ‛«s»«ws»’
 
+  op [op] = ‛«op»’
+  args_yes [lb _ ws2 i+ rb ws3] = ‛«lb»«_»«ws2»«i»«rb»«ws3»’
+  args_no [lb _ ws2 i+ rb ws3] = ‛«lb»«_»«ws2»«i»«rb»«ws3»’
+  args_list [i ws] = ‛«i»«ws»’
+
+  name [n] = ‛«n»’
+  
   string [dq1 cs* dq2] = ‛«dq1»«cs»«dq2»’
   dq [q] = ‛«q»’
-  symbol_continue [x] = ‛"_continue"’
-  symbol_break [x] = ‛"_break"’
-  symbol_other [cs+] = ‛"«cs»"’
+  symbol_continue [x] = ‛_continue’
+  symbol_break [x] = ‛_break’
+  symbol_other [cs+] = ‛«cs»’
   integer [ds+] = ‛«ds»’
 }
