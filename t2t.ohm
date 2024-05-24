@@ -1,0 +1,13 @@
+lisp2py {
+  main = tree+
+  tree =
+    | "(" spaces tree* ")" spaces -- rec
+    | string spaces -- string
+    | symbol spaces -- symbol
+    | integer spaces -- integer
+
+  string = dq (~dq any)* dq
+  dq = "\""
+  symbol = (~space any)+
+  integer = digit+
+}

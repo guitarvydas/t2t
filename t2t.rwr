@@ -1,0 +1,12 @@
+lisp2py {
+  main [tree+] = ‛«tree»’
+  tree_rec [lb ws tree* rb ws2] = ‛«lb»«ws»«tree»«rb»«ws2»’
+  tree_string [s ws] = ‛«s»«ws»’
+  tree_symbol [s ws] = ‛«s»«ws»’
+  tree_integer [s ws] = ‛«s»«ws»’
+
+  string [dq1 cs* dq2] = ‛«dq1»«cs»«dq2»’
+  dq [q] = ‛«q»’
+  symbol [cs+] = ‛«cs»’
+  integer [ds+] = ‛«ds»’
+}
