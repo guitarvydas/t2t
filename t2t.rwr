@@ -1,28 +1,31 @@
 // swib instructions lisp 2 python
 t2t {
   main [script+] = ‛«script»’
-  script [lb ws _script ws2+ name ws3+ instruction+ rb ws4] = ‛{«ws»«_script»«ws2»«name»«ws3»«instruction»}«ws4»’
-  instruction_enter [lb op ws name rb ws2] = ‛[«op»«ws»«name»]«ws2»’
-  instruction_exit [lb op ws name rb ws2] = ‛[«op»«ws»«name»]«ws2»’
-  instruction_rec [lb ws op args* rb ws2] = ‛[«ws»«op»«args»]«ws2»’
-  instruction_atom [a] = ‛«a»’
+  script [lb ws _script ws2+ name ws3 instruction+ rb ws4] = ‛{«ws»«_script»«ws2»«name»«ws3»«instruction»}«ws4»’
+  instruction_enter [lb op ws name ws2 rb ws3] = ‛[«op»«ws»«name»«ws2»]«ws3»’
+  instruction_exit [lb op ws name ws2 rb ws3] = ‛[«op»«ws»«name»«ws2»]«ws3»’
+  instruction_op0 [lb op rb ws2] = ‛[«op»]«ws2»’
+  instruction_opN [lb op ws+ n ws2 rb ws3] = ‛[«op»«ws»«n»«ws2»]«ws3»’
+  instruction_sendaccumulator [lb op ws+ p ws2 rb ws3] = ‛[«op»«ws»«p»«ws2»]«ws3»’
+  instruction_sendstring [lb op ws+ s ws2 p ws3 rb ws4] = ‛[«op»«ws»«s»«ws2»«p»«ws3»]«ws4»’
+  instruction_call [lb op ws name ws2 yn ws3 rb ws4] = ‛[«op»«ws»«name»«ws2»«yn»«ws3»]«ws4»’
+  instruction_peek [lb op ws s ws2 yn ws3 rb ws4] = ‛[«op»«ws»«s»«ws2»«yn»«ws3»]«ws4»’
+  instruction_peekend [lb op ws yn ws3 rb ws4] = ‛[«op»«ws»«yn»«ws3»]«ws4»’
+  instruction_cycle [lb op ws i+ rb ws2] = ‛«lb»«op»«ws»«i»«rb»«ws2»’
 
-  atom_string [s ws] = ‛«s»«ws»’
-  atom_symbol [s ws] = ‛«s»«ws»’
-  atom_integer [s ws] = ‛«s»«ws»’
+  op0 [op] = ‛«op»’
+  opN [op] = ‛«op»’
 
-  op [op] = ‛«op»’
-  args_yes [lb _ ws2 i+ rb ws3] = ‛«lb»«_»«ws2»«i»«rb»«ws3»’
-  args_no [lb _ ws2 i+ rb ws3] = ‛«lb»«_»«ws2»«i»«rb»«ws3»’
-  args_list [i ws] = ‛«i»«ws»’
+  yesno [y n] = ‛«y»«n»’
+  yes [lb _ ws2 i+ rb ws3] = ‛«lb»«_»«ws2»«i»«rb»«ws3»’
+  no [lb _ ws2 i+ rb ws3] = ‛«lb»«_»«ws2»«i»«rb»«ws3»’
 
   name [n] = ‛«n»’
+  port [p] = ‛«p»’
   
   string [dq1 cs* dq2] = ‛«dq1»«cs»«dq2»’
   dq [q] = ‛«q»’
-  symbol_continue [x] = ‛_continue’
-  symbol_break [x] = ‛_break’
-  symbol_other [cs+] = ‛«cs»’
+  symbol [cs+] = ‛«cs»’
   integer [ds+] = ‛«ds»’
 
   keyword [x] = ‛«x»’

@@ -1,32 +1,39 @@
 // swib instructions lisp 2 py
 t2t {
   main = script+
-  script = "(" spaces "script" space+ name space+ instruction+ ")" spaces
+  script = "(" spaces "script" space+ name spaces instruction+ ")" spaces
   instruction =
-    | "(" kw<"enter"> spaces name ")" spaces -- enter
-    | "(" kw<"exit"> spaces name ")" spaces -- exit
-    | "(" spaces op args* ")" spaces -- rec
-    | atom -- atom
+    | "(" kw<"enter"> spaces name spaces ")" spaces -- enter
+    | "(" kw<"exit"> spaces name spaces ")" spaces -- exit
+    | "(" op0 ")" spaces -- op0
+    | "(" opN space+ integer spaces ")" spaces -- opN
+    | "(" kw<"send-accumulator"> space+ port spaces ")" spaces -- sendaccumulator
+    | "(" kw<"send-string"> space+ string spaces port spaces ")" spaces -- sendstring
+    | "(" kw<"call"> spaces name spaces yesno spaces ")" spaces -- call
+    | "(" kw<"peek"> spaces string spaces yesno spaces ")" spaces -- peek
+    | "(" kw<"peek-end"> spaces yesno spaces ")" spaces -- peekend
+    | "(" kw<"cycle"> spaces instruction+ ")" spaces -- cycle
 
-  atom =
-    | string spaces -- string
-    | integer spaces -- integer
-    | symbol spaces -- symbol
+  op0 =
+    | kw<"push-fresh-accumulator">
+    | kw<"pop-accumulator">
+    | kw<"continue">
+    | kw<"break">
+    | kw<"send-accumulator">
+    | kw<"accept-and-append">
+  opN =
+    | kw<"prefetch">
 
-  op = atom
-  args =
-    | "(" "✓" spaces instruction+ ")" spaces -- yes
-    | "(" "✗" spaces instruction+ ")" spaces -- no
-    | instruction spaces -- list
+  yesno = yes no
+  yes = "(" kw<"✓"> spaces instruction+ ")" spaces
+  no = "(" kw<"✗"> spaces instruction+ ")" spaces
 
   name = symbol
+  port = string
   
   string = dq (~dq any)* dq
   dq = "\""
-  symbol =
-    | "continue" -- continue
-    | "break" -- break
-    | (~space ~"(" ~")" ~string ~integer ~keyword any)+ -- other
+  symbol = (~space ~"(" ~")" ~string ~integer ~keyword any)+ -- other
   integer = digit+
 
   keyword =
@@ -34,6 +41,12 @@ t2t {
     | kw<"break">
     | kw<"enter">
     | kw<"exit">
+    | kw<"push-fresh-accumulator">
+    | kw<"pop-accumulator">
+    | kw<"accept-and-append">
+    | kw<"send-accumulator">
+    | kw<"send-string">
+    | kw<"cycle">
     | kw<"✓">
     | kw<"✗">
   kw<s> = s ~alnum
