@@ -1,0 +1,9 @@
+*~
+node_modules/
+package*.json
+.DS_Store
+.#*
+junk*
+*.bkp
+
+_.py
