@@ -2,7 +2,8 @@
 t2t {
   main [script+] = ‛«script»’
   script [lb ws _script ws2+ name ws3+ instruction+ rb ws4] = ‛{«ws»«_script»«ws2»«name»«ws3»«instruction»}«ws4»’
-  instruction_enterexit [lb op ws+ name rb ws2] = ‛[«op»«ws»«name»]«ws2»’
+  instruction_enter [lb op ws name rb ws2] = ‛[«op»«ws»«name»]«ws2»’
+  instruction_exit [lb op ws name rb ws2] = ‛[«op»«ws»«name»]«ws2»’
   instruction_rec [lb ws op args* rb ws2] = ‛[«ws»«op»«args»]«ws2»’
   instruction_atom [a] = ‛«a»’
 
@@ -25,4 +26,5 @@ t2t {
   integer [ds+] = ‛«ds»’
 
   keyword [x] = ‛«x»’
+  kw [s] = ‛«s»’
 }

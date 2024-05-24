@@ -3,7 +3,8 @@ t2t {
   main = script+
   script = "(" spaces "script" space+ name space+ instruction+ ")" spaces
   instruction =
-    | "(" ("enter" | "exit") space+ name ")" spaces -- enterexit
+    | "(" kw<"enter"> spaces name ")" spaces -- enter
+    | "(" kw<"exit"> spaces name ")" spaces -- exit
     | "(" spaces op args* ")" spaces -- rec
     | atom -- atom
 
@@ -28,5 +29,12 @@ t2t {
     | (~space ~"(" ~")" ~string ~integer ~keyword any)+ -- other
   integer = digit+
 
-  keyword = ("continue" | "break" | "enter" | "exit" | "✓" | "✗") ~alnum
+  keyword =
+    | kw<"continue">
+    | kw<"break">
+    | kw<"enter">
+    | kw<"exit">
+    | kw<"✓">
+    | kw<"✗">
+  kw<s> = s ~alnum
 }
