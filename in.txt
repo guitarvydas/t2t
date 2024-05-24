@@ -1,5 +1,5 @@
 (script Sampler
-  (enter "Sampler")
+  (enter Sampler)
   (push-fresh-accumulator)
   (call Stuff 
     (✓ (prefetch 1)
@@ -9,10 +9,10 @@
 	 (✗ (send-string "" "✗") )))
     (✗ (send-string "" "✗") ))
   (pop-accumulator)
-  (exit "Sampler"))
+  (exit Sampler))
 
 (script Stuff
-  (enter "Stuff")
+  (enter Stuff)
   (push-fresh-accumulator)
   (cycle
     (prefetch 11)
@@ -27,11 +27,11 @@
   	   (✗ (accept-and-append)
 	      (continue))))))
   (pop-accumulator)
-  (exit "Stuff"))
+  (exit Stuff))
 
 
 (script Hello
-  (enter "Hello")
+  (enter Hello)
   (push-fresh-accumulator)
   (prefetch 11)
   (peek "Hello World"
@@ -39,4 +39,4 @@
        (send-accumulator "✓"))
     (✗ (send-string "" "✗")))
   (pop-accumulator)
-  (exit "Hello"))
+  (exit Hello))

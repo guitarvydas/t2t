@@ -3,6 +3,7 @@ t2t {
   main = script+
   script = "(" spaces "script" space+ name space+ instruction+ ")" spaces
   instruction =
+    | "(" ("enter" | "exit") space+ name ")" spaces -- enterexit
     | "(" spaces op args* ")" spaces -- rec
     | atom -- atom
 
@@ -24,6 +25,8 @@ t2t {
   symbol =
     | "continue" -- continue
     | "break" -- break
-    | (~space ~"(" ~")" any)+ -- other
+    | (~space ~"(" ~")" ~string ~integer ~keyword any)+ -- other
   integer = digit+
+
+  keyword = ("continue" | "break" | "enter" | "exit" | "✓" | "✗") ~alnum
 }
