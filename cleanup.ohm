@@ -1,0 +1,6 @@
+cleanup {
+  main = item+
+  item =
+    | "," spaces "]" -- extracomma
+    | any -- other
+}

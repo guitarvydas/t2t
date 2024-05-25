@@ -1,0 +1,52 @@
+{"script":"Sampler","body":[
+    {"op":"enter","arg":"Sampler},
+    {"op":"push-fresh-accumulator"},
+    {"op":"call","arg":"Stuff","tail":[
+        {"op":"prefetch","arg":1},
+        {"op":"peekend","tail":[
+            {"op":"accept-and-append"},
+            {"op":"send-accumulator","port":"✓"},
+            {"op":"send-string","arg":"","port":"✗"},
+        ]},
+        {"op":"send-string","arg":"","port":"✗"},
+    ]},
+    {"op":"pop-accumulator"},
+    {"op":"exit","arg":"Sampler"},
+]}
+
+{"script":"Stuff","body":[
+    {"op":"enter","arg":"Stuff},
+    {"op":"push-fresh-accumulator"},
+    {"op":"cycle","body":[
+        {"op":"prefetch","arg":11},
+        {"op":"peek","arg":""Hello World"","tail":[
+            {"op":"call","arg":"Hello","tail":[
+                {"op":"continue"},
+                {"op":"send-string","arg":"","port":"✗"},
+                {"op":"break"},
+            ]},
+            {"op":"peekend","tail":[
+                {"op":"send-accumulator","port":"✓"},
+                {"op":"break"},
+                {"op":"accept-and-append"},
+                {"op":"continue"},
+            ]},
+        ]},
+    ]},
+    {"op":"pop-accumulator"},
+    {"op":"exit","arg":"Stuff"},
+]}
+
+{"script":"Hello","body":[
+    {"op":"enter","arg":"Hello},
+    {"op":"push-fresh-accumulator"},
+    {"op":"prefetch","arg":11},
+    {"op":"peek","arg":""Hello World"","tail":[
+        {"op":"accept-and-append"},
+        {"op":"send-accumulator","port":"✓"},
+        {"op":"send-string","arg":"","port":"✗"},
+    ]},
+    {"op":"pop-accumulator"},
+    {"op":"exit","arg":"Hello"},
+]}
+
