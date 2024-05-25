@@ -12,7 +12,7 @@ function indenter (str) {
 }
 
  let indentation = [];
- // we emit code using bracketed notation ⤷ and ⤶ which is compatible
+ // we emit code using bracketed notation → and ← which is compatible
  // lisp pretty-printing, which allows easier debugging of the transpiled code
  // then, for Python, we convert the bracketing into indentation...
  function indent1 (s) {

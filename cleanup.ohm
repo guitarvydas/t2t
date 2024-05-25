@@ -1,8 +1,9 @@
 cleanup {
   main = item+
   item =
-    | "," spaces "]" -- extracomma
+    | "," ws* "]" -- extracomma
     | any -- other
-  space += "⤶"
-  space += "⤷"
+  in = "⤷"
+  out = "⤶"
+  ws = " " | "\t" | "\n" | in | out
 }
