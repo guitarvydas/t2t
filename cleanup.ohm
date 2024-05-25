@@ -3,4 +3,6 @@ cleanup {
   item =
     | "," spaces "]" -- extracomma
     | any -- other
+  space += "⤶"
+  space += "⤷"
 }

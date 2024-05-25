@@ -12,16 +12,16 @@ function indenter (str) {
 }
 
  let indentation = [];
- // we emit code using bracketed notation (- and -) which is compatible
+ // we emit code using bracketed notation ⤷ and ⤶ which is compatible
  // lisp pretty-printing, which allows easier debugging of the transpiled code
  // then, for Python, we convert the bracketing into indentation...
  function indent1 (s) {
-   let opens = (s.match (/\(-/g) || []).length;
-   let closes = (s.match (/-\)/g) || []).length;
+   let opens = (s.match (/⤷/g) || []).length;
+   let closes = (s.match (/⤶/g) || []).length;
      // let r0 = s.trim ();
      let r0 = s;
-   let r1 = r0.replace (/\(-/g, '');
-   let r2 = r1.replace (/-\)/g, '');
+   let r1 = r0.replace (/⤷/g, '');
+   let r2 = r1.replace (/⤶/g, '');
    let spaces = indentation.join ('');
    let r  = spaces + r2.replace (/\n/g, spaces);
    let diff = opens - closes;
