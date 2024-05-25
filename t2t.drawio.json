@@ -4,12 +4,16 @@
         "name": "main",
         "children": [
             {
+                "name": "$ node indenter.js",
+                "id": 3
+            },
+            {
                 "name": "t2t",
                 "id": 7
             },
             {
                 "name": "Read Text File",
-                "id": 11
+                "id": 10
             }
         ],
         "connections": [
@@ -22,7 +26,7 @@
                 "source_port": "",
                 "target": {
                     "name": "Read Text File",
-                    "id": 11
+                    "id": 10
                 },
                 "target_port": ""
             },
@@ -30,7 +34,7 @@
                 "dir": 1,
                 "source": {
                     "name": "Read Text File",
-                    "id": 11
+                    "id": 10
                 },
                 "source_port": "",
                 "target": {
@@ -40,36 +44,23 @@
                 "target_port": ""
             },
             {
-                "dir": 2,
+                "dir": 1,
                 "source": {
                     "name": "t2t",
                     "id": 7
                 },
                 "source_port": "",
                 "target": {
-                    "name": "",
-                    "id": 0
+                    "name": "$ node indenter.js",
+                    "id": 3
                 },
                 "target_port": ""
-            },
-            {
-                "dir": 2,
-                "source": {
-                    "name": "t2t",
-                    "id": 7
-                },
-                "source_port": "\u2717",
-                "target": {
-                    "name": "",
-                    "id": 0
-                },
-                "target_port": "\u2717"
             },
             {
                 "dir": 2,
                 "source": {
                     "name": "Read Text File",
-                    "id": 11
+                    "id": 10
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -77,6 +68,45 @@
                     "id": 0
                 },
                 "target_port": "\u2717"
+            },
+            {
+                "dir": 2,
+                "source": {
+                    "name": "t2t",
+                    "id": 7
+                },
+                "source_port": "\u2717",
+                "target": {
+                    "name": "",
+                    "id": 0
+                },
+                "target_port": "\u2717"
+            },
+            {
+                "dir": 2,
+                "source": {
+                    "name": "$ node indenter.js",
+                    "id": 3
+                },
+                "source_port": "\u2717",
+                "target": {
+                    "name": "",
+                    "id": 0
+                },
+                "target_port": "\u2717"
+            },
+            {
+                "dir": 2,
+                "source": {
+                    "name": "$ node indenter.js",
+                    "id": 3
+                },
+                "source_port": "",
+                "target": {
+                    "name": "",
+                    "id": 0
+                },
+                "target_port": ""
             }
         ]
     },

@@ -1,24 +1,24 @@
 // swib instructions lisp 2 python
 t2t {
   main [script+] = ‛«script»’
-  script [lb ws _script ws2+ name ws3 instruction+ rb ws4] = ‛{«ws»«_script»«ws2»«name»«ws3»«instruction»}«ws4»’
-  instruction_enter [lb op ws name ws2 rb ws3] = ‛[«op»«ws»«name»«ws2»]«ws3»’
-  instruction_exit [lb op ws name ws2 rb ws3] = ‛[«op»«ws»«name»«ws2»]«ws3»’
-  instruction_op0 [lb op rb ws2] = ‛[«op»]«ws2»’
-  instruction_opN [lb op ws+ n ws2 rb ws3] = ‛[«op»«ws»«n»«ws2»]«ws3»’
-  instruction_sendaccumulator [lb op ws+ p ws2 rb ws3] = ‛[«op»«ws»«p»«ws2»]«ws3»’
-  instruction_sendstring [lb op ws+ s ws2 p ws3 rb ws4] = ‛[«op»«ws»«s»«ws2»«p»«ws3»]«ws4»’
-  instruction_call [lb op ws name ws2 yn ws3 rb ws4] = ‛[«op»«ws»«name»«ws2»«yn»«ws3»]«ws4»’
-  instruction_peek [lb op ws s ws2 yn ws3 rb ws4] = ‛[«op»«ws»«s»«ws2»«yn»«ws3»]«ws4»’
-  instruction_peekend [lb op ws yn ws3 rb ws4] = ‛[«op»«ws»«yn»«ws3»]«ws4»’
-  instruction_cycle [lb op ws i+ rb ws2] = ‛«lb»«op»«ws»«i»«rb»«ws2»’
+  script [lb ws _script ws2+ name ws3 instruction+ rb ws4] = ‛\n{"script":"«name»","body":[(-«instruction»-)\n]}\n’
+  instruction_enter [lb op ws name ws2 rb ws3] = ‛\n{"op":"enter","name":"«name»},’
+  instruction_exit [lb op ws name ws2 rb ws3] = ‛\n{"op":"exit","name":"«name»"},’
+  instruction_op0 [lb op rb ws2] = ‛\n{"op":"«op»"},’
+  instruction_opN [lb op ws+ n ws2 rb ws3] = ‛\n{"op":"«op»","arg1":«n»},’
+  instruction_sendaccumulator [lb op ws+ p ws2 rb ws3] = ‛\n{"op":"send-accumulator","port":«p»},’
+  instruction_sendstring [lb op ws+ s ws2 p ws3 rb ws4] = ‛\n{"op":"send-string","arg1":«s»,"port":«p»},’
+  instruction_call [lb op ws name ws2 yn ws3 rb ws4] = ‛\n{"op":"call","arg1":"«name»","tail":[(-«yn»-)\n]},’
+  instruction_peek [lb op ws s ws2 yn ws3 rb ws4] = ‛\n{"op":"peek","arg1":"«s»","tail":[(-«yn»-)\n]},’
+  instruction_peekend [lb op ws yn ws3 rb ws4] = ‛\n{"op":"peekend","tail":[(-«yn»-)\n]},’
+  instruction_cycle [lb op ws i+ rb ws2] = ‛\n{"op":"cycle","body":[(-«i»-)\n]},’
 
   op0 [op] = ‛«op»’
   opN [op] = ‛«op»’
 
   yesno [y n] = ‛«y»«n»’
-  yes [lb _ ws2 i+ rb ws3] = ‛«lb»«_»«ws2»«i»«rb»«ws3»’
-  no [lb _ ws2 i+ rb ws3] = ‛«lb»«_»«ws2»«i»«rb»«ws3»’
+  yes [lb _ ws2 i+ rb ws3] = ‛«i»’
+  no [lb _ ws2 i+ rb ws3] = ‛«i»’
 
   name [n] = ‛«n»’
   port [p] = ‛«p»’
