@@ -4,20 +4,20 @@
         "name": "main",
         "children": [
             {
-                "name": "$ node indenter.js",
-                "id": 3
-            },
-            {
-                "name": "t2t",
-                "id": 7
-            },
-            {
                 "name": "Read Text File",
-                "id": 10
+                "id": 14
             },
             {
                 "name": "cleanup",
-                "id": 17
+                "id": 21
+            },
+            {
+                "name": "t2t",
+                "id": 29
+            },
+            {
+                "name": "$ node indenter.js",
+                "id": 31
             }
         ],
         "connections": [
@@ -27,49 +27,179 @@
                     "name": "",
                     "id": 0
                 },
+                "source_port": "grammar&#xa;name",
+                "target": {
+                    "name": "t2t",
+                    "id": 29
+                },
+                "target_port": "grammar&#xa;name"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "ohm",
+                "target": {
+                    "name": "t2t",
+                    "id": 29
+                },
+                "target_port": "ohm"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "rwr",
+                "target": {
+                    "name": "t2t",
+                    "id": 29
+                },
+                "target_port": "rwr"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "support",
+                "target": {
+                    "name": "t2t",
+                    "id": 29
+                },
+                "target_port": "support"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
                 "source_port": "",
                 "target": {
                     "name": "Read Text File",
-                    "id": 10
+                    "id": 14
                 },
                 "target_port": ""
             },
             {
-                "dir": 1,
+                "dir": 0,
                 "source": {
-                    "name": "Read Text File",
-                    "id": 10
+                    "name": "",
+                    "id": 0
                 },
-                "source_port": "",
-                "target": {
-                    "name": "t2t",
-                    "id": 7
-                },
-                "target_port": ""
-            },
-            {
-                "dir": 1,
-                "source": {
-                    "name": "t2t",
-                    "id": 7
-                },
-                "source_port": "",
+                "source_port": "cleanup&#xa;grammar&#xa;name",
                 "target": {
                     "name": "cleanup",
-                    "id": 17
+                    "id": 21
                 },
-                "target_port": ""
+                "target_port": "grammar&#xa;name"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "cleanup&#xa;ohm",
+                "target": {
+                    "name": "cleanup",
+                    "id": 21
+                },
+                "target_port": "ohm"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "cleanup&#xa;rwr",
+                "target": {
+                    "name": "cleanup",
+                    "id": 21
+                },
+                "target_port": "rwr"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "cleanup&#xa;support",
+                "target": {
+                    "name": "cleanup",
+                    "id": 21
+                },
+                "target_port": "support"
             },
             {
                 "dir": 1,
                 "source": {
                     "name": "cleanup",
-                    "id": 17
+                    "id": 21
                 },
                 "source_port": "",
                 "target": {
                     "name": "$ node indenter.js",
-                    "id": 3
+                    "id": 31
+                },
+                "target_port": ""
+            },
+            {
+                "dir": 1,
+                "source": {
+                    "name": "t2t",
+                    "id": 29
+                },
+                "source_port": "",
+                "target": {
+                    "name": "cleanup",
+                    "id": 21
+                },
+                "target_port": ""
+            },
+            {
+                "dir": 1,
+                "source": {
+                    "name": "Read Text File",
+                    "id": 14
+                },
+                "source_port": "",
+                "target": {
+                    "name": "t2t",
+                    "id": 29
+                },
+                "target_port": ""
+            },
+            {
+                "dir": 2,
+                "source": {
+                    "name": "$ node indenter.js",
+                    "id": 31
+                },
+                "source_port": "\u2717",
+                "target": {
+                    "name": "",
+                    "id": 0
+                },
+                "target_port": "\u2717"
+            },
+            {
+                "dir": 2,
+                "source": {
+                    "name": "$ node indenter.js",
+                    "id": 31
+                },
+                "source_port": "",
+                "target": {
+                    "name": "",
+                    "id": 0
                 },
                 "target_port": ""
             },
@@ -77,7 +207,7 @@
                 "dir": 2,
                 "source": {
                     "name": "cleanup",
-                    "id": 17
+                    "id": 21
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -90,7 +220,7 @@
                 "dir": 2,
                 "source": {
                     "name": "Read Text File",
-                    "id": 10
+                    "id": 14
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -103,33 +233,7 @@
                 "dir": 2,
                 "source": {
                     "name": "t2t",
-                    "id": 7
-                },
-                "source_port": "\u2717",
-                "target": {
-                    "name": "",
-                    "id": 0
-                },
-                "target_port": "\u2717"
-            },
-            {
-                "dir": 2,
-                "source": {
-                    "name": "$ node indenter.js",
-                    "id": 3
-                },
-                "source_port": "",
-                "target": {
-                    "name": "",
-                    "id": 0
-                },
-                "target_port": ""
-            },
-            {
-                "dir": 2,
-                "source": {
-                    "name": "$ node indenter.js",
-                    "id": 3
+                    "id": 29
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -147,22 +251,6 @@
             {
                 "name": "Transpile",
                 "id": 11
-            },
-            {
-                "name": "'t2t",
-                "id": 12
-            },
-            {
-                "name": "'null.js",
-                "id": 15
-            },
-            {
-                "name": "'t2t.ohm",
-                "id": 19
-            },
-            {
-                "name": "'t2t.rwr",
-                "id": 23
             }
         ],
         "connections": [
@@ -172,12 +260,12 @@
                     "name": "",
                     "id": 0
                 },
-                "source_port": "",
+                "source_port": "rwr",
                 "target": {
-                    "name": "'t2t",
-                    "id": 12
+                    "name": "Transpile",
+                    "id": 11
                 },
-                "target_port": ""
+                "target_port": "rwrfn"
             },
             {
                 "dir": 0,
@@ -185,38 +273,12 @@
                     "name": "",
                     "id": 0
                 },
-                "source_port": "",
+                "source_port": "support",
                 "target": {
-                    "name": "'t2t.ohm",
-                    "id": 19
+                    "name": "Transpile",
+                    "id": 11
                 },
-                "target_port": ""
-            },
-            {
-                "dir": 0,
-                "source": {
-                    "name": "",
-                    "id": 0
-                },
-                "source_port": "",
-                "target": {
-                    "name": "'t2t.rwr",
-                    "id": 23
-                },
-                "target_port": ""
-            },
-            {
-                "dir": 0,
-                "source": {
-                    "name": "",
-                    "id": 0
-                },
-                "source_port": "",
-                "target": {
-                    "name": "'null.js",
-                    "id": 15
-                },
-                "target_port": ""
+                "target_port": "rwrsupportfn"
             },
             {
                 "dir": 0,
@@ -232,56 +294,30 @@
                 "target_port": "input"
             },
             {
-                "dir": 1,
+                "dir": 0,
                 "source": {
-                    "name": "'null.js",
-                    "id": 15
+                    "name": "",
+                    "id": 0
                 },
-                "source_port": "",
-                "target": {
-                    "name": "Transpile",
-                    "id": 11
-                },
-                "target_port": "rwrsupportfn"
-            },
-            {
-                "dir": 1,
-                "source": {
-                    "name": "'t2t.rwr",
-                    "id": 23
-                },
-                "source_port": "",
-                "target": {
-                    "name": "Transpile",
-                    "id": 11
-                },
-                "target_port": "rwrfn"
-            },
-            {
-                "dir": 1,
-                "source": {
-                    "name": "'t2t",
-                    "id": 12
-                },
-                "source_port": "",
-                "target": {
-                    "name": "Transpile",
-                    "id": 11
-                },
-                "target_port": "grammar name"
-            },
-            {
-                "dir": 1,
-                "source": {
-                    "name": "'t2t.ohm",
-                    "id": 19
-                },
-                "source_port": "",
+                "source_port": "ohm",
                 "target": {
                     "name": "Transpile",
                     "id": 11
                 },
                 "target_port": "ohmfn"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "grammar&#xa;name",
+                "target": {
+                    "name": "Transpile",
+                    "id": 11
+                },
+                "target_port": "grammar name"
             },
             {
                 "dir": 2,
@@ -317,23 +353,7 @@
         "children": [
             {
                 "name": "Transpile",
-                "id": 11
-            },
-            {
-                "name": "'cleanup",
-                "id": 12
-            },
-            {
-                "name": "'null.js",
-                "id": 15
-            },
-            {
-                "name": "'cleanup.ohm",
-                "id": 19
-            },
-            {
-                "name": "'cleanup.rwr",
-                "id": 23
+                "id": 13
             }
         ],
         "connections": [
@@ -343,51 +363,12 @@
                     "name": "",
                     "id": 0
                 },
-                "source_port": "",
+                "source_port": "ohm",
                 "target": {
-                    "name": "'cleanup",
-                    "id": 12
+                    "name": "Transpile",
+                    "id": 13
                 },
-                "target_port": ""
-            },
-            {
-                "dir": 0,
-                "source": {
-                    "name": "",
-                    "id": 0
-                },
-                "source_port": "",
-                "target": {
-                    "name": "'cleanup.ohm",
-                    "id": 19
-                },
-                "target_port": ""
-            },
-            {
-                "dir": 0,
-                "source": {
-                    "name": "",
-                    "id": 0
-                },
-                "source_port": "",
-                "target": {
-                    "name": "'cleanup.rwr",
-                    "id": 23
-                },
-                "target_port": ""
-            },
-            {
-                "dir": 0,
-                "source": {
-                    "name": "",
-                    "id": 0
-                },
-                "source_port": "",
-                "target": {
-                    "name": "'null.js",
-                    "id": 15
-                },
-                "target_port": ""
+                "target_port": "ohmfn"
             },
             {
                 "dir": 0,
@@ -398,67 +379,54 @@
                 "source_port": "",
                 "target": {
                     "name": "Transpile",
-                    "id": 11
+                    "id": 13
                 },
                 "target_port": "input"
             },
             {
-                "dir": 1,
+                "dir": 0,
                 "source": {
-                    "name": "'null.js",
-                    "id": 15
+                    "name": "",
+                    "id": 0
                 },
-                "source_port": "",
+                "source_port": "grammar&#xa;name",
                 "target": {
                     "name": "Transpile",
-                    "id": 11
-                },
-                "target_port": "rwrsupportfn"
-            },
-            {
-                "dir": 1,
-                "source": {
-                    "name": "'cleanup.rwr",
-                    "id": 23
-                },
-                "source_port": "",
-                "target": {
-                    "name": "Transpile",
-                    "id": 11
-                },
-                "target_port": "rwrfn"
-            },
-            {
-                "dir": 1,
-                "source": {
-                    "name": "'cleanup",
-                    "id": 12
-                },
-                "source_port": "",
-                "target": {
-                    "name": "Transpile",
-                    "id": 11
+                    "id": 13
                 },
                 "target_port": "grammar name"
             },
             {
-                "dir": 1,
+                "dir": 0,
                 "source": {
-                    "name": "'cleanup.ohm",
-                    "id": 19
+                    "name": "",
+                    "id": 0
                 },
-                "source_port": "",
+                "source_port": "rwr",
                 "target": {
                     "name": "Transpile",
-                    "id": 11
+                    "id": 13
                 },
-                "target_port": "ohmfn"
+                "target_port": "rwrfn"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "support",
+                "target": {
+                    "name": "Transpile",
+                    "id": 13
+                },
+                "target_port": "rwrsupportfn"
             },
             {
                 "dir": 2,
                 "source": {
                     "name": "Transpile",
-                    "id": 11
+                    "id": 13
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -471,7 +439,7 @@
                 "dir": 2,
                 "source": {
                     "name": "Transpile",
-                    "id": 11
+                    "id": 13
                 },
                 "source_port": "",
                 "target": {
