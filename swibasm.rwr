@@ -1,5 +1,5 @@
 // swib instructions lisp 2 python
-t2t {
+swibasm {
   main [script+] = ‛«script»’
   script [lb ws _script ws2+ name ws3 instruction+ rb ws4] = ‛\n{"script":"«name»","body":[⤷«instruction»⤶\n]}\n’
   instruction_enter [lb op ws name ws2 rb ws3] = ‛\n{"op":"enter","arg":"«name»},’

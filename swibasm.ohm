@@ -1,5 +1,5 @@
 // swib instructions lisp 2 py
-t2t {
+swibasm {
   main = script+
   script = "(" spaces "script" space+ name spaces instruction+ ")" spaces
   instruction =
