@@ -32,10 +32,10 @@ def main ():
     diagram_names = sys.argv [i:]
     i += 1
 
-    print (f'root_project={root_project} root_0D={root_0D}')
-    print (f'grammar_name={grammar_name} support={support}')
-    print (f'cleanup_grammar_name={cleanup_grammar_name} cleanup_support={cleanup_support}')
-    print (f'arg={arg} main_container_name={main_container_name} diagram_names={diagram_names}')
+    # print (f'root_project={root_project} root_0D={root_0D}')
+    # print (f'grammar_name={grammar_name} support={support}')
+    # print (f'cleanup_grammar_name={cleanup_grammar_name} cleanup_support={cleanup_support}')
+    # print (f'arg={arg} main_container_name={main_container_name} diagram_names={diagram_names}')
 
     palette = zd.initialize_component_palette (root_project, root_0D, diagram_names, components_to_include_in_project)
     zd.run (palette, root_project, root_0D, arg, main_container_name, diagram_names, start_function,
