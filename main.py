@@ -2,17 +2,13 @@ import py0d as zd
 import sys
 
 grammar_name = ""
-ohm = ""
-rwr = ""
 support = ""
 
 cleanup_grammar_name = ""
-cleanupohm = ""
-cleanuprwr = ""
 cleanup_support = ""
 
 def main ():
-    global grammar_name, ohm, rwr, support, cleanup_grammar_name, cleanupohm, cleanuprwr, cleanup_support
+    global grammar_name, support, cleanup_grammar_name, cleanup_support
 
     print (sys.argv)
 
@@ -21,18 +17,10 @@ def main ():
     i = 3
     grammar_name = sys.argv [i]
     i += 1
-    ohm = sys.argv [i]
-    i += 1
-    rwr = sys.argv [i]
-    i += 1
     support = sys.argv [i]
     i += 1
 
     cleanup_grammar_name = sys.argv [i]
-    i += 1
-    cleanupohm = sys.argv [i]
-    i += 1
-    cleanuprwr = sys.argv [i]
     i += 1
     cleanup_support = sys.argv [i]
     i += 1
@@ -45,27 +33,27 @@ def main ():
     i += 1
 
     print (f'root_project={root_project} root_0D={root_0D}')
-    print (f'grammar_name={grammar_name} ohm={ohm} rwr={rwr} support={support}')
-    print (f'cleanup_grammar_name={cleanup_grammar_name} ohm={cleanupohm} rwr={cleanuprwr} support={cleanup_support}')
+    print (f'grammar_name={grammar_name} support={support}')
+    print (f'cleanup_grammar_name={cleanup_grammar_name} cleanup_support={cleanup_support}')
     print (f'arg={arg} main_container_name={main_container_name} diagram_names={diagram_names}')
- 
+
     palette = zd.initialize_component_palette (root_project, root_0D, diagram_names, components_to_include_in_project)
     zd.run (palette, root_project, root_0D, arg, main_container_name, diagram_names, start_function,
               show_hierarchy=False, show_connections=False, show_traces=False, show_all_outputs=False)
 
 def start_function (root_project, root_0D, arg, main_container):
-    global grammar_name, ohm, rwr, support, cleanup_grammar_name, cleanupohm, cleanuprwr, cleanup_support
+    global grammar_name, support, cleanup_grammar_name, cleanup_support
 
     # grammar name, ohm, rwr, and, support filenames
     g = zd.new_datum_string (grammar_name)
     msg = zd.make_message("grammar&#xa;name", g)
     zd.inject (main_container, msg)
 
-    g = zd.new_datum_string (ohm)
+    g = zd.new_datum_string (grammar_name + ".ohm")
     msg = zd.make_message("ohm", g)
     zd.inject (main_container, msg)
 
-    g = zd.new_datum_string (rwr)
+    g = zd.new_datum_string (grammar_name + ".rwr")
     msg = zd.make_message("rwr", g)
     zd.inject (main_container, msg)
 
@@ -79,11 +67,11 @@ def start_function (root_project, root_0D, arg, main_container):
     msg = zd.make_message("cleanup&#xa;grammar&#xa;name", g)
     zd.inject (main_container, msg)
 
-    g = zd.new_datum_string (cleanupohm)
+    g = zd.new_datum_string (cleanup_grammar_name + ".ohm")
     msg = zd.make_message("cleanup&#xa;ohm", g)
     zd.inject (main_container, msg)
 
-    g = zd.new_datum_string (cleanuprwr)
+    g = zd.new_datum_string (cleanup_grammar_name + ".rwr")
     msg = zd.make_message("cleanup&#xa;rwr", g)
     zd.inject (main_container, msg)
 
