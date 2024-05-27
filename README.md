@@ -1,4 +1,6 @@
 # t2t transpiler tool
+- t2t tool - text to text transpiler
+- inhales 'in.txt' and exhales transpiled text according to the grammars and rewrite rules
 - you need to supply 2 grammars and 2 corresponding rewrite scripts
 - input is the source text to be converted, output is the converted source
 - this tool parses the input text using the 1st grammar then rewrites it per the 1st rwr (rewrite) script
@@ -7,11 +9,21 @@
 - and you need to specify support (JS) files, if needed (in most cases 'null.js' is sufficient) [details elsewhere]
 
 ## concept
-- the tool inhales source text, parses it according to the main grammar, then rewrites the text according to the RWR (ReWRite script), then passes the transpiled text to a cleanup pass
+- the tool inhales source text, parses it according to the main grammar, then rewrites the text according to the RWR (ReWRite script), then passes the transpiled text to a cleanup pass, the twice-transpiled text is sent through an indenter to format the output code ("pretty print" for structured languages, vital for Python-like languages)
 - the cleanup pass parses the transformed text and tweaks it according to the cleanup RWR script
+  - for example, many languages insist that commas are significant. So, if t2t is used to emit code in one of those languages, the emitted code needs to have just
+    the right number of commas in it, and must not have a comma after the last element in a list. In such cases, the cleanup pass can delete superfluous commas. If not needed, the cleanup pass can be stubbed out on the diagram by feeing inputs directly to outputs.
+- After the two parsing/rewriting passes, the code is further filtered by an indenter. The indenter converts the unicode characters "⤷" into indents and "⤶" into outdents
+  - the RWR (rewrite) scripts can emit code that contains indent and outdent characters to make the final code easier to read, or, to make the code compatible with indentation-based languages, like Python.
+  - At present, indents produce a fixed number of spaces. The amount is currently hard-wired into the indent.js code. This amount should be easy to change on a per-project basis by editing the 'indent.js' program.
 
 # diagram of the tool
 ![t2t](./t2t.png)
+
+# usage
+- run 'make' at the command line, you should see a JSON structure printed on the console
+
+- at present, this is just a simple example of t2t 
 
 # example
 - in the Makefile rule 'all', we see the line:

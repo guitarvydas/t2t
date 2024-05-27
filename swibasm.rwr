@@ -2,7 +2,7 @@
 swibasm {
   main [script+] = ‛«script»’
   script [lb ws _script ws2+ name ws3 instruction+ rb ws4] = ‛\n{"script":"«name»","body":[⤷«instruction»⤶\n]}\n’
-  instruction_enter [lb op ws name ws2 rb ws3] = ‛\n{"op":"enter","arg":"«name»},’
+  instruction_enter [lb op ws name ws2 rb ws3] = ‛\n{"op":"enter","arg":"«name»"},’
   instruction_exit [lb op ws name ws2 rb ws3] = ‛\n{"op":"exit","arg":"«name»"},’
   instruction_op0 [lb op rb ws2] = ‛\n{"op":"«op»"},’
   instruction_opN [lb op ws+ n ws2 rb ws3] = ‛\n{"op":"«op»","arg":«n»},’
