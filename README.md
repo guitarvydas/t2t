@@ -20,7 +20,7 @@
 
 	- which takes input source from in.txt and outputs the twice rewritten text to stdout
 	- the example source file is "in.txt", it contains code the is lisp-flavoured (actually RT - Recursive Text), and that code is converted to .json format
-		- 'in.txt' is supposed to be a simple "assembler" for parsing, the .json output is "assembler" written in JSON format
+		- 'in.txt' is supposed to be a simple "assembler" source with opcodes targeted at parsing text, the .json output is "assembler" written in JSON format
 	- the cleanup pass removes superfluous commas at the end of Python lists, i.e ,...] => ...] (where "..." is whitespace)
 	- in this example, the main grammar is "swibasm" which is sent to the tool as 1 string "swibasm" and is converted into 2 filenames "swibasm.ohm", and, "swibasm.rwr"
 		- the support file for the main grammar is 'null.js'
@@ -35,6 +35,11 @@
 		- 'main' is the tab-name of the main diagram (see the diagram above, see t2t.drawio (use the draw.io editor https://app.diagrams.net))
 		- 't2t.drawio.json' is a json-ified version of the semantically interesting parts of the t2t diagram, created by the das2json tool
 		- 'transpile.drawio.json' is a json-ified version of the semantically interesting parts of some library code used by this tool, created by the das2json tool
+
+# Odin
+- The main workhorse of this tool is the Transpile component, found in the standard library for 0D.
+- The Transpile component works in the Odin version of 0D (in fact, Transpile was developed with Odin0D).
+- I haven't tested this t2t tool with Odin0D, but, I believe that it will, also, work with Odin0D. The .ohm and .rwr files should require no porting for use with Odin0D.
 
 I am happy to answer questoins:
 find me on Discord https://discord.gg/UJWjhFJN
