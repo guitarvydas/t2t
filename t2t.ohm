@@ -131,7 +131,8 @@ t2t {
   rwName = name
   rwCstName = name
   rwCstPredicate =
-    | "(" spaces (rwName spaces)+ ")" spaces ("+" | "*" | "?") -- tree
+    | "(" spaces (rwName spaces)+ ")" spaces ("+" | "*" | "?") -- parenthesized_iter
+    | rwCstName spaces ("+" | "*" | "?") -- iter
     | rwCstName -- name
   rewriteScope =
     | "⎡" spaces name spaces "=" spaces #rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter

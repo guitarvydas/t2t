@@ -24,7 +24,7 @@ let rule_name_stack = [];
 «rewriteDef»
 ’
 
-  ParameterDef [_ name] = ‛\nlet «name»_stack = [];’
+  ParameterDef [_p name] = ‛\nlet «name»_stack = [];«_.memo_parameter (name)»’
 
   GrammarDef [_ name Rules+] = ‛
 const grammar = String.raw\\\`
@@ -34,7 +34,11 @@ const grammar = String.raw\\\`
 \\\`;
 ’
 
-  rewriteDef [_ ws rewriteRules+] = ‛«_»«ws»«rewriteRules»’
+  rewriteDef [_ ws rewriteRules+] = ‛const rewrite_code = {«rewriteRules»
+    _terminal: function () { return this.sourceString; },
+    _iter: function (...children) { return children.map(c => c.rwr ()); }
+};
+’
 
   Rule_define [ident Formals? ruleDescr? _eq RuleBody] ‛«_.setrule (ident.rwr (), Formals.rwr (), ruleDescr.rwr ())»’ = ‛«RuleBody»’
   Rule_override [ident Formals? _ceq RuleBody]  ‛«_.setrule (ident.rwr (), Formals.rwr (), "")»’ = ‛«RuleBody»’
@@ -123,12 +127,25 @@ const grammar = String.raw\\\`
 
 
 
-  rewriteRule [rwName ws1 lb ws2 rwCstPredicate+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛«rwName»«ws1»«lb»«ws2»«rwCstPredicate»«ws2»«rb»«ws4»«_eq»«ws5»«rewriteScope»«ws6»’
+  rewriteRule [rwName ws1 lb ws2 rwCstPredicate+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛
+«rwName» : function («rwCstPredicate») {
+        return_value_stack.push ("");
+        rule_name_stack.push ("");
+        set_top (rule_name_stack, "«rwName»");
+        «_.foreach_parameter (".push ('');")»
+
+«rewriteScope»
+        «_.foreach_parameter (".pop ();")»
+        rule_name_stack.pop ();
+        return return_vbalue_stack.pop ();
+},’
+  
   rwName [name] =‛«name»’
   rwCstName [name] =‛«name»’
-  rwCstPredicate_tree [lb ws1 rwName+ ws2+ rb ws3 op] = ‛«lb»«ws1»«rwName»«ws2»«rb»«ws3»«op»’
-  rwCstPredicate_name [rwCstName] = ‛«rwCstName»’
-  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛«lb»«ws1»«name»«ws2»«_eq»«ws3»«rewriteFormatString»«ws4»«rewriteScope»«ws5»«rb»«ws6»’
+  rwCstPredicate_parenthesized_iter [lb ws1 rwName+ ws2 rb ws3 op] = ‛«lb»«ws1»«rwName»«ws2»«rb»«ws3»«op», ’
+  rwCstPredicate_iter [rwName ws2 op] = ‛«rwName»«ws2»«op», ’
+  rwCstPredicate_name [rwCstName] = ‛«rwCstName», ’
+  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name», «rewriteFormatString»);\n«rewriteScope»’
   rewriteScope_raw [rewriteFormatString] = ‛«rewriteFormatString»’
   rewriteFormatString [lq formatChars* rq] = ‛«lq»«formatChars»«rq»’
   formatChar_cst_interpolation [lb rwCstName rb] = ‛«lb»«rwCstName»«rb»’

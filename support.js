@@ -21,7 +21,19 @@ _ = {
     setrule : function (name, formals, desc) { _.rulename = name.trim (); _.formals = formals ; _.ruleDescr = desc ; return ""; },
     getrulename : function () { return _.rulename; },
     getformals : function () { return _.formals; },
-    getruleDescr : function () { return _.ruleDescr; }
+    getruleDescr : function () { return _.ruleDescr; },
 
+
+    // for rewriter
+    parameter_names : [],
+    memo_parameter : function (str) {
+	_.parameter_names.push (str); 
+	return "";
+    },
+    foreach_parameter : function (str) {
+	s = [];
+	_.parameter_names.forEach (p => s.push (`${p}${str}\n`));
+	return s.join ('');
+    },
 }
 ,
