@@ -21,19 +21,20 @@ let rule_name_stack = [];
 const grammar = String.raw`
 example {
 
-Main = "a"
+Main = "a" "b"+
 }
 `;
 
 const rewrite_code = {
-Main : function (_A) {
+Main : function (A, B, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
 set_top (rule_name_stack, "Main");
 
-_A = _A.rwr ();
+A = A.rwr ();
+B = B.rwr ().join ('');
 
-set_top (return_value_stack, `@@@ ${_A} @@@`);
+set_top (return_value_stack, `@@@ ${A} @@@ ${B} %%%`);
 
 
 rule_name_stack.pop ();

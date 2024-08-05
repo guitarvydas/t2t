@@ -127,23 +127,21 @@ t2t {
 
 
   // rewrite parsing section
-  rewriteRule = rwRuleName spaces "[" spaces (rwPredicateDef spaces)+ "]" spaces "=" spaces rewriteScope spaces
+  rewriteRule = rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces
 
   rwRuleName = name
   rwPredicateDef = name
-  rwIterPredicateDef = name
-  rwPredicateName = name
+  rwIterPredicateDef = name ("+" | "*" | "?")
+  rwParameterDef = (rwIterPredicateDef | rwPredicateDef)
 
-  rwCstPredicate =
-    | "(" spaces (rwIterPredicateDef spaces)+ ")" spaces ("+" | "*" | "?") -- parenthesized_iter
-    | rwPredicateDef spaces ("+" | "*" | "?") -- iter
-    | rwPredicateDef -- name
+  rwPredicateRef = name
+
   rewriteScope =
     | "⎡" spaces name spaces "=" spaces #rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
-    | "⟪" rwPredicateName "⟫" -- parameter_interpolation
-    | "«" rwPredicateName "»" -- predicate_interpolation
+    | "⟪" rwPredicateRef "⟫" -- parameter_interpolation
+    | "«" rwPredicateRef "»" -- predicate_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
 }

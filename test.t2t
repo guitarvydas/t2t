@@ -1,5 +1,5 @@
 % grammar example
-  Main = "a"
+  Main = "a" "b"+
 
 % rewrite
-Main [_A ] = ‛@@@ «_A» @@@’ 
+Main [A B+] = ‛@@@ «A» @@@ «B» %%%’ 

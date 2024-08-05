@@ -146,8 +146,8 @@ const grammar = String.raw\\\`
 
 
 
-  rewriteRule [rwName ws1 lb ws2 rwCstPredicate+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛
-«rwName» : function («rwCstPredicate») {
+  rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛
+«rwName» : function («rwParameterDefs») {
 return_value_stack.push ("");
 rule_name_stack.push ("");
 set_top (rule_name_stack, "«rwName»");
@@ -160,20 +160,17 @@ return return_value_stack.pop ();
 },’
   
   rwRuleName [name] =‛«name»’
-  rwPredicateDef [name] =‛«name»«_.memo_predicate (name)»’
-  rwIterPredicateDef [name] =‛«name»«_.memo_iter_predicate (name)»’
-  rwPredicateName [name] =‛«name»’
+  rwPredicateDef [name] =‛«name», «_.memo_predicate (name)»’
+  rwIterPredicateDef [name op] =‛«name», «_.memo_iter_predicate (name)»’
+  rwParameterDef [def] = ‛«def»’
+  rwPredicateRef [name] =‛«name»’
 
-  rwCstPredicate_parenthesized_iter [lb ws1 rwIterPredicateDef+ ws2+ rb ws3 op] = ‛«rwIterPredicateDef», ’
-  rwCstPredicate_iter [rwIterPredicateDef ws2 op] = ‛«rwIterPredicateDef», ’
-  rwCstPredicate_name [rwPredicateDef] = ‛«rwPredicateDef», ’
-  
   rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
   rewriteScope_raw [rewriteFormatString] = ‛set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
-  formatChar_predicate_interpolation [lb rwCstName rb] = ‛\\\$\\\{«rwCstName»\\\}’
-  formatChar_parameter_interpolation [lb rwCstName rb] = ‛\\\$\\\{top («rwCstName»_stack)\\\}’
+  formatChar_predicate_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
+  formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
   
 }
