@@ -4,20 +4,36 @@
         "name": "main",
         "children": [
             {
+                "name": "trash",
+                "id": 13
+            },
+            {
                 "name": "Read Text File",
                 "id": 14
             },
             {
-                "name": "cleanup",
-                "id": 21
+                "name": "trash",
+                "id": 19
             },
             {
-                "name": "t2t",
+                "name": "trash",
                 "id": 29
             },
             {
                 "name": "$ node indenter.js",
-                "id": 31
+                "id": 38
+            },
+            {
+                "name": "t2t",
+                "id": 39
+            },
+            {
+                "name": "cleanup",
+                "id": 42
+            },
+            {
+                "name": "trash",
+                "id": 44
             }
         ],
         "connections": [
@@ -27,12 +43,12 @@
                     "name": "",
                     "id": 0
                 },
-                "source_port": "grammar&#xa;name",
+                "source_port": "cleanup&#xa;support",
                 "target": {
-                    "name": "t2t",
-                    "id": 29
+                    "name": "trash",
+                    "id": 13
                 },
-                "target_port": "grammar&#xa;name"
+                "target_port": ""
             },
             {
                 "dir": 0,
@@ -43,7 +59,7 @@
                 "source_port": "ohm",
                 "target": {
                     "name": "t2t",
-                    "id": 29
+                    "id": 39
                 },
                 "target_port": "ohm"
             },
@@ -53,12 +69,51 @@
                     "name": "",
                     "id": 0
                 },
-                "source_port": "rwr",
+                "source_port": "grammar&#xa;name",
                 "target": {
                     "name": "t2t",
+                    "id": 39
+                },
+                "target_port": "grammar&#xa;name"
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "cleanup&#xa;grammar&#xa;name",
+                "target": {
+                    "name": "trash",
+                    "id": 44
+                },
+                "target_port": ""
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "cleanup&#xa;ohm",
+                "target": {
+                    "name": "trash",
                     "id": 29
                 },
-                "target_port": "rwr"
+                "target_port": ""
+            },
+            {
+                "dir": 0,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "cleanup&#xa;rwr",
+                "target": {
+                    "name": "trash",
+                    "id": 19
+                },
+                "target_port": ""
             },
             {
                 "dir": 0,
@@ -69,7 +124,7 @@
                 "source_port": "support",
                 "target": {
                     "name": "t2t",
-                    "id": 29
+                    "id": 39
                 },
                 "target_port": "support"
             },
@@ -92,62 +147,23 @@
                     "name": "",
                     "id": 0
                 },
-                "source_port": "cleanup&#xa;grammar&#xa;name",
+                "source_port": "rwr",
                 "target": {
-                    "name": "cleanup",
-                    "id": 21
-                },
-                "target_port": "grammar&#xa;name"
-            },
-            {
-                "dir": 0,
-                "source": {
-                    "name": "",
-                    "id": 0
-                },
-                "source_port": "cleanup&#xa;ohm",
-                "target": {
-                    "name": "cleanup",
-                    "id": 21
-                },
-                "target_port": "ohm"
-            },
-            {
-                "dir": 0,
-                "source": {
-                    "name": "",
-                    "id": 0
-                },
-                "source_port": "cleanup&#xa;rwr",
-                "target": {
-                    "name": "cleanup",
-                    "id": 21
+                    "name": "t2t",
+                    "id": 39
                 },
                 "target_port": "rwr"
             },
             {
-                "dir": 0,
-                "source": {
-                    "name": "",
-                    "id": 0
-                },
-                "source_port": "cleanup&#xa;support",
-                "target": {
-                    "name": "cleanup",
-                    "id": 21
-                },
-                "target_port": "support"
-            },
-            {
                 "dir": 1,
                 "source": {
                     "name": "cleanup",
-                    "id": 21
+                    "id": 42
                 },
                 "source_port": "",
                 "target": {
                     "name": "$ node indenter.js",
-                    "id": 31
+                    "id": 38
                 },
                 "target_port": ""
             },
@@ -155,12 +171,12 @@
                 "dir": 1,
                 "source": {
                     "name": "t2t",
-                    "id": 29
+                    "id": 39
                 },
                 "source_port": "",
                 "target": {
                     "name": "cleanup",
-                    "id": 21
+                    "id": 42
                 },
                 "target_port": ""
             },
@@ -173,7 +189,7 @@
                 "source_port": "",
                 "target": {
                     "name": "t2t",
-                    "id": 29
+                    "id": 39
                 },
                 "target_port": ""
             },
@@ -181,7 +197,7 @@
                 "dir": 2,
                 "source": {
                     "name": "$ node indenter.js",
-                    "id": 31
+                    "id": 38
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -194,7 +210,7 @@
                 "dir": 2,
                 "source": {
                     "name": "$ node indenter.js",
-                    "id": 31
+                    "id": 38
                 },
                 "source_port": "",
                 "target": {
@@ -207,7 +223,7 @@
                 "dir": 2,
                 "source": {
                     "name": "cleanup",
-                    "id": 21
+                    "id": 42
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -233,7 +249,7 @@
                 "dir": 2,
                 "source": {
                     "name": "t2t",
-                    "id": 29
+                    "id": 39
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -350,6 +366,28 @@
     {
         "file": "t2t.drawio",
         "name": "cleanup",
+        "children": [
+
+        ],
+        "connections": [
+            {
+                "dir": 3,
+                "source": {
+                    "name": "",
+                    "id": 0
+                },
+                "source_port": "",
+                "target": {
+                    "name": "",
+                    "id": 0
+                },
+                "target_port": ""
+            }
+        ]
+    },
+    {
+        "file": "t2t.drawio",
+        "name": "Copy of cleanup",
         "children": [
             {
                 "name": "Transpile",
