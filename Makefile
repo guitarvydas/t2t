@@ -11,6 +11,12 @@ all:
 manual:
 	node example.js
 
+auto:
+	${D2J} t2t.drawio
+	${D2J} 0D/python/std/transpile.drawio
+	python3 main.py . 0D/python ${SRC} main t2t.drawio.json transpile.drawio.json >t2t.js
+	node t2t.js <test.txt
+
 clean:
 	rm -rf *.json
 	rm -rf *~

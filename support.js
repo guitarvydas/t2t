@@ -37,8 +37,8 @@ _ = {
 	return s.join ('');
     },
 
-    memo_predicate : function (s) { console.log (`**** MEMO_pred ${s}`); _.predicate_expansions.push (`${s} = ${s}.rwr ();\n`); return ""; },
-    memo_iter_predicate : function (s) { console.log (`**** MEMO_ITER_pred ${s}`); _.predicate_expansions.push (`${s} = ${s}.rwr ().join ('');\n`); return ""; },
+    memo_predicate : function (s) { _.predicate_expansions.push (`${s} = ${s}.rwr ();\n`); return ""; },
+    memo_iter_predicate : function (s) { _.predicate_expansions.push (`${s} = ${s}.rwr ().join ('');\n`); return ""; },
     predicate_expansions_as_string : function () { return _.predicate_expansions.join (''); },
 }
 ,

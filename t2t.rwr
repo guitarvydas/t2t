@@ -22,6 +22,25 @@ let rule_name_stack = [];
 «ParameterDefs»
 «GrammarDef»
 «rewriteDef»
+
+function main (src) {
+    let parser = ohm.grammar (grammar);
+    let cst = parser.match (src);
+    if (cst.succeeded ()) {
+	let cstSemantics = parser.createSemantics ();
+	cstSemantics.addOperation ('rwr', rewrite_code);
+	var generated_code = cstSemantics (cst).rwr ();
+	return generated_code;
+    } else {
+	console.log (parser.trace (src).toString ());
+	throw ("grammar error");
+    }
+}
+
+let fs = require('fs');
+let src = fs.readFileSync(0, 'utf-8');
+var result = main (src);
+console.log (result);
 ’
 
   ParameterDef [_p name] = ‛\nlet «name»_stack = [];«_.memo_parameter (name)»’
@@ -48,7 +67,7 @@ const grammar = String.raw\\\`
   RuleBody_seq [_bar? TopLevelTerm_list] = ‛«_bar»«TopLevelTerm_list»’
 
   TopLevelTermWithCaseName [Seq caseName] = ‛\n«_.getrulename () + "_" + «caseName»» «_.getformals ()»«_.getruleDescr ()» =«Seq»’
-  TopLevelTermWithoutCaseName [Seq] =  ‛\n«_.getrulename () + "__"»«_.getformals ()»«_.getruleDescr ()» =«Seq»’
+  TopLevelTermWithoutCaseName [Seq] =  ‛\n«_.getrulename ()»«_.getformals ()»«_.getruleDescr ()» =«Seq»’
 
   OverrideRuleBody [_bar? OverrideTopLevelTerm_list] = ‛«_bar»«OverrideTopLevelTerm_list»’
 
@@ -129,15 +148,15 @@ const grammar = String.raw\\\`
 
   rewriteRule [rwName ws1 lb ws2 rwCstPredicate+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛
 «rwName» : function («rwCstPredicate») {
-        return_value_stack.push ("");
-        rule_name_stack.push ("");
-        set_top (rule_name_stack, "«rwName»");
-        «_.foreach_parameter (".push ('');")»
-	«_.predicate_expansions_as_string ()»
+return_value_stack.push ("");
+rule_name_stack.push ("");
+set_top (rule_name_stack, "«rwName»");
+«_.foreach_parameter ("_stack.push ('');")»
+«_.predicate_expansions_as_string ()»
 «rewriteScope»
-        «_.foreach_parameter (".pop ();")»
-        rule_name_stack.pop ();
-        return return_vbalue_stack.pop ();
+«_.foreach_parameter ("_stack.pop ();")»
+rule_name_stack.pop ();
+return return_value_stack.pop ();
 },’
   
   rwRuleName [name] =‛«name»’
@@ -148,11 +167,13 @@ const grammar = String.raw\\\`
   rwCstPredicate_parenthesized_iter [lb ws1 rwIterPredicateDef+ ws2+ rb ws3 op] = ‛«rwIterPredicateDef», ’
   rwCstPredicate_iter [rwIterPredicateDef ws2 op] = ‛«rwIterPredicateDef», ’
   rwCstPredicate_name [rwPredicateDef] = ‛«rwPredicateDef», ’
-  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name», «rewriteFormatString»);\n«rewriteScope»’
-  rewriteScope_raw [rewriteFormatString] = ‛«rewriteFormatString»’
-  rewriteFormatString [lq formatChars* rq] = ‛«lq»«formatChars»«rq»’
-  formatChar_cst_interpolation [lb rwCstName rb] = ‛«lb»«rwCstName»«rb»’
-  formatChar_parameter_interpolation [lb rwCstName rb] = ‛«lb»«rwCstName»«rb»’
+  
+  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
+  rewriteScope_raw [rewriteFormatString] = ‛set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
+  
+  rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
+  formatChar_predicate_interpolation [lb rwCstName rb] = ‛\\\$\\\{«rwCstName»\\\}’
+  formatChar_parameter_interpolation [lb rwCstName rb] = ‛\\\$\\\{top («rwCstName»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
   
 }
