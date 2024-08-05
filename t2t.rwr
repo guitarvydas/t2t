@@ -161,9 +161,11 @@ return return_value_stack.pop ();
   
   rwRuleName [name] =‛«name»’
   rwPredicateDef [name] =‛«name», «_.memo_predicate (name)»’
-  rwIterPredicateDef [name op] =‛«name», «_.memo_iter_predicate (name)»’
+  rwIterPredicateDef [name op] = ‛«name», «_.memo_iter_predicate (name)»’
+  rwParenthesizedIterPredicateDef [lb defs+ rb] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
   rwPredicateRef [name] =‛«name»’
+  rwParenPredicateDef [name] = ‛«name», «_.memo_iter_predicate (name)»’
 
   rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
   rewriteScope_raw [rewriteFormatString] = ‛set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’

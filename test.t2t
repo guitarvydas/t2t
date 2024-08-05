@@ -1,5 +1,5 @@
 % grammar example
-  Main = "a" "b"+
+  Main = "a" ( ";" "b")+ "c"
 
 % rewrite
-Main [A B+] = ‛@@@ «A» @@@ «B» %%%’ 
+Main [A semi+ B+ C] = ‛@@@ «A» @@@ «semi» «B» %%% «C» !!!’ 
