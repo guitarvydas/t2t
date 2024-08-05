@@ -133,18 +133,21 @@ const grammar = String.raw\\\`
         rule_name_stack.push ("");
         set_top (rule_name_stack, "«rwName»");
         «_.foreach_parameter (".push ('');")»
-
+	«_.predicate_expansions_as_string ()»
 «rewriteScope»
         «_.foreach_parameter (".pop ();")»
         rule_name_stack.pop ();
         return return_vbalue_stack.pop ();
 },’
   
-  rwName [name] =‛«name»’
-  rwCstName [name] =‛«name»’
-  rwCstPredicate_parenthesized_iter [lb ws1 rwName+ ws2 rb ws3 op] = ‛«lb»«ws1»«rwName»«ws2»«rb»«ws3»«op», ’
-  rwCstPredicate_iter [rwName ws2 op] = ‛«rwName»«ws2»«op», ’
-  rwCstPredicate_name [rwCstName] = ‛«rwCstName», ’
+  rwRuleName [name] =‛«name»’
+  rwPredicateDef [name] =‛«name»«_.memo_predicate (name)»’
+  rwIterPredicateDef [name] =‛«name»«_.memo_iter_predicate (name)»’
+  rwPredicateName [name] =‛«name»’
+
+  rwCstPredicate_parenthesized_iter [lb ws1 rwIterPredicateDef+ ws2+ rb ws3 op] = ‛«rwIterPredicateDef», ’
+  rwCstPredicate_iter [rwIterPredicateDef ws2 op] = ‛«rwIterPredicateDef», ’
+  rwCstPredicate_name [rwPredicateDef] = ‛«rwPredicateDef», ’
   rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name», «rewriteFormatString»);\n«rewriteScope»’
   rewriteScope_raw [rewriteFormatString] = ‛«rewriteFormatString»’
   rewriteFormatString [lq formatChars* rq] = ‛«lq»«formatChars»«rq»’

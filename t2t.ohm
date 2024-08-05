@@ -127,19 +127,23 @@ t2t {
 
 
   // rewrite parsing section
-  rewriteRule = rwName spaces "[" spaces (rwCstPredicate spaces)+ "]" spaces "=" spaces rewriteScope spaces
-  rwName = name
-  rwCstName = name
+  rewriteRule = rwRuleName spaces "[" spaces (rwCstPredicate spaces)+ "]" spaces "=" spaces rewriteScope spaces
+
+  rwRuleName = name
+  rwPredicateDef = name
+  rwIterPredicateDef = name
+  rwPredicateName = name
+
   rwCstPredicate =
-    | "(" spaces (rwName spaces)+ ")" spaces ("+" | "*" | "?") -- parenthesized_iter
-    | rwCstName spaces ("+" | "*" | "?") -- iter
-    | rwCstName -- name
+    | "(" spaces (rwIterPredicateDef spaces)+ ")" spaces ("+" | "*" | "?") -- parenthesized_iter
+    | rwPredicateDef spaces ("+" | "*" | "?") -- iter
+    | rwPredicateDef -- name
   rewriteScope =
     | "⎡" spaces name spaces "=" spaces #rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
-    | "⟪" rwCstName "⟫" -- cst_interpolation
-    | "«" rwCstName "»" -- parameter_interpolation
+    | "⟪" rwPredicateName "⟫" -- cst_interpolation
+    | "«" rwPredicateName "»" -- parameter_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
 }
