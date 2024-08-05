@@ -1,14 +1,39 @@
 Ohm {
 
   main [ParameterDefs* GrammarDef rewriteDef] = ‛
+'use strict'
+
+var ohm = require('ohm-js');
+
+
+function set_top (stack, val) {
+    stack.pop ();
+    stack.push (val);
+}
+
+function top (stack) {
+    let r = stack.pop ();
+    stack.push (r);
+    return r;
+}
+
 let return_value_stack = [];
 let rule_name_stack = [];
 «ParameterDefs»
-«GrammarDef»«rewriteDef»’
+«GrammarDef»
+«rewriteDef»
+’
 
   ParameterDef [_ name] = ‛\nlet «name»_stack = [];’
 
-  GrammarDef [_ name Rules+] = ‛«_»«name»«Rules»’
+  GrammarDef [_ name Rules+] = ‛
+const grammar = String.raw\\\`
+«name» {
+«Rules»
+}
+\\\`;
+’
+
   rewriteDef [_ ws rewriteRules+] = ‛«_»«ws»«rewriteRules»’
 
   Rule_define [ident Formals? ruleDescr? _eq RuleBody] ‛«_.setrule (ident.rwr (), Formals.rwr (), ruleDescr.rwr ())»’ = ‛«RuleBody»’
