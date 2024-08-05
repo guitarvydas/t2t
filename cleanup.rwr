@@ -1,9 +1,0 @@
-cleanup {
-  main [items+] = ‛«items»’
-  item_extracomma [comma ws* lb] = ‛«ws»«lb»’
-  item_other [x] = ‛«x»’
-  in [c] = ‛«c»’
-  out [c] = ‛«c»’
-  ws [c] = ‛«c»’
-}
-

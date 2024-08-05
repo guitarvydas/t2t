@@ -1,9 +1,0 @@
-cleanup {
-  main = item+
-  item =
-    | "," ws* "]" -- extracomma
-    | any -- other
-  in = "⤷"
-  out = "⤶"
-  ws = " " | "\t" | "\n" | in | out
-}
