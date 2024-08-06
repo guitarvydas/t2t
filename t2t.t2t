@@ -46,50 +46,53 @@
 
 % rewrite
 
-  main [GrammarDef ParameterDefs* rewriteDef] ‛«_.initialize_stacks ()»’ = ‛
-'use strict'
+  main [GrammarDef ParameterDefs* rewriteDef] =
+    ⎡ ‛⎨initialize_stacks ‛’⎬’
+      ‛
+      'use strict'
 
-var ohm = require('ohm-js');
+      var ohm = require('ohm-js');
 
 
-function set_top (stack, val) {
-    stack.pop ();
-    stack.push (val);
-}
+      function set_top (stack, val) {
+	  stack.pop ();
+	  stack.push (val);
+      }
 
-function top (stack) {
-    let r = stack.pop ();
-    stack.push (r);
-    return r;
-}
+      function top (stack) {
+	  let r = stack.pop ();
+	  stack.push (r);
+	  return r;
+      }
 
-let return_value_stack = [];
-let rule_name_stack = [];
-«ParameterDefs»
-«GrammarDef»
-«rewriteDef»
+      let return_value_stack = [];
+      let rule_name_stack = [];
+      «ParameterDefs»
+      «GrammarDef»
+      «rewriteDef»
 
-function main (src) {
-    let parser = ohm.grammar (grammar);
-    let cst = parser.match (src);
-    if (cst.succeeded ()) {
-	let cstSemantics = parser.createSemantics ();
-	cstSemantics.addOperation ('rwr', rewrite_code);
-	var generated_code = cstSemantics (cst).rwr ();
-	return generated_code;
-    } else {
-	console.log (parser.trace (src).toString ());
-	throw ("grammar error");
-    }
-}
+      function main (src) {
+	  let parser = ohm.grammar (grammar);
+	  let cst = parser.match (src);
+	  if (cst.succeeded ()) {
+	      let cstSemantics = parser.createSemantics ();
+	      cstSemantics.addOperation ('rwr', rewrite_code);
+	      var generated_code = cstSemantics (cst).rwr ();
+	      return generated_code;
+	  } else {
+	      console.log (parser.trace (src).toString ());
+	      throw ("grammar error");
+	  }
+      }
 
-let fs = require('fs');
-let src = fs.readFileSync(0, 'utf-8');
-var result = main (src);
-console.log (result);
-’
+      let fs = require('fs');
+      let src = fs.readFileSync(0, 'utf-8');
+      var result = main (src);
+      console.log (result);
+      ’
+    ⎦
 
-  ParameterDef [_p name] = ‛\nlet «name»_stack = [];«_.memo_parameter (name)»’
+  ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
 
   GrammarDef [_ name Rules+] = ‛
 const grammar = String.raw\\\`
@@ -118,21 +121,21 @@ const grammar = String.raw\\\`
 return_value_stack.push ("");
 rule_name_stack.push ("");
 set_top (rule_name_stack, "«rwName»");
-«_.foreach_parameter ("_stack.push ('');")»
-«_.predicate_expansions_as_string ()»
+⎨foreach_parameter ‛_stack.push ('');’⎬
+⎨predicate_expansions_as_string ‛’⎬
 «rewriteScope»
-«_.foreach_parameter ("_stack.pop ();")»
+⎨foreach_parameter ‛"_stack.pop ();"’⎬
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },’
   
   rwRuleName [name] =‛«name»’
-  rwPredicateDef [name] =‛«name», «_.memo_predicate (name)»’
-  rwIterPredicateDef [name op] = ‛«name», «_.memo_iter_predicate (name)»’
+  rwPredicateDef [name] =‛«name», ⎨memo_predicate ‛«name»’⎬’
+  rwIterPredicateDef [name op] = ‛«name», ⎨memo_iter_predicate ‛«name»’⎬’
   rwParenthesizedIterPredicateDef [lb defs+ rb op] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
   rwPredicateRef [name] =‛«name»’
-  rwParenPredicateDef [name ws] = ‛«name», «_.memo_iter_predicate (name)»’
+  rwParenPredicateDef [name ws] = ‛«name», ⎨memo_iter_predicate ‛«name»’⎬’
 
   rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
   rewriteScope_raw [rewriteFormatString] = ‛set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’

@@ -59,8 +59,8 @@ const grammar = String.raw\\\`
 };
 ’
 
-  Rule_parameter_as_string [cs] = ‛"% parameter"’
-  Rule_rewrite_as_string [cs] = ‛"% rewrite"’
+  Rule_parameter_as_string [lq cs rq] = ‛"% parameter"’
+  Rule_rewrite_as_string [lq cs rq] = ‛"% rewrite"’
   Rule_basic [cs] = ‛«cs»’
 
   name [nameFirst nameRest*] = ‛«nameFirst»«nameRest»’
@@ -90,10 +90,16 @@ return return_value_stack.pop ();
   rwPredicateRef [name] =‛«name»’
   rwParenPredicateDef [name ws] = ‛«name», «_.memo_iter_predicate (name)»’
 
+  rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
+pre_«name» («s»);
+«scope»
+post_«name» («s»);’
+
   rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
   rewriteScope_raw [rewriteFormatString] = ‛set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
+  formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\\\$\\\{_.name («s»)\\\}’
   formatChar_predicate_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
   formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
