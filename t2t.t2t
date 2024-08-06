@@ -1,9 +1,5 @@
-# parameter rulename
-# parameter formals
-# parameter ruledescriptor
-
 # grammar t2t
-  main = applySyntactic<ParameterDef>* applySyntactic<GrammarDef> rewriteDef
+  main = applySyntactic<GrammarDef> applySyntactic<ParameterDef>* rewriteDef
   ParameterDef = "% parameter" name
   GrammarDef = "% grammar" name Rule+
   rewriteDef = "% rewrite" spaces rewriteRule+
@@ -151,8 +147,14 @@
     | "«" rwPredicateRef "»" -- predicate_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
 
+
+
+% parameter rulename
+% parameter formals
+% parameter ruledescriptor
+
 % rewrite
-  main [ParameterDefs* GrammarDef rewriteDef] = ‛
+  main [GrammarDef ParameterDefs* rewriteDef] = ‛
 'use strict'
 
 var ohm = require('ohm-js');
@@ -218,18 +220,26 @@ const grammar = String.raw\\\`
                                                              ⎦
                                                            ⎦
                                                          ⎦
-
-  Rule_define [ident Formals? ruleDescr? _eq RuleBody] ‛«_.setrule (ident.rwr (), Formals.rwr (), ruleDescr.rwr ())»’ = ‛«RuleBody»’
-
-
-  Rule_override [ident Formals? _ceq RuleBody]  ‛«_.setrule (ident.rwr (), Formals.rwr (), "")»’ = ‛«RuleBody»’
-  Rule_extend [ident Formals? _peq RuleBody]  ‛«_.setrule (ident.rwr (), Formals.rwr (), "")»’ = ‛«RuleBody»’
+  Rule_override [ident Formals? _ceq RuleBody] = ⎡ rulename=‛«ident»’
+                                                           ⎡ formals=‛«Formals»’
+                                                             ⎡ ruledescriptor=‛’
+							       ‛«RuleBody»"
+                                                             ⎦
+                                                           ⎦
+                                                         ⎦
+  Rule_extend [ident Formals? _peq RuleBody] = ⎡ rulename=‛«ident»’
+                                                           ⎡ formals=‛«Formals»’
+                                                             ⎡ ruledescriptor=‛’
+							       ‛«RuleBody»"
+                                                             ⎦
+                                                           ⎦
+                                                         ⎦
 
   RuleBody_toplevelcasebranch [_bar? TopLevelTerm_list] = ‛\n«_bar»«TopLevelTerm_list»’
   RuleBody_seq [_bar? TopLevelTerm_list] = ‛«_bar»«TopLevelTerm_list»’
 
-  TopLevelTermWithCaseName [Seq caseName] = ‛\n«_.getrulename () + "_" + «caseName»» «_.getformals ()»«_.getruleDescr ()» =«Seq»’
-  TopLevelTermWithoutCaseName [Seq] =  ‛\n«_.getrulename ()»«_.getformals ()»«_.getruleDescr ()» =«Seq»’
+  TopLevelTermWithCaseName [Seq caseName] = ‛\n⟪rulename⟫_«caseName» ⟪formals⟫⟪ruledescriptor⟫ = «Seq»’
+  TopLevelTermWithoutCaseName [Seq] =  ‛\n⟪rulename⟫ ⟪formals⟫⟪ruledescriptor⟫ = «Seq»’
 
   OverrideRuleBody [_bar? OverrideTopLevelTerm_list] = ‛«_bar»«OverrideTopLevelTerm_list»’
 
@@ -306,7 +316,7 @@ const grammar = String.raw\\\`
  
   NonemptyListOf [elem sep+ elem2+] = ‛«elem»«sep»«elem2»’ // needed due to ListOf<...>
 
-
+*****
 
   rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛
 «rwName» : function («rwParameterDefs») {
