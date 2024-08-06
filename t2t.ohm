@@ -132,9 +132,9 @@ t2t {
   rwRuleName = name
   rwPredicateDef = name
   rwIterPredicateDef = name ("+" | "*" | "?")
-  rwParenthesizedIterPredicateDef = "(" rwParenPredicateDef+ ")"
+  rwParenthesizedIterPredicateDef = "(" rwParenPredicateDef+ ")" ("+" | "*" | "?")
   rwParameterDef = (rwParenthesizedIterPredicateDef | rwIterPredicateDef | rwPredicateDef)
-  rwParenPredicateDef = name
+  rwParenPredicateDef = name spaces
 
   rwPredicateRef = name
 
