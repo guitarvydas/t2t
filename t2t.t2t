@@ -1,4 +1,4 @@
-# grammar t2t
+% grammar t2t
   main = applySyntactic<GrammarDef> applySyntactic<ParameterDef>* rewriteDef
   ParameterDef = "% parameter" name
   GrammarDef = "% grammar" name Rule+
@@ -18,15 +18,14 @@
   TopLevelTermWithCaseName = Seq caseName
   TopLevelTermWithoutCaseName = Seq
 
-  OverrideRuleBody
-    = "|"? NemptyListOf<OverrideTopLevelTerm, "|">
+  OverrideRuleBody =
+    | "|"? NemptyListOf<OverrideTopLevelTerm, "|">
 
-  OverrideTopLevelTerm
-    = "..."  -- superSplice
-    | TopLevelTermWithoutCaseName
+  OverrideTopLevelTerm =
+    | "..."  -- superSplice
+    | TopLevelTermWithoutCaseName -- basic
 
-  Formals
-    = "<" ListOf<ident, ","> ">"
+  Formals = "<" ListOf<ident, ","> ">"
 
   Params
     = "<" ListOf<Seq, ","> ">"
@@ -38,16 +37,16 @@
     = Pred "*"  -- star
     | Pred "+"  -- plus
     | Pred "?"  -- opt
-    | Pred
+    | Pred -- basic
 
   Pred
     = "~" Lex  -- not
     | "&" Lex  -- lookahead
-    | Lex
+    | Lex -- basic
 
   Lex
     = "#" Base  -- lex
-    | Base
+    | Base -- basic
 
   Base
     = ident Params ~(ruleDescr? "=" | ":=" | "+=")   -- application
@@ -71,13 +70,9 @@
   name  (a name)
     = nameFirst nameRest*
 
-  nameFirst
-    = "_"
-    | letter
+  nameFirst    = ("_" | letter)
 
-  nameRest
-    = "_"
-    | alnum
+  nameRest = ("_" | alnum)
 
   ident  (an identifier)
     = name
@@ -88,9 +83,7 @@
   oneCharTerminal
     = "\"" terminalChar "\""
 
-  terminalChar
-    = escapeChar
-      | ~"\\" ~"\"" ~"\n" "\u{0}".."\u{10FFFF}"
+  terminalChar = ( escapeChar | (~"\\" ~"\"" ~"\n" "\u{0}".."\u{10FFFF}"))
 
   escapeChar  (an escape sequence)
     = "\\\\"                                     -- backslash
@@ -114,11 +107,11 @@
 
   tokens = token*
 
-  token = caseName | comment | ident | operator | punctuation | terminal | any
+  token = (caseName | comment | ident | operator | punctuation | terminal | any)
 
-  operator = "<:" | "=" | ":=" | "+=" | "*" | "+" | "?" | "~" | "&"
+  operator = ("<:" | "=" | ":=" | "+=" | "*" | "+" | "?" | "~" | "&")
 
-  punctuation = "<" | ">" | "," | "--"
+  punctuation = ("<" | ">" | "," | "--")
 
   NemptyListOf<elem, sep> = elem NemptyListOf2<elem, sep>+
   NemptyListOf2<elem, sep> = sep elem
@@ -316,7 +309,6 @@ const grammar = String.raw\\\`
  
   NonemptyListOf [elem sep+ elem2+] = ‛«elem»«sep»«elem2»’ // needed due to ListOf<...>
 
-*****
 
   rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛
 «rwName» : function («rwParameterDefs») {
