@@ -3,19 +3,8 @@ Ohm {
   main [GrammarDef ParameterDefs* rewriteDef] ‛«_.initialize_stacks ()»’ = ‛
 'use strict'
 
-var ohm = require('ohm-js');
-
-
-function set_top (stack, val) {
-    stack.pop ();
-    stack.push (val);
-}
-
-function top (stack) {
-    let r = stack.pop ();
-    stack.push (r);
-    return r;
-}
+import {_} from './support.mjs';
+import * as ohm from 'ohm-js';
 
 let return_value_stack = [];
 let rule_name_stack = [];
@@ -37,7 +26,7 @@ function main (src) {
     }
 }
 
-let fs = require('fs');
+import * as fs from 'fs';
 let src = fs.readFileSync(0, 'utf-8');
 var result = main (src);
 console.log (result);
@@ -73,7 +62,7 @@ const grammar = String.raw\\\`
 «rwName» : function («rwParameterDefs») {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-set_top (rule_name_stack, "«rwName»");
+_.set_top (rule_name_stack, "«rwName»");
 «_.foreach_parameter ("_stack.push ('');")»
 «_.predicate_expansions_as_string ()»
 «rewriteScope»
@@ -91,17 +80,17 @@ return return_value_stack.pop ();
   rwParenPredicateDef [name ws] = ‛«name», «_.memo_iter_predicate (name)»’
 
   rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
-pre_«name» («s»);
+_.pre_«name» (\\\`«s»\\\`);
 «scope»
-post_«name» («s»);’
+_.post_«name» (\\\`«s»\\\`);’
 
-  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
-  rewriteScope_raw [rewriteFormatString] = ‛set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
+  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛_.set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
+  rewriteScope_raw [rewriteFormatString] = ‛_.set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
-  formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\\\$\\\{_.name («s»)\\\}’
+  formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\\\$\\\{_.«name» (\\\`«s»\\\`)\\\}’
   formatChar_predicate_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
-  formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{top («rwRef»_stack)\\\}’
+  formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{_.top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
   
 }
