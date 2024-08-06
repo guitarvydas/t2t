@@ -1,12 +1,25 @@
 _ = {
-    rulename : "",
-    formals : "",
-    ruleDescr : "",
+    rulename_stack : [],
+    formals_stack : [],
+    ruleDescr_stack : [],
 
-    setrule : function (name, formals, desc) { _.rulename = name.trim (); _.formals = formals ; _.ruleDescr = desc ; return ""; },
-    getrulename : function () { return _.rulename; },
-    getformals : function () { return _.formals; },
-    getruleDescr : function () { return _.ruleDescr; },
+    top : function (stack) { v = stack.pop (); stack.push (v); return v; },
+    
+    initialize_stacks : function () { 
+	rulename_stack = []; 
+	formals_stack = [];
+	ruleDescr_stack = [];
+    },
+
+    setrule : function (name, formals, desc) {
+	_.rulename_stack.push (name.trim ());
+	_.formals_stack.push (formals) ;
+	_.ruleDescr_stack.push (desc) ;
+	return "";
+    },
+    getrulename : function () { return _.top (_.rulename_stack); },
+    getformals : function () { return _.top (_.formals_stack); },
+    getruleDescr : function () { return _.top (_.ruleDescr_stack); },
 
 
     // for rewriter

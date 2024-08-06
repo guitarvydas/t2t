@@ -1,6 +1,6 @@
 Ohm {
 
-  main [GrammarDef ParameterDefs* rewriteDef] = ‛
+  main [GrammarDef ParameterDefs* rewriteDef] ‛«_.initialize_stacks ()»’ = ‛
 'use strict'
 
 var ohm = require('ohm-js');
