@@ -1,9 +1,9 @@
+% grammar example
+  Main = "a" (";" "b")+ "c"
+
 % parameter A
 % parameter B
 % parameter C
-
-% grammar example
-  Main = "a" (";" "b")+ "c"
 
 % rewrite
 Main [_A (_Bsemis _Bs)+ _C] = ⎡ A=‛«_A»’

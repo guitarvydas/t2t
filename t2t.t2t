@@ -1,6 +1,158 @@
-Ohm {
+# parameter rulename
+# parameter formals
+# parameter ruledescriptor
 
-  main [GrammarDef ParameterDefs* rewriteDef] = ‛
+# grammar t2t
+  main = applySyntactic<ParameterDef>* applySyntactic<GrammarDef> rewriteDef
+  ParameterDef = "% parameter" name
+  GrammarDef = "% grammar" name Rule+
+  rewriteDef = "% rewrite" spaces rewriteRule+
+
+
+  // these patterns were stolen from OhmJS' ohm.ohm ... 
+  Rule
+    = ident Formals? ruleDescr? "="  RuleBody  -- define
+    | ident Formals?            ":=" OverrideRuleBody  -- override
+    | ident Formals?            "+=" RuleBody  -- extend
+
+  RuleBody =
+    | "|"? NemptyListOf<TopLevelTermWithCaseName, "|"> -- toplevelcasebranch
+    | "|"? TopLevelTermWithoutCaseName ~"|" -- seq
+
+  TopLevelTermWithCaseName = Seq caseName
+  TopLevelTermWithoutCaseName = Seq
+
+  OverrideRuleBody
+    = "|"? NemptyListOf<OverrideTopLevelTerm, "|">
+
+  OverrideTopLevelTerm
+    = "..."  -- superSplice
+    | TopLevelTermWithoutCaseName
+
+  Formals
+    = "<" ListOf<ident, ","> ">"
+
+  Params
+    = "<" ListOf<Seq, ","> ">"
+
+  Seq
+    = Iter*
+
+  Iter
+    = Pred "*"  -- star
+    | Pred "+"  -- plus
+    | Pred "?"  -- opt
+    | Pred
+
+  Pred
+    = "~" Lex  -- not
+    | "&" Lex  -- lookahead
+    | Lex
+
+  Lex
+    = "#" Base  -- lex
+    | Base
+
+  Base
+    = ident Params ~(ruleDescr? "=" | ":=" | "+=")   -- application
+    | ident        ~(ruleDescr? "=" | ":=" | "+=")   -- simple
+    | oneCharTerminal ".." oneCharTerminal           -- range
+    | terminal                                       -- terminal
+    | "(" Seq OrSeq+ ")"                             -- parenalt
+    | "(" Seq ")"                                    -- parenseq
+
+  OrSeq = "|" Seq
+
+  ruleDescr  (a rule description)
+    = "(" ruleDescrText ")"
+
+  ruleDescrText
+    = (~")" any)*
+
+  caseName
+    = "--" (~"\n" space)* name (~"\n" space)* ("\n" | &"}")
+
+  name  (a name)
+    = nameFirst nameRest*
+
+  nameFirst
+    = "_"
+    | letter
+
+  nameRest
+    = "_"
+    | alnum
+
+  ident  (an identifier)
+    = name
+
+  terminal
+    = "\"" terminalChar* "\""
+
+  oneCharTerminal
+    = "\"" terminalChar "\""
+
+  terminalChar
+    = escapeChar
+      | ~"\\" ~"\"" ~"\n" "\u{0}".."\u{10FFFF}"
+
+  escapeChar  (an escape sequence)
+    = "\\\\"                                     -- backslash
+    | "\\\""                                     -- doubleQuote
+    | "\\\'"                                     -- singleQuote
+    | "\\b"                                      -- backspace
+    | "\\n"                                      -- lineFeed
+    | "\\r"                                      -- carriageReturn
+    | "\\t"                                      -- tab
+    | "\\u{" hexDigit hexDigit? hexDigit?
+             hexDigit? hexDigit? hexDigit? "}"   -- unicodeCodePoint
+    | "\\u" hexDigit hexDigit hexDigit hexDigit  -- unicodeEscape
+    | "\\x" hexDigit hexDigit                    -- hexEscape
+
+  space
+   += comment
+
+  comment
+    = "//" (~"\n" any)* &("\n" | end)  -- singleLine
+    | "/*" (~"*/" any)* "*/"  -- multiLine
+
+  tokens = token*
+
+  token = caseName | comment | ident | operator | punctuation | terminal | any
+
+  operator = "<:" | "=" | ":=" | "+=" | "*" | "+" | "?" | "~" | "&"
+
+  punctuation = "<" | ">" | "," | "--"
+
+  NemptyListOf<elem, sep> = elem NemptyListOf2<elem, sep>+
+  NemptyListOf2<elem, sep> = sep elem
+
+  // end stolen grammar parsing section
+
+
+  // rewrite parsing section
+  rewriteRule = rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces
+
+  rwRuleName = name
+  rwPredicateDef = name
+  rwIterPredicateDef = name ("+" | "*" | "?")
+  rwParenthesizedIterPredicateDef = "(" rwParenPredicateDef+ ")" ("+" | "*" | "?")
+  rwParameterDef = (rwParenthesizedIterPredicateDef | rwIterPredicateDef | rwPredicateDef)
+  rwParenPredicateDef = name spaces
+
+  rwPredicateRef = name
+
+  rewriteScope =
+    | "⎡" spaces name spaces "=" spaces #rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
+    | #rewriteFormatString -- raw
+  rewriteFormatString = "‛" formatChar* "’"
+  formatChar =
+    | "⟪" rwPredicateRef "⟫" -- parameter_interpolation
+    | "«" rwPredicateRef "»" -- predicate_interpolation
+    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
+
+% rewrite
+  main [ParameterDefs* GrammarDef rewriteDef] = ‛
 'use strict'
 
 var ohm = require('ohm-js');
@@ -59,7 +211,17 @@ const grammar = String.raw\\\`
 };
 ’
 
+  Rule_define [ident Formals? ruleDescr? _eq RuleBody] = ⎡ rulename=‛«ident»’
+                                                           ⎡ formals=‛«Formals»’
+                                                             ⎡ ruledescriptor=‛«ruleDescr»’
+							       ‛«RuleBody»"
+                                                             ⎦
+                                                           ⎦
+                                                         ⎦
+
   Rule_define [ident Formals? ruleDescr? _eq RuleBody] ‛«_.setrule (ident.rwr (), Formals.rwr (), ruleDescr.rwr ())»’ = ‛«RuleBody»’
+
+
   Rule_override [ident Formals? _ceq RuleBody]  ‛«_.setrule (ident.rwr (), Formals.rwr (), "")»’ = ‛«RuleBody»’
   Rule_extend [ident Formals? _peq RuleBody]  ‛«_.setrule (ident.rwr (), Formals.rwr (), "")»’ = ‛«RuleBody»’
 
@@ -175,4 +337,3 @@ return return_value_stack.pop ();
   formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
   
-}

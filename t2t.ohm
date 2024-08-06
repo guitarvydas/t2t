@@ -1,7 +1,8 @@
 t2t {
-  main = applySyntactic<ParameterDef>* applySyntactic<GrammarDef> rewriteDef
-  ParameterDef = "% parameter" name
+  main = applySyntactic<GrammarDef> applySyntactic<ParameterDef>* rewriteDef
+
   GrammarDef = "% grammar" name Rule+
+  ParameterDef = "% parameter" name
   rewriteDef = "% rewrite" spaces rewriteRule+
 
 
