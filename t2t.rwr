@@ -59,7 +59,9 @@ const grammar = String.raw\\\`
 };
 ’
 
-  Rule [cs] = ‛«cs»’
+  Rule_parameter_as_string [cs] = ‛"% parameter"’
+  Rule_rewrite_as_string [cs] = ‛"% rewrite"’
+  Rule_basic [cs] = ‛«cs»’
 
   name [nameFirst nameRest*] = ‛«nameFirst»«nameRest»’
 

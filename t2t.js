@@ -23,8 +23,7 @@ let C_stack = [];
 
 const grammar = String.raw`
 example {
-
-Main = "a" ( ";" "b")+ "c"
+Main="a"(";""b")+"c"
 }
 `;
 
