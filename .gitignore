@@ -5,5 +5,3 @@ package*.json
 .#*
 junk*
 *.bkp
-
-_.py
