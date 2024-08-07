@@ -1,6 +1,6 @@
 Ohm {
 
-  main [GrammarDef ParameterDefs* rewriteDef] ‛«_.initialize_stacks ()»’ = ‛
+  main [grammarDef ParameterDefs* rewriteDef] = ‛
 'use strict'
 
 import {_} from './support.mjs';
@@ -9,7 +9,7 @@ import * as ohm from 'ohm-js';
 let return_value_stack = [];
 let rule_name_stack = [];
 «ParameterDefs»
-«GrammarDef»
+«grammarDef»
 «rewriteDef»
 
 function main (src) {
@@ -34,23 +34,23 @@ console.log (result);
 
   ParameterDef [_p name] = ‛\nlet «name»_stack = [];«_.memo_parameter (name)»’
 
-  GrammarDef [_ name Rules+] = ‛
+  grammarDef [_g ws name rules+] = ‛
 const grammar = String.raw\\\`
 «name» {
-«Rules»
+«rules»
 }
 \\\`;
 ’
 
-  rewriteDef [_ ws rewriteRules+] = ‛const rewrite_code = {«rewriteRules»
+  rewriteDef [_r ws rewriteRules+] = ‛const rewrite_code = {«rewriteRules»
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
 ’
 
-  Rule_parameter_as_string [lq cs rq] = ‛"% parameter"’
-  Rule_rewrite_as_string [lq cs rq] = ‛"% rewrite"’
-  Rule_basic [cs] = ‛«cs»’
+  rule_parameter_as_string [lq cs rq] = ‛"% parameter"’
+  rule_rewrite_as_string [lq cs rq] = ‛"% rewrite"’
+  rule_basic [cs] = ‛«cs»’
 
   name [nameFirst nameRest*] = ‛«nameFirst»«nameRest»’
 
@@ -58,7 +58,7 @@ const grammar = String.raw\\\`
   nameRest [c] = ‛«c»’
 
 
-  rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛
+  rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] ‛«_.reset_stacks ()»’ = ‛
 «rwName» : function («rwParameterDefs») {
 return_value_stack.push ("");
 rule_name_stack.push ("");

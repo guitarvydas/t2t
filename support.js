@@ -1,30 +1,15 @@
 _ = {
-    rulename_stack : [],
-    formals_stack : [],
-    ruleDescr_stack : [],
-
     top : function (stack) { v = stack.pop (); stack.push (v); return v; },
     
-    initialize_stacks : function () { 
-	rulename_stack = []; 
-	formals_stack = [];
-	ruleDescr_stack = [];
-    },
-
-    setrule : function (name, formals, desc) {
-	_.rulename_stack.push (name.trim ());
-	_.formals_stack.push (formals) ;
-	_.ruleDescr_stack.push (desc) ;
-	return "";
-    },
-    getrulename : function () { return _.top (_.rulename_stack); },
-    getformals : function () { return _.top (_.formals_stack); },
-    getruleDescr : function () { return _.top (_.ruleDescr_stack); },
-
-
     // for rewriter
     parameter_names : [],
     predicate_expansions : [],
+
+    reset_stacks : function () { 
+	_.predicate_names = []; 
+	_.predicate_expansions = [];
+    },
+
     memo_parameter : function (str) {
 	_.parameter_names.push (str); 
 	return "";

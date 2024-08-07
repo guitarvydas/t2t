@@ -1,13 +1,13 @@
 t2t {
-  main = applySyntactic<GrammarDef> applySyntactic<ParameterDef>* rewriteDef
+  main = grammarDef applySyntactic<ParameterDef>* rewriteDef
 
-  GrammarDef = "% grammar" name Rule+
+  grammarDef = "% grammar" spaces name rule+
   ParameterDef = "% parameter" name
   rewriteDef = "% rewrite" spaces rewriteRule+
 
 
   // just pass the grammar through to OhmJS - it parses and checks the grammar
-  Rule =
+  rule =
     | "\"" "% parameter" "\"" -- parameter_as_string
     | "\"" "% rewrite" "\"" -- rewrite_as_string
     | ~"% parameter" ~"% rewrite" any -- basic
