@@ -136,11 +136,11 @@ ws2 = ws2.rwr ();
 rules = rules.rwr ().join ('');
 
 _.set_top (return_value_stack, `
-      const grammar = String.raw\\\`
+      const grammar = String.raw\`
       ${name} {
       ${rules}
       }
-      \\\`;
+      \`;
       `);
 
 
@@ -405,9 +405,9 @@ rb = rb.rwr ();
 ws7 = ws7.rwr ();
 
 _.set_top (return_value_stack, `
-_.pre_${name} (\\\`${s}\\\`);
+_.pre_${name} (\`${s}\`);
 ${scope}
-_.post_${name} (\\\`${s}\\\`);`);
+_.post_${name} (\`${s}\`);`);
 
 
 rule_name_stack.pop ();
@@ -431,7 +431,7 @@ ws5 = ws5.rwr ();
 rb = rb.rwr ();
 ws6 = ws6.rwr ();
 
-_.set_top (return_value_stack, `_.set_top (${name}_stack, \\\`${rewriteFormatString}\\\`);\n${rewriteScope}`);
+_.set_top (return_value_stack, `_.set_top (${name}_stack, \`${rewriteFormatString}\`);\n${rewriteScope}`);
 
 
 rule_name_stack.pop ();
@@ -444,7 +444,7 @@ _.set_top (rule_name_stack, "rewriteScope_raw");
 
 rewriteFormatString = rewriteFormatString.rwr ();
 
-_.set_top (return_value_stack, `_.set_top (return_value_stack, \\\`${rewriteFormatString}\\\`);\n`);
+_.set_top (return_value_stack, `_.set_top (return_value_stack, \`${rewriteFormatString}\`);\n`);
 
 
 rule_name_stack.pop ();
@@ -478,7 +478,7 @@ s = s.rwr ();
 ws3 = ws3.rwr ();
 rb = rb.rwr ();
 
-_.set_top (return_value_stack, `\\\$\\\{_.${name} (\\\`${s}\\\`)\\\}`);
+_.set_top (return_value_stack, `\$\{_.${name} (\`${s}\`)\}`);
 
 
 rule_name_stack.pop ();

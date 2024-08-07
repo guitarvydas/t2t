@@ -87,11 +87,11 @@
   ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
 
   grammarDef [_g ws name ws2 rules+] = ‛
-      const grammar = String.raw\\\`
+      const grammar = String.raw\`
       «name» {
       «rules»
       }
-      \\\`;
+      \`;
       ’
     
   rewriteDef [_r ws rewriteRules+] = ‛const rewrite_code = {«rewriteRules»
@@ -136,15 +136,15 @@
   rwParenPredicateDef [name ws] = ‛«name», ⎨memo_iter_predicate ‛name’⎬’
 
   rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
-_.pre_«name» (\\\`«s»\\\`);
+_.pre_«name» (\`«s»\`);
 «scope»
-_.post_«name» (\\\`«s»\\\`);’
+_.post_«name» (\`«s»\`);’
 
-  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛_.set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
-  rewriteScope_raw [rewriteFormatString] = ‛_.set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
+  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛_.set_top («name»_stack, \`«rewriteFormatString»\`);\n«rewriteScope»’
+  rewriteScope_raw [rewriteFormatString] = ‛_.set_top (return_value_stack, \`«rewriteFormatString»\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
-  formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\\\$\\\{_.«name» (\\\`«s»\\\`)\\\}’
+  formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\$\{_.«name» (\`«s»\`)\}’
   formatChar_predicate_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
   formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{_.top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’

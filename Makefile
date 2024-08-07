@@ -27,7 +27,8 @@ t2t:
 	${D2J} t2t.drawio
 	${D2J} 0D/python/std/transpile.drawio
 	python3 main.py . 0D/python t2t.t2t main t2t.drawio.json transpile.drawio.json >t2t.mjs
-	node t2t.mjs <simple.t2t
+	node t2t.mjs <simple.t2t >simple_regression.mjs
+	node simple_regression.mjs <test.txt
 
 
 ## house-keeping
