@@ -7,9 +7,9 @@
       let return_value_stack = [];
       let rule_name_stack = [];
       
-let A_stack = [];
-let B_stack = [];
-let C_stack = [];
+let sA_stack = [];
+let sB_stack = [];
+let sC_stack = [];
       
       const grammar = String.raw`
       example {
@@ -20,26 +20,27 @@ let C_stack = [];
       `;
       
       const rewrite_code = {
-      Main : function (_A, _Bsemis, _Bs, _C, ) {
+      Main : function (_pA, _pBsemis, _pBs, _pC, ) {
       return_value_stack.push ("");
       rule_name_stack.push ("");
       _.set_top (rule_name_stack, "Main");
-      A_stack.push ('');
-B_stack.push ('');
-C_stack.push ('');
+      sA_stack.push ('');
+sB_stack.push ('');
+sC_stack.push ('');
 
       
-      _.set_top (A_stack, `\$\{_A\}`);
-_.set_top (B_stack, `\$\{_Bs\}`);
-_.set_top (C_stack, `\$\{_C\}`);
+      
+      _.set_top (sA_stack, `${_pA}`);
+_.set_top (sB_stack, `${_pBs}`);
+_.set_top (sC_stack, `${_pC}`);
 
 _.pre_print (`hello`);
-_.set_top (return_value_stack, `... ${_.print (`middle`)} \$\{_A\}\$\{_Bsemis\}\$\{_.top (B_stack)\}\$\{_C\}...`);
+_.set_top (return_value_stack, `... ${_.print (`middle`)} ${_pA}${_pBsemis}${_.top (sB_stack)}${_pC}...`);
 
 _.post_print (`hello`);
-      A_stack.pop ();
-B_stack.pop ();
-C_stack.pop ();
+      sA_stack.pop ();
+sB_stack.pop ();
+sC_stack.pop ();
 
       rule_name_stack.pop ();
       return return_value_stack.pop ();

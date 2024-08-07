@@ -4,7 +4,7 @@ SRC=simple.t2t
 #SRC=t2t.t2t
 D2J=./das2json/mac/das2json
 
-dev: t2t
+dev: t2t_bootstrap
 
 all:
 	${D2J} t2t.drawio
@@ -23,7 +23,12 @@ auto:
 
 ## regression test - can this stuff self-compile itself and compile simple.t2t???
 
+# manually edited t2t.mjs
 t2t:
+	node t2t.mjs <simple.t2t >simple_regression.mjs
+	node simple_regression.mjs <test.txt
+
+t2t_bootstrap:
 	${D2J} t2t.drawio
 	${D2J} 0D/python/std/transpile.drawio
 	python3 main.py . 0D/python t2t.t2t main t2t.drawio.json transpile.drawio.json >t2t.mjs
