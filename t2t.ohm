@@ -1,73 +1,16 @@
 t2t {
-  main = applySyntactic<GrammarDef> applySyntactic<ParameterDef>* rewriteDef
+  main = grammarDef applySyntactic<ParameterDef>* rewriteDef
 
-  GrammarDef = "% grammar" name Rule+
+  grammarDef = "% grammar" spaces name rule+
   ParameterDef = "% parameter" name
   rewriteDef = "% rewrite" spaces rewriteRule+
 
 
-  // these patterns were stolen from OhmJS' ohm.ohm ... 
-  Rule
-    = ident Formals? ruleDescr? "="  RuleBody  -- define
-    | ident Formals?            ":=" OverrideRuleBody  -- override
-    | ident Formals?            "+=" RuleBody  -- extend
-
-  RuleBody =
-    | "|"? NemptyListOf<TopLevelTermWithCaseName, "|"> -- toplevelcasebranch
-    | "|"? TopLevelTermWithoutCaseName ~"|" -- seq
-
-  TopLevelTermWithCaseName = Seq caseName
-  TopLevelTermWithoutCaseName = Seq
-
-  OverrideRuleBody
-    = "|"? NemptyListOf<OverrideTopLevelTerm, "|">
-
-  OverrideTopLevelTerm
-    = "..."  -- superSplice
-    | TopLevelTermWithoutCaseName
-
-  Formals
-    = "<" ListOf<ident, ","> ">"
-
-  Params
-    = "<" ListOf<Seq, ","> ">"
-
-  Seq
-    = Iter*
-
-  Iter
-    = Pred "*"  -- star
-    | Pred "+"  -- plus
-    | Pred "?"  -- opt
-    | Pred
-
-  Pred
-    = "~" Lex  -- not
-    | "&" Lex  -- lookahead
-    | Lex
-
-  Lex
-    = "#" Base  -- lex
-    | Base
-
-  Base
-    = ident Params ~(ruleDescr? "=" | ":=" | "+=")   -- application
-    | ident        ~(ruleDescr? "=" | ":=" | "+=")   -- simple
-    | oneCharTerminal ".." oneCharTerminal           -- range
-    | terminal                                       -- terminal
-    | "(" Seq OrSeq+ ")"                             -- parenalt
-    | "(" Seq ")"                                    -- parenseq
-
-  OrSeq = "|" Seq
-
-  ruleDescr  (a rule description)
-    = "(" ruleDescrText ")"
-
-  ruleDescrText
-    = (~")" any)*
-
-  caseName
-    = "--" (~"\n" space)* name (~"\n" space)* ("\n" | &"}")
+  // just pass the grammar through to OhmJS - it parses and checks the grammar
+  rule =
+    | "\"" "% parameter" "\"" -- parameter_as_string
+    | "\"" "% rewrite" "\"" -- rewrite_as_string
+    | ~"% parameter" ~"% rewrite" any -- basic
 
   name  (a name)
     = nameFirst nameRest*
@@ -79,52 +22,6 @@ t2t {
   nameRest
     = "_"
     | alnum
-
-  ident  (an identifier)
-    = name
-
-  terminal
-    = "\"" terminalChar* "\""
-
-  oneCharTerminal
-    = "\"" terminalChar "\""
-
-  terminalChar
-    = escapeChar
-      | ~"\\" ~"\"" ~"\n" "\u{0}".."\u{10FFFF}"
-
-  escapeChar  (an escape sequence)
-    = "\\\\"                                     -- backslash
-    | "\\\""                                     -- doubleQuote
-    | "\\\'"                                     -- singleQuote
-    | "\\b"                                      -- backspace
-    | "\\n"                                      -- lineFeed
-    | "\\r"                                      -- carriageReturn
-    | "\\t"                                      -- tab
-    | "\\u{" hexDigit hexDigit? hexDigit?
-             hexDigit? hexDigit? hexDigit? "}"   -- unicodeCodePoint
-    | "\\u" hexDigit hexDigit hexDigit hexDigit  -- unicodeEscape
-    | "\\x" hexDigit hexDigit                    -- hexEscape
-
-  space
-   += comment
-
-  comment
-    = "//" (~"\n" any)* &("\n" | end)  -- singleLine
-    | "/*" (~"*/" any)* "*/"  -- multiLine
-
-  tokens = token*
-
-  token = caseName | comment | ident | operator | punctuation | terminal | any
-
-  operator = "<:" | "=" | ":=" | "+=" | "*" | "+" | "?" | "~" | "&"
-
-  punctuation = "<" | ">" | "," | "--"
-
-  NemptyListOf<elem, sep> = elem NemptyListOf2<elem, sep>+
-  NemptyListOf2<elem, sep> = sep elem
-
-  // end stolen grammar parsing section
 
 
   // rewrite parsing section
@@ -140,10 +37,12 @@ t2t {
   rwPredicateRef = name
 
   rewriteScope =
-    | "⎡" spaces name spaces "=" spaces #rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
+    | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
+    | "⎡" spaces name spaces "=" spaces rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
+    | "⎨" spaces name spaces rewriteFormatString spaces "⎬" -- support_interpolation
     | "⟪" rwPredicateRef "⟫" -- parameter_interpolation
     | "«" rwPredicateRef "»" -- predicate_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character

@@ -1,0 +1,17 @@
+% grammar example
+  Main = "a" (";" "b")+ "c"
+
+% parameter A
+% parameter B
+% parameter C
+
+% rewrite
+Main [_A (_Bsemis _Bs)+ _C] = ⎡ A=‛«_A»’
+                                ⎡ B=‛«_Bs»’
+                                  ⎡ C=‛«_C»’
+                                    ⎡ ⎨print ‛hello’⎬
+                                      ‛... ⎨print ‛middle’⎬ «_A»«_Bsemis»⟪B⟫«_C»...’ 
+                                    ⎦
+                                  ⎦
+                                ⎦
+                              ⎦

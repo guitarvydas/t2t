@@ -1,76 +1,17 @@
-# parameter rulename
-# parameter formals
-# parameter ruledescriptor
+% grammar t2t
 
-# grammar t2t
-  main = applySyntactic<ParameterDef>* applySyntactic<GrammarDef> rewriteDef
+  main = grammarDef applySyntactic<ParameterDef>* rewriteDef
+
+  grammarDef = "% grammar" spaces name spaces rule+
   ParameterDef = "% parameter" name
-  GrammarDef = "% grammar" name Rule+
   rewriteDef = "% rewrite" spaces rewriteRule+
 
 
-  // these patterns were stolen from OhmJS' ohm.ohm ... 
-  Rule
-    = ident Formals? ruleDescr? "="  RuleBody  -- define
-    | ident Formals?            ":=" OverrideRuleBody  -- override
-    | ident Formals?            "+=" RuleBody  -- extend
-
-  RuleBody =
-    | "|"? NemptyListOf<TopLevelTermWithCaseName, "|"> -- toplevelcasebranch
-    | "|"? TopLevelTermWithoutCaseName ~"|" -- seq
-
-  TopLevelTermWithCaseName = Seq caseName
-  TopLevelTermWithoutCaseName = Seq
-
-  OverrideRuleBody
-    = "|"? NemptyListOf<OverrideTopLevelTerm, "|">
-
-  OverrideTopLevelTerm
-    = "..."  -- superSplice
-    | TopLevelTermWithoutCaseName
-
-  Formals
-    = "<" ListOf<ident, ","> ">"
-
-  Params
-    = "<" ListOf<Seq, ","> ">"
-
-  Seq
-    = Iter*
-
-  Iter
-    = Pred "*"  -- star
-    | Pred "+"  -- plus
-    | Pred "?"  -- opt
-    | Pred
-
-  Pred
-    = "~" Lex  -- not
-    | "&" Lex  -- lookahead
-    | Lex
-
-  Lex
-    = "#" Base  -- lex
-    | Base
-
-  Base
-    = ident Params ~(ruleDescr? "=" | ":=" | "+=")   -- application
-    | ident        ~(ruleDescr? "=" | ":=" | "+=")   -- simple
-    | oneCharTerminal ".." oneCharTerminal           -- range
-    | terminal                                       -- terminal
-    | "(" Seq OrSeq+ ")"                             -- parenalt
-    | "(" Seq ")"                                    -- parenseq
-
-  OrSeq = "|" Seq
-
-  ruleDescr  (a rule description)
-    = "(" ruleDescrText ")"
-
-  ruleDescrText
-    = (~")" any)*
-
-  caseName
-    = "--" (~"\n" space)* name (~"\n" space)* ("\n" | &"}")
+  // just pass the grammar through to OhmJS - it parses and checks the grammar
+  rule =
+    | "\"" "% parameter" "\"" -- parameter_as_string
+    | "\"" "% rewrite" "\"" -- rewrite_as_string
+    | ~"% parameter" ~"% rewrite" any -- basic
 
   name  (a name)
     = nameFirst nameRest*
@@ -82,52 +23,6 @@
   nameRest
     = "_"
     | alnum
-
-  ident  (an identifier)
-    = name
-
-  terminal
-    = "\"" terminalChar* "\""
-
-  oneCharTerminal
-    = "\"" terminalChar "\""
-
-  terminalChar
-    = escapeChar
-      | ~"\\" ~"\"" ~"\n" "\u{0}".."\u{10FFFF}"
-
-  escapeChar  (an escape sequence)
-    = "\\\\"                                     -- backslash
-    | "\\\""                                     -- doubleQuote
-    | "\\\'"                                     -- singleQuote
-    | "\\b"                                      -- backspace
-    | "\\n"                                      -- lineFeed
-    | "\\r"                                      -- carriageReturn
-    | "\\t"                                      -- tab
-    | "\\u{" hexDigit hexDigit? hexDigit?
-             hexDigit? hexDigit? hexDigit? "}"   -- unicodeCodePoint
-    | "\\u" hexDigit hexDigit hexDigit hexDigit  -- unicodeEscape
-    | "\\x" hexDigit hexDigit                    -- hexEscape
-
-  space
-   += comment
-
-  comment
-    = "//" (~"\n" any)* &("\n" | end)  -- singleLine
-    | "/*" (~"*/" any)* "*/"  -- multiLine
-
-  tokens = token*
-
-  token = caseName | comment | ident | operator | punctuation | terminal | any
-
-  operator = "<:" | "=" | ":=" | "+=" | "*" | "+" | "?" | "~" | "&"
-
-  punctuation = "<" | ">" | "," | "--"
-
-  NemptyListOf<elem, sep> = elem NemptyListOf2<elem, sep>+
-  NemptyListOf2<elem, sep> = sep elem
-
-  // end stolen grammar parsing section
 
 
   // rewrite parsing section
@@ -143,197 +38,114 @@
   rwPredicateRef = name
 
   rewriteScope =
-    | "⎡" spaces name spaces "=" spaces #rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
+    | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
+    | "⎡" spaces name spaces "=" spaces rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
+    | "⎨" spaces name spaces rewriteFormatString spaces "⎬" -- support_interpolation
     | "⟪" rwPredicateRef "⟫" -- parameter_interpolation
     | "«" rwPredicateRef "»" -- predicate_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
 
+
 % rewrite
-  main [ParameterDefs* GrammarDef rewriteDef] = ‛
-'use strict'
 
-var ohm = require('ohm-js');
+  main [grammarDef ParameterDefs* rewriteDef] =
+    ‛
+      'use strict'
 
+      import {_} from './support.mjs';
+      import * as ohm from 'ohm-js';
 
-function set_top (stack, val) {
-    stack.pop ();
-    stack.push (val);
-}
+      let return_value_stack = [];
+      let rule_name_stack = [];
+      «ParameterDefs»
+      «grammarDef»
+      «rewriteDef»
 
-function top (stack) {
-    let r = stack.pop ();
-    stack.push (r);
-    return r;
-}
+      function main (src) {
+          let parser = ohm.grammar (grammar);
+          let cst = parser.match (src);
+          if (cst.succeeded ()) {
+              let cstSemantics = parser.createSemantics ();
+              cstSemantics.addOperation ('rwr', rewrite_code);
+              var generated_code = cstSemantics (cst).rwr ();
+              return generated_code;
+          } else {
+              console.log (parser.trace (src).toString ());
+              throw ("grammar error");
+          }
+      }
 
-let return_value_stack = [];
-let rule_name_stack = [];
-«ParameterDefs»
-«GrammarDef»
-«rewriteDef»
+      import * as fs from 'fs';
+      let src = fs.readFileSync(0, 'utf-8');
+      var result = main (src);
+      console.log (result);
+      ’
 
-function main (src) {
-    let parser = ohm.grammar (grammar);
-    let cst = parser.match (src);
-    if (cst.succeeded ()) {
-	let cstSemantics = parser.createSemantics ();
-	cstSemantics.addOperation ('rwr', rewrite_code);
-	var generated_code = cstSemantics (cst).rwr ();
-	return generated_code;
-    } else {
-	console.log (parser.trace (src).toString ());
-	throw ("grammar error");
-    }
-}
+  ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
 
-let fs = require('fs');
-let src = fs.readFileSync(0, 'utf-8');
-var result = main (src);
-console.log (result);
-’
-
-  ParameterDef [_p name] = ‛\nlet «name»_stack = [];«_.memo_parameter (name)»’
-
-  GrammarDef [_ name Rules+] = ‛
-const grammar = String.raw\\\`
-«name» {
-«Rules»
-}
-\\\`;
-’
-
-  rewriteDef [_ ws rewriteRules+] = ‛const rewrite_code = {«rewriteRules»
+  grammarDef [_g ws name ws2 rules+] = ‛
+      const grammar = String.raw\`
+      «name» {
+      «rules»
+      }
+      \`;
+      ’
+    
+  rewriteDef [_r ws rewriteRules+] = ‛const rewrite_code = {«rewriteRules»
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
 ’
 
-  Rule_define [ident Formals? ruleDescr? _eq RuleBody] = ⎡ rulename=‛«ident»’
-                                                           ⎡ formals=‛«Formals»’
-                                                             ⎡ ruledescriptor=‛«ruleDescr»’
-							       ‛«RuleBody»"
-                                                             ⎦
-                                                           ⎦
-                                                         ⎦
-
-  Rule_define [ident Formals? ruleDescr? _eq RuleBody] ‛«_.setrule (ident.rwr (), Formals.rwr (), ruleDescr.rwr ())»’ = ‛«RuleBody»’
-
-
-  Rule_override [ident Formals? _ceq RuleBody]  ‛«_.setrule (ident.rwr (), Formals.rwr (), "")»’ = ‛«RuleBody»’
-  Rule_extend [ident Formals? _peq RuleBody]  ‛«_.setrule (ident.rwr (), Formals.rwr (), "")»’ = ‛«RuleBody»’
-
-  RuleBody_toplevelcasebranch [_bar? TopLevelTerm_list] = ‛\n«_bar»«TopLevelTerm_list»’
-  RuleBody_seq [_bar? TopLevelTerm_list] = ‛«_bar»«TopLevelTerm_list»’
-
-  TopLevelTermWithCaseName [Seq caseName] = ‛\n«_.getrulename () + "_" + «caseName»» «_.getformals ()»«_.getruleDescr ()» =«Seq»’
-  TopLevelTermWithoutCaseName [Seq] =  ‛\n«_.getrulename ()»«_.getformals ()»«_.getruleDescr ()» =«Seq»’
-
-  OverrideRuleBody [_bar? OverrideTopLevelTerm_list] = ‛«_bar»«OverrideTopLevelTerm_list»’
-
-  OverrideTopLevelTerm_superSplice [_ddd] = ‛«_ddd»’
-  OverrideTopLevelTerm [tlt] = ‛«tlt»’
-
-  Formals [lb ident_list rb] = ‛«lb»«ident_list»«rb»’
-
-  Params [lb Seq_list rb] = ‛«lb»«Seq_list»«rb»’
-
-  Seq [Iter*] = ‛«Iter»’
-
-  Iter_star [Pred _suffix] = ‛«Pred»«_suffix»’
-  Iter_plus [Pred _suffix] = ‛«Pred»«_suffix»’
-  Iter_opt [Pred _suffix] = ‛«Pred»«_suffix»’
-  Iter [Pred] = ‛«Pred»’
-
-  Pred_not [_prefix Lex] = ‛«_prefix»«Lex»’
-  Pred_lookahead [_prefix Lex] = ‛«_prefix»«Lex»’
-  Pred [Lex] = ‛«Lex»’
-
-  Lex_lex [_octothorpe Base] = ‛«_octothorpe»«Base»’
-  Lex [Base] = ‛«Base»’
-
-  Base_application [ident Params] = ‛ «ident»«Params»’
-  Base_simple [ident] = ‛ «ident»’
-  Base_range [first _dd second] = ‛ «first»«_dd»«second»’
-  Base_terminal [terminal] = ‛ «terminal»’
-  Base_parenalt [lb Seq OrSeq+ rb] = ‛ «lb»«Seq»«OrSeq»«rb»’
-  Base_parenseq [lb Seq rb] = ‛ «lb»«Seq»«rb»’
-
-  OrSeq [_or Seq] = ‛«_or»«Seq»’
-
-  ruleDescr [lb ruleDescrText rb] = ‛«lb»«ruleDescrText»«rb»’
-  ruleDescrText [cs*] = ‛«cs»’
-
-  caseName [_dd ws* name ws2* newlineOrRb] = ‛ «_dd»«ws»«name»«ws2»«newlineOrRb»’
+  rule_parameter_as_string [lq cs rq] = ‛"% parameter"’
+  rule_rewrite_as_string [lq cs rq] = ‛"% rewrite"’
+  rule_basic [cs] = ‛«cs»’
 
   name [nameFirst nameRest*] = ‛«nameFirst»«nameRest»’
 
   nameFirst [c] = ‛«c»’
   nameRest [c] = ‛«c»’
 
-  ident [name] = ‛«name»’
 
-  terminal [lq terminalChar* rq] = ‛«lq»«terminalChar»«rq»’
-
-  oneCharTerminal [lq terminalChar rq] = ‛«lq»«terminalChar»«rq»’
-
-  terminalChar [c] = ‛«c»’
-
-  escapeChar_backslash [c] = ‛«c»’
-  escapeChar_doubleQuote [c] = ‛«c»’
-  escapeChar_singleQuote [c] = ‛«c»’
-  escapeChar_backspace [c] = ‛«c»’
-  escapeChar_lineFeed [c] = ‛«c»’
-  escapeChar_carriageReturn [c] = ‛«c»’
-  escapeChar_tab [c] = ‛«c»’
-  escapeChar_unicodeCodePoint [lb h1 h2? h3? h4? h5? h6? rb] = ‛«lb»«h1»«h2»«h3»«h4»«h5»«h6»«rb»’
-  escapeChar_unicodeEscape [lb h1 h2 h3 h4] = ‛«lb»«h1»«h2»«h3»«h4»’
-  escapeChar_hexEscape [lb h1 h2] = ‛«lb»«h1»«h2»’
-
-  comment_singleLine [_ss cs* newlineOrEnd] = ‛«_ss»«cs»’
-  comment_multiLine [_slst cs* _stsl] = ‛«_slst»«cs»«_stsl»’
-
-  tokens [token*] = ‛«token»’
-
-  token [tok] = ‛«tok»’
-  operator [op] = ‛«op»’
-  punctuation [punc] = ‛«punc»’
-
-  NemptyListOf [elem sepelem+] = ‛«elem»«sepelem»’
-  NemptyListOf2 [sep elem] = ‛«sep»«elem»’
- 
-  NonemptyListOf [elem sep+ elem2+] = ‛«elem»«sep»«elem2»’ // needed due to ListOf<...>
-
-
-
-  rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = ‛
-«rwName» : function («rwParameterDefs») {
-return_value_stack.push ("");
-rule_name_stack.push ("");
-set_top (rule_name_stack, "«rwName»");
-«_.foreach_parameter ("_stack.push ('');")»
-«_.predicate_expansions_as_string ()»
-«rewriteScope»
-«_.foreach_parameter ("_stack.pop ();")»
-rule_name_stack.pop ();
-return return_value_stack.pop ();
-},’
+  rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = 
+  ⎡ ⎨reset_stacks ‛’⎬
+    ‛
+      «rwName» : function («rwParameterDefs») {
+      return_value_stack.push ("");
+      rule_name_stack.push ("");
+      _.set_top (rule_name_stack, "«rwName»");
+      ⎨foreach_parameter ‛_stack.push ('');’⎬
+      ⎨predicate_expansions_as_string ‛’⎬
+      «rewriteScope»
+      ⎨foreach_parameter ‛_stack.pop ();’⎬
+      rule_name_stack.pop ();
+      return return_value_stack.pop ();
+      },
+    ’
+  ⎦
   
   rwRuleName [name] =‛«name»’
-  rwPredicateDef [name] =‛«name», «_.memo_predicate (name)»’
-  rwIterPredicateDef [name op] = ‛«name», «_.memo_iter_predicate (name)»’
+  rwPredicateDef [name] =‛«name», ⎨memo_predicate ‛name’⎬’
+  rwIterPredicateDef [name op] = ‛«name», ⎨memo_iter_predicate ‛name’⎬’
   rwParenthesizedIterPredicateDef [lb defs+ rb op] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
   rwPredicateRef [name] =‛«name»’
-  rwParenPredicateDef [name ws] = ‛«name», «_.memo_iter_predicate (name)»’
+  rwParenPredicateDef [name ws] = ‛«name», ⎨memo_iter_predicate ‛name’⎬’
 
-  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
-  rewriteScope_raw [rewriteFormatString] = ‛set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
+  rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
+_.pre_«name» (\`«s»\`);
+«scope»
+_.post_«name» (\`«s»\`);’
+
+  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛_.set_top («name»_stack, \`«rewriteFormatString»\`);\n«rewriteScope»’
+  rewriteScope_raw [rewriteFormatString] = ‛_.set_top (return_value_stack, \`«rewriteFormatString»\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
+  formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\$\{_.«name» (\`«s»\`)\}’
   formatChar_predicate_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
-  formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{top («rwRef»_stack)\\\}’
+  formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{_.top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
   

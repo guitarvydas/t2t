@@ -1,18 +1,7 @@
 'use strict'
 
-var ohm = require('ohm-js');
-
-
-function set_top (stack, val) {
-    stack.pop ();
-    stack.push (val);
-}
-
-function top (stack) {
-    let r = stack.pop ();
-    stack.push (r);
-    return r;
-}
+import {_} from './support.mjs';
+import * as ohm from 'ohm-js';
 
 let return_value_stack = [];
 let rule_name_stack = [];
@@ -24,7 +13,9 @@ let C_stack = [];
 const grammar = String.raw`
 example {
 
-Main = "a" ( ";" "b")+ "c"
+  Main = "a" (";" "b")+ "c"
+
+
 }
 `;
 
@@ -32,7 +23,7 @@ const rewrite_code = {
 Main : function (_A, _Bsemis, _Bs, _C, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-set_top (rule_name_stack, "Main");
+_.set_top (rule_name_stack, "Main");
 A_stack.push ('');
 B_stack.push ('');
 C_stack.push ('');
@@ -42,11 +33,14 @@ _Bsemis = _Bsemis.rwr ().join ('');
 _Bs = _Bs.rwr ().join ('');
 _C = _C.rwr ();
 
-set_top (A_stack, `${_A}`);
-set_top (B_stack, `${_Bs}`);
-set_top (C_stack, `${_C}`);
-set_top (return_value_stack, `...${_A}${_Bsemis}${top (B_stack)}${_C}...`);
+_.set_top (A_stack, `${_A}`);
+_.set_top (B_stack, `${_Bs}`);
+_.set_top (C_stack, `${_C}`);
 
+_.pre_print (`hello`);
+_.set_top (return_value_stack, `... ${_.print (`middle`)} ${_A}${_Bsemis}${_.top (B_stack)}${_C}...`);
+
+_.post_print (`hello`);
 A_stack.pop ();
 B_stack.pop ();
 C_stack.pop ();
@@ -73,7 +67,7 @@ function main (src) {
     }
 }
 
-let fs = require('fs');
+import * as fs from 'fs';
 let src = fs.readFileSync(0, 'utf-8');
 var result = main (src);
 console.log (result);
