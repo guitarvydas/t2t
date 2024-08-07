@@ -25,7 +25,9 @@ t2t {
 
 
   // rewrite parsing section
-  rewriteRule = rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces
+  rewriteRule = 
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
 
   rwRuleName = name
   rwPredicateDef = name
@@ -46,4 +48,6 @@ t2t {
     | "⟪" rwPredicateRef "⟫" -- parameter_interpolation
     | "«" rwPredicateRef "»" -- predicate_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
+
+  before = "⎨" spaces name spaces rewriteFormatString spaces "⎬"
 }

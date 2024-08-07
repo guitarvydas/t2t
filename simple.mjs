@@ -6,48 +6,78 @@ import * as ohm from 'ohm-js';
 let return_value_stack = [];
 let rule_name_stack = [];
 
-let A_stack = [];
-let B_stack = [];
-let C_stack = [];
+let sA_stack = [];
+let sB_stack = [];
+let sC_stack = [];
 
 const grammar = String.raw`
 example {
 
   Main = "a" (";" "b")+ "c"
+  Second = "a" (";" "b")+ "c"
 
 
 }
 `;
 
 const rewrite_code = {
-    Main : function (_A, _Bsemis, _Bs, _C, ) {
-	return_value_stack.push ("");
-	rule_name_stack.push ("");
-	_.set_top (rule_name_stack, "Main");
-	A_stack.push ('');
-	B_stack.push ('');
-	C_stack.push ('');
+Main : function (_pA, _pBsemis, _pBs, _pC, ) {
+let _pre = _.print (`pre down`);
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "Main");
+sA_stack.push ('');
+sB_stack.push ('');
+sC_stack.push ('');
 
-	_A = _A.rwr ();
-	_Bsemis = _Bsemis.rwr ().join ('');
-	_Bs = _Bs.rwr ().join ('');
-	_C = _C.rwr ();
+_pA = _pA.rwr ();
+_pBsemis = _pBsemis.rwr ().join ('');
+_pBs = _pBs.rwr ().join ('');
+_pC = _pC.rwr ();
 
-	_.set_top (A_stack, `${_A}`);
-	_.set_top (B_stack, `${_Bs}`);
-	_.set_top (C_stack, `${_C}`);
+_.set_top (sA_stack, `${_pA}`);
+_.set_top (sB_stack, `${_pBs}`);
+_.set_top (sC_stack, `${_pC}`);
 
-	_.pre_print (`hello`);
-	_.set_top (return_value_stack, `... ${_.print (`middle`)} ${_A}${_Bsemis}${_.top (B_stack)}${_C}...`);
+_.pre_print (`hello`);
+_.set_top (return_value_stack, `... ${_.print (`middle`)} ${_pA}${_pBsemis}${_.top (sB_stack)}${_pC}...`);
 
-	_.post_print (`hello`);
-	A_stack.pop ();
-	B_stack.pop ();
-	C_stack.pop ();
+_.post_print (`hello`);
+sA_stack.pop ();
+sB_stack.pop ();
+sC_stack.pop ();
 
-	rule_name_stack.pop ();
-	return return_value_stack.pop ();
-    },
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+Second : function (_pX, _pYsemis, _pYs, _pZ, ) {
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "Second");
+sA_stack.push ('');
+sB_stack.push ('');
+sC_stack.push ('');
+
+_pX = _pX.rwr ();
+_pYsemis = _pYsemis.rwr ().join ('');
+_pYs = _pYs.rwr ().join ('');
+_pZ = _pZ.rwr ();
+
+_.set_top (sA_stack, `${_pX}`);
+_.set_top (sB_stack, `${_pYs}`);
+_.set_top (sC_stack, `${_pZ}`);
+
+_.pre_print (`hello`);
+_.set_top (return_value_stack, `... ${_.print (`middle`)} ${_pX}${_pYsemis}${_.top (sB_stack)}${_pZ}...`);
+
+_.post_print (`hello`);
+sA_stack.pop ();
+sB_stack.pop ();
+sC_stack.pop ();
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
 };

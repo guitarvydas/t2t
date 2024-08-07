@@ -26,7 +26,7 @@
 
 
   // rewrite parsing section
-  rewriteRule = rwRuleName spaces "[" spaces (rwArgDef spaces)+ "]" spaces "=" spaces rewriteScope spaces
+  rewriteRule = rwRuleName spaces "[" spaces (rwArgDef spaces)+ "]" spaces pre? spaces "=" spaces rewriteScope spaces
 
   rwArgDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwSimpleArgDef)
   rwRuleName = name
@@ -51,6 +51,8 @@
   rwArg_Ref = name
   rwStack_Ref = name
 
+  pre = rewriteFormatString
+  
 % rewrite
 
   main [grammarDef StackDefs* rewriteDef] =
@@ -112,10 +114,10 @@
   nameRest [c] = ‛«c»’
 
 
-  rewriteRule [rwName ws1 lb ws2 rwArgDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = 
-  ⎡ ⎨reset_stacks ‛’⎬
+  rewriteRule [rwName ws1 lb ws2 rwArgDefs+ ws3+ rb ws4 pre? ws7 _eq ws5 rewriteScope ws6] ‛⎨reset_stacks ‛’⎬’ = 
     ‛
       «rwName» : function («rwArgDefs») {
+      let _pre = "«pre»";
       return_value_stack.push ("");
       rule_name_stack.push ("");
       _.set_top (rule_name_stack, "«rwName»");
@@ -128,7 +130,6 @@
       return return_value_stack.pop ();
       },
     ’
-  ⎦
   
   rwArgDef [def] = ‛«def»’
   rwRuleName [name] =‛«name»’
@@ -156,3 +157,4 @@ _.post_«name» (\`«s»\`);’
   rwArg_Ref [name] =‛«name»’
   rwStack_Ref [name] =‛«name»’
 
+  pre [s] = ‛«s»’  

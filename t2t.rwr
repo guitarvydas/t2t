@@ -58,7 +58,21 @@ const grammar = String.raw\\\`
   nameRest [c] = ‛«c»’
 
 
-  rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] ‛«_.reset_stacks ()»’ = ‛
+  rewriteRule_withbefore [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 before ws7 _eq ws5 rewriteScope ws6] ‛«_.reset_stacks ()»’ = ‛
+«rwName» : function («rwParameterDefs») {
+let _pre = «before»;
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "«rwName»");
+«_.foreach_parameter ("_stack.push ('');")»
+«_.predicate_expansions_as_string ()»
+«rewriteScope»
+«_.foreach_parameter ("_stack.pop ();")»
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},’
+  
+  rewriteRule_plain [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] ‛«_.reset_stacks ()»’ = ‛
 «rwName» : function («rwParameterDefs») {
 return_value_stack.push ("");
 rule_name_stack.push ("");
@@ -71,6 +85,7 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },’
   
+
   rwRuleName [name] =‛«name»’
   rwPredicateDef [name] =‛«name», «_.memo_predicate (name)»’
   rwIterPredicateDef [name op] = ‛«name», «_.memo_iter_predicate (name)»’
@@ -92,5 +107,6 @@ _.post_«name» (\\\`«s»\\\`);’
   formatChar_predicate_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
   formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{_.top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
-  
+
+  before [lb ws1 name ws2 s ws3 rb] = ‛_.«name» (\\\`«s»\\\`)’
 }

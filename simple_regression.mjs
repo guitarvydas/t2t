@@ -14,6 +14,7 @@ let sC_stack = [];
       const grammar = String.raw`
       example {
       Main = "a" (";" "b")+ "c"
+  Second = "a" (";" "b")+ "c"
 
 
       }
@@ -21,6 +22,7 @@ let sC_stack = [];
       
       const rewrite_code = {
       Main : function (_pA, _pBsemis, _pBs, _pC, ) {
+      let _pre = "";
       return_value_stack.push ("");
       rule_name_stack.push ("");
       _.set_top (rule_name_stack, "Main");
@@ -28,14 +30,65 @@ let sC_stack = [];
 sB_stack.push ('');
 sC_stack.push ('');
 
-      
-      
+      name = name.join ('');
+ = name = name.join ('');
+.rwr ();
+name = name.join ('');
+ = name = name.join ('');
+.rwr ();
+
+      name = name.join ('');
+name = name.join ('');
+
       _.set_top (sA_stack, `${_pA}`);
 _.set_top (sB_stack, `${_pBs}`);
 _.set_top (sC_stack, `${_pC}`);
 
 _.pre_print (`hello`);
 _.set_top (return_value_stack, `... ${_.print (`middle`)} ${_pA}${_pBsemis}${_.top (sB_stack)}${_pC}...`);
+
+_.post_print (`hello`);
+      sA_stack.pop ();
+sB_stack.pop ();
+sC_stack.pop ();
+
+      rule_name_stack.pop ();
+      return return_value_stack.pop ();
+      },
+    
+      Second : function (_pX, _pYsemis, _pYs, _pZ, ) {
+      let _pre = "";
+      return_value_stack.push ("");
+      rule_name_stack.push ("");
+      _.set_top (rule_name_stack, "Second");
+      sA_stack.push ('');
+sB_stack.push ('');
+sC_stack.push ('');
+
+      name = name.join ('');
+ = name = name.join ('');
+.rwr ();
+name = name.join ('');
+ = name = name.join ('');
+.rwr ();
+name = name.join ('');
+ = name = name.join ('');
+.rwr ();
+name = name.join ('');
+ = name = name.join ('');
+.rwr ();
+
+      name = name.join ('');
+name = name.join ('');
+name = name.join ('');
+name = name.join ('');
+
+      _.set_top (sA_stack, `${_pX}`);
+_.set_top (sB_stack, `${_pYs}`);
+_.set_top (sC_stack, `${_pZ}`);
+
+_.pre_print (`hello`);
+_.set_top (return_value_stack, `... ${_.print (`middle`)} ${_pX}${_pYsemis}${_.top (sB_stack)}${_pZ}...`);
 
 _.post_print (`hello`);
       sA_stack.pop ();
