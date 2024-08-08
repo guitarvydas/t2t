@@ -17,13 +17,15 @@
       `;
       
       const rewrite_code = {
-      Main : function (_pA, ) {
+      Main : function (_pA, /*memo_predicate _pA*/
+) {
       let _pre = "_.print (\`pre down\`)";
       return_value_stack.push ("");
       rule_name_stack.push ("");
       _.set_top (rule_name_stack, "Main");
       
-      
+      //foreach_arg (☐ = ☐.rwr ();)
+
       
       _.set_top (return_value_stack, `... ${_.print (`xxx middle`)} ${_pA}`);
 

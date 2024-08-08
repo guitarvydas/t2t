@@ -6,10 +6,11 @@ let _ = {
 
     // for rewriter
     parameter_names : [],
+    args : [],
     arg_joins : [],
 
     reset_stacks : function () { 
-	_.predicate_names = []; 
+	_.args = [],
 	_.arg_joins = [];
     },
 
@@ -24,13 +25,13 @@ let _ = {
     },
 
     foreach_arg : function (str) {
-	let s = [];
+	let s = [`//foreach_arg (${str})\n`];
 	_.arg_joins.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
 	return s.join ('');
     },
 
-    memo_predicate : function (s) { return ""; },
-    memo_iter_predicate : function (s) { _.arg_joins.push (`${s} = ${s}.join ('');\n`); return ""; },
+    memo_predicate : function (s) { _.args.push (s); return `/*memo_predicate ${s}*/\n`; },
+    memo_iter_predicate : function (s) { _.arg_joins.push (`${s} = ${s}.join ('');\n`); return `/*memo_iter_predicate ${s}*/\n`; },
     arg_joins_as_string : function () { return _.arg_joins.join (''); },
 
     pre_print : function (s) {console.log (`pre: ${s}`);},

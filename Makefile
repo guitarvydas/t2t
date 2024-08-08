@@ -4,7 +4,7 @@ SRC=simple.t2t
 #SRC=t2t.t2t
 D2J=./das2json/mac/das2json
 
-dev: t2t_bootstrap
+dev: auto
 
 all:
 	${D2J} t2t.drawio

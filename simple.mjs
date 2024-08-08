@@ -45,8 +45,7 @@ function main (src) {
 	var generated_code = cstSemantics (cst).rwr ();
 	return generated_code;
     } else {
-	console.log (parser.trace (src).toString ());
-	throw ("grammar error");
+	return parser.trace (src).toString ();
     }
 }
 

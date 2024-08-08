@@ -152,10 +152,10 @@
   rwArgDef [def] = ‛«def»’
   rwRuleName [name] =‛«name»’
 
-  rwSimpleArgDef [name] =‛«name», ⎨memo_predicate ‛name’⎬’
-  rwIterArgDef [name op] = ‛«name», ⎨memo_iter_predicate ‛name’⎬’
+  rwSimpleArgDef [name] =‛«name», ⎨memo_predicate ‛«name»’⎬’
+  rwIterArgDef [name op] = ‛«name», ⎨memo_iter_predicate ‛«name»’⎬’
   rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
-  rwInsideParenArgDef [name ws] = ‛«name», ⎨memo_iter_predicate ‛name’⎬’
+  rwInsideParenArgDef [name ws] = ‛«name», ⎨memo_iter_predicate ‛«name»’⎬’
 
 
   rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
