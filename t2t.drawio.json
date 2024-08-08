@@ -219,20 +219,24 @@
                 "id": 7
             },
             {
-                "name": "?A",
-                "id": 12
+                "name": "'_0D_/std/rwr.sem.js",
+                "id": 13
             },
             {
-                "name": "'_0D_/std/rwr.sem.js",
-                "id": 16
+                "name": "'_0D_/std/rwr.ohm",
+                "id": 17
             },
             {
                 "name": "Ohm",
                 "id": 18
             },
             {
-                "name": "'_0D_/std/rwr.ohm",
-                "id": 26
+                "name": "String Concatenate",
+                "id": 27
+            },
+            {
+                "name": "'RWR",
+                "id": 30
             },
             {
                 "name": "Ohm (using file names)",
@@ -243,16 +247,8 @@
                 "id": 32
             },
             {
-                "name": "String Concatenate",
-                "id": 36
-            },
-            {
-                "name": "'RWR",
-                "id": 41
-            },
-            {
                 "name": "Read Text File",
-                "id": 50
+                "id": 45
             }
         ],
         "connections": [
@@ -278,7 +274,7 @@
                 "source_port": "ohmfn",
                 "target": {
                     "name": "Read Text File",
-                    "id": 50
+                    "id": 45
                 },
                 "target_port": ""
             },
@@ -330,7 +326,7 @@
                 "source_port": "input",
                 "target": {
                     "name": "'_0D_/std/rwr.sem.js",
-                    "id": 16
+                    "id": 13
                 },
                 "target_port": ""
             },
@@ -343,7 +339,7 @@
                 "source_port": "input",
                 "target": {
                     "name": "'_0D_/std/rwr.ohm",
-                    "id": 26
+                    "id": 17
                 },
                 "target_port": ""
             },
@@ -356,9 +352,22 @@
                 "source_port": "input",
                 "target": {
                     "name": "'RWR",
-                    "id": 41
+                    "id": 30
                 },
                 "target_port": ""
+            },
+            {
+                "dir": 1,
+                "source": {
+                    "name": "'RWR",
+                    "id": 30
+                },
+                "source_port": "",
+                "target": {
+                    "name": "Ohm (using file names)",
+                    "id": 31
+                },
+                "target_port": "grammar name"
             },
             {
                 "dir": 1,
@@ -376,26 +385,13 @@
             {
                 "dir": 1,
                 "source": {
-                    "name": "String Concatenate",
-                    "id": 36
-                },
-                "source_port": "",
-                "target": {
-                    "name": "?A",
-                    "id": 12
-                },
-                "target_port": ""
-            },
-            {
-                "dir": 1,
-                "source": {
                     "name": "Read Text File",
                     "id": 32
                 },
                 "source_port": "",
                 "target": {
                     "name": "String Concatenate",
-                    "id": 36
+                    "id": 27
                 },
                 "target_port": "1"
             },
@@ -403,7 +399,7 @@
                 "dir": 1,
                 "source": {
                     "name": "String Concatenate",
-                    "id": 36
+                    "id": 27
                 },
                 "source_port": "",
                 "target": {
@@ -421,7 +417,7 @@
                 "source_port": "",
                 "target": {
                     "name": "String Concatenate",
-                    "id": 36
+                    "id": 27
                 },
                 "target_port": "2"
             },
@@ -429,7 +425,7 @@
                 "dir": 1,
                 "source": {
                     "name": "Read Text File",
-                    "id": 50
+                    "id": 45
                 },
                 "source_port": "",
                 "target": {
@@ -442,7 +438,7 @@
                 "dir": 1,
                 "source": {
                     "name": "'_0D_/std/rwr.sem.js",
-                    "id": 16
+                    "id": 13
                 },
                 "source_port": "",
                 "target": {
@@ -455,7 +451,7 @@
                 "dir": 1,
                 "source": {
                     "name": "'_0D_/std/rwr.ohm",
-                    "id": 26
+                    "id": 17
                 },
                 "source_port": "",
                 "target": {
@@ -465,23 +461,36 @@
                 "target_port": "grammarfn"
             },
             {
-                "dir": 1,
+                "dir": 2,
                 "source": {
-                    "name": "'RWR",
-                    "id": 41
+                    "name": "Read Text File",
+                    "id": 32
                 },
-                "source_port": "",
+                "source_port": "\u2717",
                 "target": {
-                    "name": "Ohm (using file names)",
-                    "id": 31
+                    "name": "",
+                    "id": 0
                 },
-                "target_port": "grammar name"
+                "target_port": "\u2717"
+            },
+            {
+                "dir": 2,
+                "source": {
+                    "name": "Ohm",
+                    "id": 18
+                },
+                "source_port": "\u2717",
+                "target": {
+                    "name": "",
+                    "id": 0
+                },
+                "target_port": "\u2717"
             },
             {
                 "dir": 2,
                 "source": {
                     "name": "String Concatenate",
-                    "id": 36
+                    "id": 27
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -520,20 +529,7 @@
                 "dir": 2,
                 "source": {
                     "name": "Read Text File",
-                    "id": 50
-                },
-                "source_port": "\u2717",
-                "target": {
-                    "name": "",
-                    "id": 0
-                },
-                "target_port": "\u2717"
-            },
-            {
-                "dir": 2,
-                "source": {
-                    "name": "Ohm",
-                    "id": 18
+                    "id": 45
                 },
                 "source_port": "\u2717",
                 "target": {
@@ -554,19 +550,6 @@
                     "id": 0
                 },
                 "target_port": ""
-            },
-            {
-                "dir": 2,
-                "source": {
-                    "name": "Read Text File",
-                    "id": 32
-                },
-                "source_port": "\u2717",
-                "target": {
-                    "name": "",
-                    "id": 0
-                },
-                "target_port": "\u2717"
             }
         ]
     }

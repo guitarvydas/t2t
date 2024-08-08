@@ -70,7 +70,6 @@ t2t {
 
 const rewrite_code = {
 main : function (grammarDef, StackDefs, rewriteDef, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "main");
@@ -116,7 +115,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 StackDef : function (_p, name, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "StackDef");
@@ -131,7 +129,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 grammarDef : function (_g, ws, name, ws2, rules, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "grammarDef");
@@ -155,7 +152,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rewriteDef : function (_r, ws, rewriteRules, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteDef");
@@ -175,7 +171,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rule_parameter_as_string : function (lq, cs, rq, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_parameter_as_string");
@@ -191,7 +186,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rule_rewrite_as_string : function (lq, cs, rq, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_rewrite_as_string");
@@ -207,7 +201,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rule_basic : function (cs, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_basic");
@@ -221,7 +214,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 name : function (nameFirst, nameRest, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "name");
@@ -236,7 +228,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 nameFirst : function (c, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "nameFirst");
@@ -250,7 +241,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 nameRest : function (c, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "nameRest");
@@ -264,7 +254,7 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rewriteRule : function (rwName, ws1, lb, ws2, rwArgDefs, ws3, rb, ws4, pre, ws7, _eq, ws5, rewriteScope, ws6, ) {
-let _pre = "${_.reset_stacks (``)}";
+let _pre = _.reset_stacks (``);
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteRule");
@@ -305,7 +295,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rwArgDef : function (def, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwArgDef");
@@ -319,7 +308,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rwRuleName : function (name, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwRuleName");
@@ -333,7 +321,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rwSimpleArgDef : function (name, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwSimpleArgDef");
@@ -347,7 +334,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rwIterArgDef : function (name, op, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwIterArgDef");
@@ -362,7 +348,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rwParenthesizedIterArgDef : function (lb, defs, rb, op, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwParenthesizedIterArgDef");
@@ -379,7 +364,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rwInsideParenArgDef : function (name, ws, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwInsideParenArgDef");
@@ -394,7 +378,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rewriteScope_within_support_wrapper : function (lb, ws1, lb2, ws2, name, ws3, s, ws4, rb2, ws5, scope, ws6, rb, ws7, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_within_support_wrapper");
@@ -424,7 +407,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rewriteScope_with_parameter : function (lb, ws1, name, ws2, _eq, ws3, rewriteFormatString, ws4, rewriteScope, ws5, rb, ws6, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_with_parameter");
@@ -449,7 +431,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rewriteScope_raw : function (rewriteFormatString, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_raw");
@@ -463,7 +444,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rewriteFormatString : function (lq, formatChars, rq, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteFormatString");
@@ -479,7 +459,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 formatChar_support_interpolation : function (lb, ws1, name, ws2, s, ws3, rb, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_support_interpolation");
@@ -499,7 +478,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 formatChar_stack_interpolation : function (lb, rwRef, rb, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_stack_interpolation");
@@ -515,7 +493,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 formatChar_arg_interpolation : function (lb, rwRef, rb, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_arg_interpolation");
@@ -531,7 +508,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 formatChar_raw_character : function (c, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_raw_character");
@@ -545,7 +521,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rwArg_Ref : function (name, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwArg_Ref");
@@ -559,7 +534,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 rwStack_Ref : function (name, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwStack_Ref");
@@ -573,7 +547,6 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
 pre : function (s, ) {
-let _pre = "";
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "pre");

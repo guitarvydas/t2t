@@ -114,7 +114,7 @@
   nameRest [c] = ‛«c»’
 
 
-  rewriteRule [rwName ws1 lb ws2 rwArgDefs+ ws3+ rb ws4 pre? ws7 _eq ws5 rewriteScope ws6] ‛⎨reset_stacks ‛’⎬’ = 
+  rewriteRule [rwName ws1 lb ws2 rwArgDefs+ ws3+ rb ws4 pre? ws7 _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’⎬ = 
     ‛
       «rwName» : function («rwArgDefs») {
       let _pre = "«pre»";

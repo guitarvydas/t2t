@@ -1,6 +1,5 @@
 % grammar example
   Main = "a" (";" "b")+ "c"
-  Second = "a" (";" "b")+ "c"
 
 % parameter sA
 % parameter sB
@@ -17,12 +16,3 @@ Main [_pA (_pBsemis _pBs)+ _pC] ⎨print ‛pre down’⎬= ⎡ sA=‛«_pA»’
                                 ⎦
                               ⎦
 
-Second [_pX (_pYsemis _pYs)+ _pZ] = ⎡ sA=‛«_pX»’
-                                ⎡ sB=‛«_pYs»’
-                                  ⎡ sC=‛«_pZ»’
-                                    ⎡ ⎨print ‛hello’⎬
-                                      ‛... ⎨print ‛middle’⎬ «_pX»«_pYsemis»⟪sB⟫«_pZ»...’ 
-                                    ⎦
-                                  ⎦
-                                ⎦
-                              ⎦
