@@ -8,11 +8,10 @@ let _ = {
     parameter_names : [],
     arg_joins : [],
 
-    pre_reset_stacks : function () { 
+    reset_stacks : function () { 
 	_.predicate_names = []; 
 	_.arg_joins = [];
     },
-    post_reset_stacks : function () { },
 
     memo_parameter : function (str) {
 	_.parameter_names.push (str); 

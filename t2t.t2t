@@ -26,7 +26,9 @@
 
 
   // rewrite parsing section
-  rewriteRule = rwRuleName spaces "[" spaces (rwArgDef spaces)+ "]" spaces pre? spaces "=" spaces rewriteScope spaces
+  rewriteRule = 
+    | rwRuleName spaces "[" spaces (rwArgDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
+    | rwRuleName spaces "[" spaces (rwArgDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
 
   rwArgDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwSimpleArgDef)
   rwRuleName = name
@@ -51,7 +53,7 @@
   rwArg_Ref = name
   rwStack_Ref = name
 
-  pre = rewriteFormatString
+  before = "⎨" spaces name spaces rewriteFormatString spaces "⎬"
   
 % rewrite
 
@@ -114,10 +116,26 @@
   nameRest [c] = ‛«c»’
 
 
-  rewriteRule [rwName ws1 lb ws2 rwArgDefs+ ws3+ rb ws4 pre? ws7 _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’⎬ = 
+  rewriteRule_plain [rwName ws1 lb ws2 rwArgDefs+ ws3+ rb ws4  _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’⎬ =
     ‛
       «rwName» : function («rwArgDefs») {
-      let _pre = "«pre»";
+      return_value_stack.push ("");
+      rule_name_stack.push ("");
+      _.set_top (rule_name_stack, "«rwName»");
+      ⎨foreach_parameter ‛☐_stack.push ('');’⎬
+      ⎨foreach_arg ‛☐ = ☐.rwr ();’⎬
+      ⎨arg_joins_as_string ‛’⎬
+      «rewriteScope»
+      ⎨foreach_parameter ‛☐_stack.pop ();’⎬
+      rule_name_stack.pop ();
+      return return_value_stack.pop ();
+      },
+    ’
+  
+  rewriteRule_withbefore [rwName ws1 lb ws2 rwArgDefs+ ws3+ rb ws4 before ws7 _eq ws5 rewriteScope ws6]  ⎨reset_stacks ‛’⎬ =
+    ‛
+      «rwName» : function («rwArgDefs») {
+      let _pre = "«before»";
       return_value_stack.push ("");
       rule_name_stack.push ("");
       _.set_top (rule_name_stack, "«rwName»");
@@ -157,4 +175,4 @@ _.post_«name» (\`«s»\`);’
   rwArg_Ref [name] =‛«name»’
   rwStack_Ref [name] =‛«name»’
 
-  pre [s] = ‛«s»’  
+  before [lb ws1 name ws2 s ws3 rb] = ‛_.«name» (\\\`«s»\\\`)’

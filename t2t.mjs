@@ -37,7 +37,9 @@ t2t {
 
 
   // rewrite parsing section
-  rewriteRule = rwRuleName spaces "[" spaces (rwArgDef spaces)+ "]" spaces pre? spaces "=" spaces rewriteScope spaces
+  rewriteRule = 
+    | rwRuleName spaces "[" spaces (rwArgDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
+    | rwRuleName spaces "[" spaces (rwArgDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
 
   rwArgDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwSimpleArgDef)
   rwRuleName = name
@@ -62,7 +64,7 @@ t2t {
   rwArg_Ref = name
   rwStack_Ref = name
 
-  pre = rewriteFormatString
+  before = "⎨" spaces name spaces rewriteFormatString spaces "⎬"
   
 
 }
@@ -253,11 +255,11 @@ _.set_top (return_value_stack, `${c}`);
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rewriteRule : function (rwName, ws1, lb, ws2, rwArgDefs, ws3, rb, ws4, pre, ws7, _eq, ws5, rewriteScope, ws6, ) {
+rewriteRule_plain : function (rwName, ws1, lb, ws2, rwArgDefs, ws3, rb, ws4, _eq, ws5, rewriteScope, ws6, ) {
 let _pre = _.reset_stacks (``);
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "rewriteRule");
+_.set_top (rule_name_stack, "rewriteRule_plain");
 
 rwName = rwName.rwr ();
 ws1 = ws1.rwr ();
@@ -267,7 +269,45 @@ rwArgDefs = rwArgDefs.rwr ().join ('');
 ws3 = ws3.rwr ().join ('');
 rb = rb.rwr ();
 ws4 = ws4.rwr ();
-pre = pre.rwr ().join ('');
+_eq = _eq.rwr ();
+ws5 = ws5.rwr ();
+rewriteScope = rewriteScope.rwr ();
+ws6 = ws6.rwr ();
+
+_.set_top (return_value_stack, `
+      ${rwName} : function (${rwArgDefs}) {
+      return_value_stack.push ("");
+      rule_name_stack.push ("");
+      _.set_top (rule_name_stack, "${rwName}");
+      ${_.foreach_parameter (`☐_stack.push ('');`)}
+      ${_.foreach_arg (`☐ = ☐.rwr ();`)}
+      ${_.arg_joins_as_string (``)}
+      ${rewriteScope}
+      ${_.foreach_parameter (`☐_stack.pop ();`)}
+      rule_name_stack.pop ();
+      return return_value_stack.pop ();
+      },
+    `);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+rewriteRule_withbefore : function (rwName, ws1, lb, ws2, rwArgDefs, ws3, rb, ws4, before, ws7, _eq, ws5, rewriteScope, ws6, ) {
+let _pre = _.reset_stacks (``);
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "rewriteRule_withbefore");
+
+rwName = rwName.rwr ();
+ws1 = ws1.rwr ();
+lb = lb.rwr ();
+ws2 = ws2.rwr ();
+rwArgDefs = rwArgDefs.rwr ().join ('');
+ws3 = ws3.rwr ().join ('');
+rb = rb.rwr ();
+ws4 = ws4.rwr ();
+before = before.rwr ();
 ws7 = ws7.rwr ();
 _eq = _eq.rwr ();
 ws5 = ws5.rwr ();
@@ -276,7 +316,7 @@ ws6 = ws6.rwr ();
 
 _.set_top (return_value_stack, `
       ${rwName} : function (${rwArgDefs}) {
-      let _pre = "${pre}";
+      let _pre = "${before}";
       return_value_stack.push ("");
       rule_name_stack.push ("");
       _.set_top (rule_name_stack, "${rwName}");
@@ -546,14 +586,20 @@ _.set_top (return_value_stack, `${name}`);
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-pre : function (s, ) {
+before : function (lb, ws1, name, ws2, s, ws3, rb, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "pre");
+_.set_top (rule_name_stack, "before");
 
+lb = lb.rwr ();
+ws1 = ws1.rwr ();
+name = name.rwr ();
+ws2 = ws2.rwr ();
 s = s.rwr ();
+ws3 = ws3.rwr ();
+rb = rb.rwr ();
 
-_.set_top (return_value_stack, `${s}`);
+_.set_top (return_value_stack, `_.${name} (\\\`${s}\\\`)`);
 
 
 rule_name_stack.pop ();
@@ -573,8 +619,7 @@ function main (src) {
 	var generated_code = cstSemantics (cst).rwr ();
 	return generated_code;
     } else {
-	console.log (parser.trace (src).toString ());
-	throw ("grammar error");
+	return parser.trace (src).toString ();
     }
 }
 

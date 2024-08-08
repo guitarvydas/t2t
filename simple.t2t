@@ -1,18 +1,7 @@
 % grammar example
-  Main = "a" (";" "b")+ "c"
-
-% parameter sA
-% parameter sB
-% parameter sC
+  Main = "a"
 
 % rewrite
-Main [_pA (_pBsemis _pBs)+ _pC] ⎨print ‛pre down’⎬= ⎡ sA=‛«_pA»’
-                                ⎡ sB=‛«_pBs»’
-                                  ⎡ sC=‛«_pC»’
-                                    ⎡ ⎨print ‛hello’⎬
-                                      ‛... ⎨print ‛middle’⎬ «_pA»«_pBsemis»⟪sB⟫«_pC»...’ 
-                                    ⎦
-                                  ⎦
-                                ⎦
-                              ⎦
+Main [_pA] ⎨print ‛pre down’⎬= ‛... ⎨print ‛xxx middle’⎬ «_pA»’ 
+
 
