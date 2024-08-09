@@ -38,6 +38,9 @@ let _ = {
     print : function (s) {console.log (`mid: ${s}`); return "";},
     post_print : function (s) {console.log (`post: ${s}`);},
 
+    print2 : function (s1, s2) {console.log (`print2: ${s1} ${s2}`); return "";},
+
+    
 
 };
 

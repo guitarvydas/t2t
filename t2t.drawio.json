@@ -20,7 +20,7 @@
                 "id": 21
             },
             {
-                "name": "'support.js",
+                "name": "'bootstrap_support.js",
                 "id": 22
             },
             {
@@ -37,7 +37,7 @@
                 },
                 "source_port": "",
                 "target": {
-                    "name": "'support.js",
+                    "name": "'bootstrap_support.js",
                     "id": 22
                 },
                 "target_port": ""
@@ -97,7 +97,7 @@
             {
                 "dir": 1,
                 "source": {
-                    "name": "'support.js",
+                    "name": "'bootstrap_support.js",
                     "id": 22
                 },
                 "source_port": "",
