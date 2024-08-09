@@ -30,13 +30,13 @@ t2t {
     | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
 
   rwRuleName = name
-  rwPredicateDef = name
-  rwIterPredicateDef = name ("+" | "*" | "?")
-  rwParenthesizedIterPredicateDef = "(" rwParenPredicateDef+ ")" ("+" | "*" | "?")
-  rwParameterDef = (rwParenthesizedIterPredicateDef | rwIterPredicateDef | rwPredicateDef)
-  rwParenPredicateDef = name spaces
+  rwArgDef = name
+  rwIterArgDef = name ("+" | "*" | "?")
+  rwParenthesizedIterArgDef = "(" rwParenArgDef+ ")" ("+" | "*" | "?")
+  rwParameterDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwArgDef)
+  rwParenArgDef = name spaces
 
-  rwPredicateRef = name
+  rwArgRef = name
 
   rewriteScope =
     | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
@@ -45,8 +45,8 @@ t2t {
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
     | "⎨" spaces name spaces rewriteFormatString spaces "⎬" -- support_interpolation
-    | "⟪" rwPredicateRef "⟫" -- parameter_interpolation
-    | "«" rwPredicateRef "»" -- predicate_interpolation
+    | "⟪" rwArgRef "⟫" -- parameter_interpolation
+    | "«" rwArgRef "»" -- arg_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
 
   before = "⎨" spaces name spaces rewriteFormatString spaces "⎬"

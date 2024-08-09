@@ -3,11 +3,11 @@ _ = {
     
     // for rewriter
     parameter_names : [],
-    predicate_expansions : [],
+    arg_expansions : [],
 
     reset_stacks : function () { 
-	_.predicate_names = []; 
-	_.predicate_expansions = [];
+	_.arg_names = []; 
+	_.arg_expansions = [];
     },
 
     memo_parameter : function (str) {
@@ -20,8 +20,8 @@ _ = {
 	return s.join ('');
     },
 
-    memo_predicate : function (s) { _.predicate_expansions.push (`${s} = ${s}.rwr ();\n`); return ""; },
-    memo_iter_predicate : function (s) { _.predicate_expansions.push (`${s} = ${s}.rwr ().join ('');\n`); return ""; },
-    predicate_expansions_as_string : function () { return _.predicate_expansions.join (''); },
+    memo_arg : function (s) { _.arg_expansions.push (`${s} = ${s}.rwr ();\n`); return ""; },
+    memo_iter_arg : function (s) { _.arg_expansions.push (`${s} = ${s}.rwr ().join ('');\n`); return ""; },
+    arg_expansions_as_string : function () { return _.arg_expansions.join (''); },
 }
 ,

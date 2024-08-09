@@ -64,7 +64,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "«rwName»");
 «_.foreach_parameter ("_stack.push ('');")»
-«_.predicate_expansions_as_string ()»
+«_.arg_expansions_as_string ()»
 «rewriteScope»
 «_.foreach_parameter ("_stack.pop ();")»
 rule_name_stack.pop ();
@@ -77,7 +77,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "«rwName»");
 «_.foreach_parameter ("_stack.push ('');")»
-«_.predicate_expansions_as_string ()»
+«_.arg_expansions_as_string ()»
 «rewriteScope»
 «_.foreach_parameter ("_stack.pop ();")»
 rule_name_stack.pop ();
@@ -86,12 +86,12 @@ return return_value_stack.pop ();
   
 
   rwRuleName [name] =‛«name»’
-  rwPredicateDef [name] =‛«name», «_.memo_predicate (name)»’
-  rwIterPredicateDef [name op] = ‛«name», «_.memo_iter_predicate (name)»’
-  rwParenthesizedIterPredicateDef [lb defs+ rb op] = ‛«defs»’
+  rwArgDef [name] =‛«name», «_.memo_arg (name)»’
+  rwIterArgDef [name op] = ‛«name», «_.memo_iter_arg (name)»’
+  rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
-  rwPredicateRef [name] =‛«name»’
-  rwParenPredicateDef [name ws] = ‛«name», «_.memo_iter_predicate (name)»’
+  rwArgRef [name] =‛«name»’
+  rwParenArgDef [name ws] = ‛«name», «_.memo_iter_arg (name)»’
 
   rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
 _.pre_«name» (\\\`«s»\\\`);
@@ -103,7 +103,7 @@ _.post_«name» (\\\`«s»\\\`);’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
   formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\\\$\\\{_.«name» (\\\`«s»\\\`)\\\}’
-  formatChar_predicate_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
+  formatChar_arg_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
   formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{_.top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
 

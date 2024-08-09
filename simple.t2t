@@ -2,6 +2,6 @@
   Main = "a"
 
 % rewrite
-Main [_pA] ⎨print ‛pre down’⎬= ‛... ⎨print ‛xxx middle’⎬ «_pA»’ 
+Main [_pA] ⎨print ‛pre down’⎬ = ‛... ⎨print ‛xxx middle’⎬ «_pA»’ 
 
 
