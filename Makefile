@@ -1,8 +1,12 @@
 #	'ensure that formatted text option in draw.io is disabled everywhere'
 
-SRC=simple.t2t
+#SRC=simple0.t2t
+SRC=simple1.t2t
 #SRC=t2t.t2t
 D2J=./das2json/mac/das2json
+
+#TEST=test0.txt
+TEST=test1.txt
 
 dev: auto
 
@@ -18,7 +22,7 @@ auto:
 	${D2J} t2t.drawio
 	${D2J} 0D/python/std/transpile.drawio
 	python3 main.py . 0D/python ${SRC} main t2t.drawio.json transpile.drawio.json >simple.mjs
-	node simple.mjs <test.txt
+	node simple.mjs <${TEST}
 
 
 ## regression test - can this stuff self-compile itself and compile simple.t2t???

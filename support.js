@@ -15,14 +15,15 @@ _ = {
 	return "";
     },
     foreach_parameter : function (str) {
+	console.error (`foreach_parameter ${str}`);
 	let s = [];
 	_.parameter_names.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
 	return s.join ('');
     },
 
 
-    memo_arg : function (s) { _.arg_expansions.push (`${s} = ${s}.rwr ();\n`); return ""; },
-    memo_iter_arg : function (s) { _.arg_expansions.push (`${s} = ${s}.rwr ().join ('');\n`); return ""; },
+    memo_arg : function (name, s) { console.error (`memo_arg ${name} ${s}`); _.arg_expansions.push (s.replaceAll ("☐", name)); return ""; },
+    memo_iter_arg : function (name, s) { console.error (`memo_iter_arg ${name} ${s}`); _.arg_expansions.push (s.replaceAll ("☐", name)); return ""; },
     arg_expansions_as_string : function () { return _.arg_expansions.join (''); },
 }
 ,
