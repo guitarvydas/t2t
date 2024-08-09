@@ -39,7 +39,7 @@ _.set_top (sB_stack, `${_pBs}`);
 _.set_top (sC_stack, `${_pC}`);
 
 _.pre_print (`hello`);
-_.set_top (return_value_stack, `... ${_.print (`middle`)} ${_pA}${_pBsemis}${_.top (sB_stack)}${_pC}...`);
+_.set_top (return_value_stack, `... ${_.print (`middle`, `2nd arg`)} ${_pA}${_pBsemis}${_.top (sB_stack)}${_pC}...`);
 
 _.post_print (`hello`);
 sA_stack.pop ('');

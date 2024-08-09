@@ -44,10 +44,16 @@ t2t {
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
-    | "⎨" spaces name spaces rewriteFormatString spaces "⎬" -- support_interpolation
+    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
     | "⟪" rwArgRef "⟫" -- parameter_interpolation
     | "«" rwArgRef "»" -- arg_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
 
-  before = "⎨" spaces name spaces rewriteFormatString spaces "⎬"
+  before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
+
+  supportArgsForInterpolation = rewriteFormatString wsRewriteFormatString_for_interpolation*
+  wsRewriteFormatString_for_interpolation = spaces rewriteFormatString
+  supportArgsForBefore = rewriteFormatString wsRewriteFormatString_for_before*
+  wsRewriteFormatString_for_before = spaces rewriteFormatString
+
 }

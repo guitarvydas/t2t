@@ -102,10 +102,14 @@ _.post_«name» (\\\`«s»\\\`);’
   rewriteScope_raw [rewriteFormatString] = ‛_.set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
-  formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\\\$\\\{_.«name» (\\\`«s»\\\`)\\\}’
+  formatChar_support_interpolation [lb ws1 name ws2 interpolation_args ws3 rb] = ‛\\\$\\\{_.«name» («interpolation_args»)\\\}’
   formatChar_arg_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
   formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{_.top («rwRef»_stack)\\\}’
   formatChar_raw_character [c] = ‛«c»’
 
-  before [lb ws1 name ws2 s ws3 rb] = ‛_.«name» (\\\`«s»\\\`)’
+  before [lb ws1 name ws2 before_args ws3 rb] = ‛_.«name» («before_args»)’
+  supportArgsForInterpolation [s more*] = ‛\\\`«s»\\\`«more»’
+  wsRewriteFormatString_for_interpolation [ws s] = ‛, \\\`«s»\\\`’
+  supportArgsForBefore [s more*] = ‛\\\`«s»\\\`«more»’
+  wsRewriteFormatString_for_before [ws s] = ‛, \\\`«s»\\\`’
 }

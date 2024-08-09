@@ -10,7 +10,7 @@ Main [_pA (_pBsemis _pBs)+ _pC] ⎨print ‛pre down’⎬= ⎡ sA=‛«_pA»’
                                 ⎡ sB=‛«_pBs»’
                                   ⎡ sC=‛«_pC»’
                                     ⎡ ⎨print ‛hello’⎬
-                                      ‛... ⎨print ‛middle’⎬ «_pA»«_pBsemis»⟪sB⟫«_pC»...’ 
+                                      ‛... ⎨print ‛middle’ ‛2nd arg’⎬ «_pA»«_pBsemis»⟪sB⟫«_pC»...’ 
                                     ⎦
                                   ⎦
                                 ⎦
