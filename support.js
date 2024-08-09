@@ -15,10 +15,11 @@ _ = {
 	return "";
     },
     foreach_parameter : function (str) {
-	s = [];
-	_.parameter_names.forEach (p => s.push (`${p}${str}\n`));
+	let s = [];
+	_.parameter_names.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
 	return s.join ('');
     },
+
 
     memo_arg : function (s) { _.arg_expansions.push (`${s} = ${s}.rwr ();\n`); return ""; },
     memo_iter_arg : function (s) { _.arg_expansions.push (`${s} = ${s}.rwr ().join ('');\n`); return ""; },

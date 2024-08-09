@@ -86,12 +86,12 @@ return return_value_stack.pop ();
   
 
   rwRuleName [name] =‛«name»’
-  rwArgDef [name] =‛«name», «_.memo_arg (name)»’
+  rwArgDef [name] =‛«name», «_.memo_arg (name, "☐ = ☐.rwr ()\n")»’
   rwIterArgDef [name op] = ‛«name», «_.memo_iter_arg (name)»’
   rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
   rwArgRef [name] =‛«name»’
-  rwParenArgDef [name ws] = ‛«name», «_.memo_iter_arg (name)»’
+  rwParenArgDef [name ws] = ‛«name», «_.memo_iter_arg (name,  "☐ = ☐.rwr ().join\n)»’
 
   rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
 _.pre_«name» (\\\`«s»\\\`);
