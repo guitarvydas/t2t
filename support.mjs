@@ -30,7 +30,7 @@ let _ = {
 	return s.join ('');
     },
 
-    memo_arg : function (name, s) { _.argnames.push (name); _.evaled_args.push (s.replaceAll ("☐", `${name}`)); return `/*memo_arg ${s}*/\n`; },
+    memo_arg : function (name, s) { _.argnames.push (name); _.evaled_args.push (s.replaceAll ("☐", `${name}`)); return ""; },
     args_as_string : function () { return _.evaled_args.join (''); },
 
     pre_print : function (s) {console.log (`pre: ${s}`);},
