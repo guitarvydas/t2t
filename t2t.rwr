@@ -87,7 +87,7 @@ return return_value_stack.pop ();
 
   rwRuleName [name] =‛«name»’
   rwArgDef [name] =‛«name», «_.memo_arg (name, "☐ = ☐.rwr ()\n")»’
-  rwIterArgDef [name op] = ‛«name», «_.memo_iter_arg (name)»’
+  rwIterArgDef [name op] = ‛«name», «_.memo_iter_arg (name, "☐ = ☐.rwr ().join ('')\n")»’
   rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
   rwArgRef [name] =‛«name»’

@@ -22,8 +22,8 @@ _ = {
     },
 
 
-    memo_arg : function (name, s) { console.error (`memo_arg ${name} ${s}`); _.arg_expansions.push (s.replaceAll ("☐", name)); return ""; },
-    memo_iter_arg : function (name, s) { console.error (`memo_iter_arg ${name} ${s}`); _.arg_expansions.push (s.replaceAll ("☐", name)); return ""; },
+    memo_arg : function (name, s) { console.error (`bootstrap memo_arg ${name} ${s}`); _.arg_expansions.push (s.replaceAll ("☐", name)); return ""; },
+    memo_iter_arg : function (name, s) { console.error (`bootstrap memo_iter_arg ${name} ${s}`); _.arg_expansions.push (s.replaceAll ("☐", name)); return ""; },
     arg_expansions_as_string : function () { return _.arg_expansions.join (''); },
 }
 ,
