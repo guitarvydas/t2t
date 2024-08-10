@@ -30,9 +30,9 @@ let _ = {
 	return s.join ('');
     },
 
-    memo_predicate : function (s) { _.args.push (s); return `/*memo_predicate ${s}*/\n`; },
-    memo_iter_predicate : function (s) { _.arg_joins.push (`${s} = ${s}.join ('');\n`); return `/*memo_iter_predicate ${s}*/\n`; },
-    arg_joins_as_string : function () { return _.arg_joins.join (''); },
+    memo_arg : function (s) { _.args.push (s); return `/*memo_arg ${s}*/\n`; },
+    memo_iter_arg : function (s) { _.arg_joins.push (`${s} = ${s}.join ('');\n`); return `/*memo_iter_arg ${s}*/\n`; },
+    arg_expansions_as_string : function () { return _.arg_joins.join (''); },
 
     pre_print : function (s) {console.log (`pre: ${s}`);},
     print : function (s) {console.log (`mid: ${s}`); return "";},

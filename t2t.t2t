@@ -49,7 +49,12 @@
     | "«" rwArgRef "»" -- arg_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
 
-  before = "⎨" spaces name spaces rewriteFormatString spaces "⎬"
+  before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
+
+  supportArgsForInterpolation = rewriteFormatString wsRewriteFormatString_for_interpolation*
+  wsRewriteFormatString_for_interpolation = spaces rewriteFormatString
+  supportArgsForBefore = rewriteFormatString wsRewriteFormatString_for_before*
+  wsRewriteFormatString_for_before = spaces rewriteFormatString
 
 
 
@@ -90,11 +95,11 @@ console.log (result);
   ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛name’⎬’
 
   grammarDef [_g ws name rules+] = ‛
-const grammar = String.raw\\\`
+const grammar = String.raw\`
 «name» {
 «rules»
 }
-\\\`;
+\`;
 ’
 
   rewriteDef [_r ws rewriteRules+] = ‛const rewrite_code = {«rewriteRules»
@@ -127,7 +132,7 @@ rule_name_stack.pop ();
 return return_value_stack.pop ();
 },’
   
-  rewriteRule_plain [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 before ws7 _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’ ⎬ = ‛
+  rewriteRule_plain [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’ ⎬ = ‛
 «rwName» : function («rwParameterDefs») {
 return_value_stack.push ("");
 rule_name_stack.push ("");
