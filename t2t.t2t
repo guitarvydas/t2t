@@ -92,7 +92,7 @@ var result = main (src);
 console.log (result);
 ’
 
-  ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛name’⎬’
+  ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
 
   grammarDef [_g ws name rules+] = ‛
 const grammar = String.raw\`

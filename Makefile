@@ -1,13 +1,13 @@
 #	'ensure that formatted text option in draw.io is disabled everywhere'
 
-SRC=simple0.t2t
-#SRC=simple1.t2t
+#SRC=simple0.t2t
+SRC=simple1.t2t
 #SRC=simple2.t2t
 #SRC=t2t.t2t
 D2J=./das2json/mac/das2json
 
-TEST=test0.txt
-#TEST=test1.txt
+#TEST=test0.txt
+TEST=test1.txt
 #TEST=test2.txt
 
 dev: t2t_bootstrap

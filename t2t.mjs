@@ -127,7 +127,7 @@ _.set_top (rule_name_stack, "ParameterDef");
 _p = _p.rwr ()
 name = name.rwr ()
 
-_.set_top (return_value_stack, `\nlet ${name}_stack = [];${_.memo_parameter (`name`)}`);
+_.set_top (return_value_stack, `\nlet ${name}_stack = [];${_.memo_parameter (`${name}`)}`);
 
 
 rule_name_stack.pop ();
