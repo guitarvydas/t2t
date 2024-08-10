@@ -44,7 +44,7 @@
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
-    | "⎨" spaces name spaces rewriteFormatString spaces "⎬" -- support_interpolation
+    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
     | "⟪" rwArgRef "⟫" -- parameter_interpolation
     | "«" rwArgRef "»" -- arg_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
@@ -160,7 +160,7 @@ _.pre_«name» (\\\`«s»\\\`);
 _.post_«name» (\\\`«s»\\\`);’
 
   rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛_.set_top («name»_stack, \\\`«rewriteFormatString»\\\`);\n«rewriteScope»’
-  rewriteScope_raw [rewriteFormatString] = ‛_.set_top (return_value_stack, \\\`«rewriteFormatString»\\\`);\n’
+  rewriteScope_raw [rewriteFormatString] = ‛_.set_top (return_value_stack, \`«rewriteFormatString»\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
   formatChar_support_interpolation [lb ws1 name ws2 interpolation_args ws3 rb] = ‛\\\$\\\{_.«name» («interpolation_args»)\\\}’
@@ -171,5 +171,5 @@ _.post_«name» (\\\`«s»\\\`);’
   before [lb ws1 name ws2 before_args ws3 rb] = ‛_.«name» («before_args»)’
   supportArgsForInterpolation [s more*] = ‛\\\`«s»\\\`«more»’
   wsRewriteFormatString_for_interpolation [ws s] = ‛, \\\`«s»\\\`’
-  supportArgsForBefore [s more*] = ‛\\\`«s»\\\`«more»’
-  wsRewriteFormatString_for_before [ws s] = ‛, \\\`«s»\\\`’
+  supportArgsForBefore [s more*] = ‛\`«s»\`«more»’
+  wsRewriteFormatString_for_before [ws s] = ‛, \`«s»\`’

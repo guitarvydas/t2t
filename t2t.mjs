@@ -55,7 +55,7 @@ t2t {
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
-    | "⎨" spaces name spaces rewriteFormatString spaces "⎬" -- support_interpolation
+    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
     | "⟪" rwArgRef "⟫" -- parameter_interpolation
     | "«" rwArgRef "»" -- arg_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
@@ -488,7 +488,7 @@ _.set_top (rule_name_stack, "rewriteScope_raw");
 
 rewriteFormatString = rewriteFormatString.rwr ()
 
-_.set_top (return_value_stack, `_.set_top (return_value_stack, \\\`${rewriteFormatString}\\\`);\n`);
+_.set_top (return_value_stack, `_.set_top (return_value_stack, \`${rewriteFormatString}\`);\n`);
 
 
 rule_name_stack.pop ();
@@ -626,7 +626,7 @@ _.set_top (rule_name_stack, "supportArgsForBefore");
 s = s.rwr ()
 more = more.rwr ().join ('')
 
-_.set_top (return_value_stack, `\\\`${s}\\\`${more}`);
+_.set_top (return_value_stack, `\`${s}\`${more}`);
 
 
 rule_name_stack.pop ();
@@ -640,7 +640,7 @@ _.set_top (rule_name_stack, "wsRewriteFormatString_for_before");
 ws = ws.rwr ()
 s = s.rwr ()
 
-_.set_top (return_value_stack, `, \\\`${s}\\\``);
+_.set_top (return_value_stack, `, \`${s}\``);
 
 
 rule_name_stack.pop ();
