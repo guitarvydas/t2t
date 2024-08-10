@@ -1,3 +1,4 @@
+
 'use strict'
 
 import {_} from './support.mjs';
@@ -6,27 +7,46 @@ import * as ohm from 'ohm-js';
 let return_value_stack = [];
 let rule_name_stack = [];
 
+let sA_stack = [];
+let sB_stack = [];
+let sC_stack = [];
 
 const grammar = String.raw`
 example {
 
-  Main = "a"
+  Main = "a" (";" "b")+ "c" "d"+
 
 
 }
 `;
 
 const rewrite_code = {
-Main : function (_pA, ) {
+Main : function (_pA, _pBsemis, _pBs, _pC, _pD, ) {
 let _pre = _.print (`pre down`);
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "Main");
+sA_stack.push ('');
+sB_stack.push ('');
+sC_stack.push ('');
 
 _pA = _pA.rwr ()
+_pBsemis = _pBsemis.rwr ().join ('')
+_pBs = _pBs.rwr ().join ('')
+_pC = _pC.rwr ()
+_pD = _pD.rwr ().join ('')
 
-_.set_top (return_value_stack, `... ${_.print (`xxx middle`)} ${_pA}`);
+_.set_top (sA_stack, `${_pA}`);
+_.set_top (sB_stack, `${_pBs}`);
+_.set_top (sC_stack, `${_pC}`);
 
+_.pre_print (`hello`);
+_.set_top (return_value_stack, `... ${_.print2 (`middle`, `2nd arg`)} ${_pA}${_pBsemis}${_.top (sB_stack)}${_pC}${_pD}...`);
+
+_.post_print (`hello`);
+sA_stack.pop ('');
+sB_stack.pop ('');
+sC_stack.pop ('');
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();
@@ -53,3 +73,4 @@ import * as fs from 'fs';
 let src = fs.readFileSync(0, 'utf-8');
 var result = main (src);
 console.log (result);
+

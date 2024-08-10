@@ -1,29 +1,25 @@
-#	'ensure that formatted text option in draw.io is disabled everywhere'
+SPEC=<your text-to-text specification>.t2t
 
-#SRC=simple0.t2t
-#SRC=simple1.t2t
-#SRC=simple2.t2t
-SRC=t2t.t2t
-D2J=./das2json/mac/das2json
+TEST=<your DSL to be transpiled>
 
-#TEST=test0.txt
-#TEST=test1.txt
-#TEST=test2.txt
-TEST=t2t.t2t
+all: t2t.mjs
 
-t2t:
-	${D2J} t2t.drawio
-	${D2J} 0D/python/std/transpile.drawio
-	python3 main.py . 0D/python t2t.t2t main t2t.drawio.json transpile.drawio.json >t2t.mjs
-	node t2t.mjs <${SRC} >rewriter.mjs
-	node rewriter.mjs <${TEST}
 
+# to use t2t, write a spec, then generate your rewriter app
+#	node t2t.mjs <${SPEC} >rewriter.mjs
+# then, use your rewriter app to transpile your test DSL
+#	node rewriter.mjs <${TEST}
+
+
+##
+t2t.mjs:
+	echo "To build t2t.mjs, use repo 'build-t2t'"
 
 ## house-keeping
 
 clean:
-	rm -rf *.json
-	rm -rf *~
+	rm -rf *~ junk.*
+	rm -rf __pycache__
 
 install-js-requires:
 	npm install yargs prompt-sync
