@@ -1,8 +1,7 @@
-% grammar t2t
-
+% grammar t2t 
   main = grammarDef applySyntactic<ParameterDef>* rewriteDef
 
-  grammarDef = "% grammar" spaces name spaces rule+
+  grammarDef = "% grammar" spaces name rule+
   ParameterDef = "% parameter" name
   rewriteDef = "% rewrite" spaces rewriteRule+
 
@@ -26,16 +25,18 @@
 
 
   // rewrite parsing section
-  rewriteRule = rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces
+  rewriteRule = 
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
 
   rwRuleName = name
-  rwPredicateDef = name
-  rwIterPredicateDef = name ("+" | "*" | "?")
-  rwParenthesizedIterPredicateDef = "(" rwParenPredicateDef+ ")" ("+" | "*" | "?")
-  rwParameterDef = (rwParenthesizedIterPredicateDef | rwIterPredicateDef | rwPredicateDef)
-  rwParenPredicateDef = name spaces
+  rwArgDef = name
+  rwIterArgDef = name ("+" | "*" | "?")
+  rwParenthesizedIterArgDef = "(" rwParenArgDef+ ")" ("+" | "*" | "?")
+  rwParameterDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwArgDef)
+  rwParenArgDef = name spaces
 
-  rwPredicateRef = name
+  rwArgRef = name
 
   rewriteScope =
     | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
@@ -43,57 +44,64 @@
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
-    | "⎨" spaces name spaces rewriteFormatString spaces "⎬" -- support_interpolation
-    | "⟪" rwPredicateRef "⟫" -- parameter_interpolation
-    | "«" rwPredicateRef "»" -- predicate_interpolation
+    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
+    | "⟪" rwArgRef "⟫" -- parameter_interpolation
+    | "«" rwArgRef "»" -- arg_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
+
+  before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
+
+  supportArgsForInterpolation = rewriteFormatString wsRewriteFormatString_for_interpolation*
+  wsRewriteFormatString_for_interpolation = spaces rewriteFormatString
+  supportArgsForBefore = rewriteFormatString wsRewriteFormatString_for_before*
+  wsRewriteFormatString_for_before = spaces rewriteFormatString
+
+
 
 
 % rewrite
 
-  main [grammarDef ParameterDefs* rewriteDef] =
-    ‛
-      'use strict'
+  main [grammarDef ParameterDefs* rewriteDef] = ‛
+'use strict'
 
-      import {_} from './support.mjs';
-      import * as ohm from 'ohm-js';
+import {_} from './support.mjs';
+import * as ohm from 'ohm-js';
 
-      let return_value_stack = [];
-      let rule_name_stack = [];
-      «ParameterDefs»
-      «grammarDef»
-      «rewriteDef»
+let return_value_stack = [];
+let rule_name_stack = [];
+«ParameterDefs»
+«grammarDef»
+«rewriteDef»
 
-      function main (src) {
-          let parser = ohm.grammar (grammar);
-          let cst = parser.match (src);
-          if (cst.succeeded ()) {
-              let cstSemantics = parser.createSemantics ();
-              cstSemantics.addOperation ('rwr', rewrite_code);
-              var generated_code = cstSemantics (cst).rwr ();
-              return generated_code;
-          } else {
-              console.log (parser.trace (src).toString ());
-              throw ("grammar error");
-          }
-      }
+function main (src) {
+    let parser = ohm.grammar (grammar);
+    let cst = parser.match (src);
+    if (cst.succeeded ()) {
+	let cstSemantics = parser.createSemantics ();
+	cstSemantics.addOperation ('rwr', rewrite_code);
+	var generated_code = cstSemantics (cst).rwr ();
+	return generated_code;
+    } else {
+	return parser.trace (src).toString ();
+    }
+}
 
-      import * as fs from 'fs';
-      let src = fs.readFileSync(0, 'utf-8');
-      var result = main (src);
-      console.log (result);
-      ’
+import * as fs from 'fs';
+let src = fs.readFileSync(0, 'utf-8');
+var result = main (src);
+console.log (result);
+’
 
   ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
 
-  grammarDef [_g ws name ws2 rules+] = ‛
-      const grammar = String.raw\`
-      «name» {
-      «rules»
-      }
-      \`;
-      ’
-    
+  grammarDef [_g ws name rules+] = ‛
+const grammar = String.raw\`
+«name» {
+«rules»
+}
+\`;
+’
+
   rewriteDef [_r ws rewriteRules+] = ‛const rewrite_code = {«rewriteRules»
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
@@ -110,30 +118,41 @@
   nameRest [c] = ‛«c»’
 
 
-  rewriteRule [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] = 
-  ⎡ ⎨reset_stacks ‛’⎬
-    ‛
-      «rwName» : function («rwParameterDefs») {
-      return_value_stack.push ("");
-      rule_name_stack.push ("");
-      _.set_top (rule_name_stack, "«rwName»");
-      ⎨foreach_parameter ‛_stack.push ('');’⎬
-      ⎨predicate_expansions_as_string ‛’⎬
-      «rewriteScope»
-      ⎨foreach_parameter ‛_stack.pop ();’⎬
-      rule_name_stack.pop ();
-      return return_value_stack.pop ();
-      },
-    ’
-  ⎦
+  rewriteRule_withbefore [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 before ws7 _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’ ⎬ = ‛
+«rwName» : function («rwParameterDefs») {
+let _pre = «before»;
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "«rwName»");
+⎨foreach_parameter ‛☐_stack.push ('');’⎬
+⎨args_as_string ‛’⎬
+«rewriteScope»
+⎨foreach_parameter ‛☐_stack.pop ('');’⎬
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},’
   
+  rewriteRule_plain [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’ ⎬ = ‛
+«rwName» : function («rwParameterDefs») {
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "«rwName»");
+⎨foreach_parameter ‛☐_stack.push ('');’⎬
+⎨args_as_string ‛’⎬
+«rewriteScope»
+⎨foreach_parameter ‛☐_stack.pop ('');’⎬
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},’
+  
+
   rwRuleName [name] =‛«name»’
-  rwPredicateDef [name] =‛«name», ⎨memo_predicate ‛name’⎬’
-  rwIterPredicateDef [name op] = ‛«name», ⎨memo_iter_predicate ‛name’⎬’
-  rwParenthesizedIterPredicateDef [lb defs+ rb op] = ‛«defs»’
+  rwArgDef [name] =‛«name», ⎨memo_arg ‛«name»’ ‛☐ = ☐.rwr ()\n’⎬’
+  rwIterArgDef [name op] = ‛«name», ⎨memo_arg ‛«name»’  ‛☐ = ☐.rwr ().join ('')\n’⎬’
+  rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
-  rwPredicateRef [name] =‛«name»’
-  rwParenPredicateDef [name ws] = ‛«name», ⎨memo_iter_predicate ‛name’⎬’
+  rwArgRef [name] =‛«name»’
+  rwParenArgDef [name ws] = ‛«name», ⎨memo_arg ‛«name»’  ‛☐ = ☐.rwr ().join ('')\n’⎬’
 
   rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
 _.pre_«name» (\`«s»\`);
@@ -144,8 +163,13 @@ _.post_«name» (\`«s»\`);’
   rewriteScope_raw [rewriteFormatString] = ‛_.set_top (return_value_stack, \`«rewriteFormatString»\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
-  formatChar_support_interpolation [lb ws1 name ws2 s ws3 rb] = ‛\$\{_.«name» (\`«s»\`)\}’
-  formatChar_predicate_interpolation [lb rwRef rb] = ‛\\\$\\\{«rwRef»\\\}’
-  formatChar_parameter_interpolation [lb rwRef rb] = ‛\\\$\\\{_.top («rwRef»_stack)\\\}’
+  formatChar_support_interpolation [lb ws1 name ws2 interpolation_args ws3 rb] = ‛\$\{_.«name» («interpolation_args»)\}’
+  formatChar_arg_interpolation [lb rwRef rb] = ‛\$\{«rwRef»\}’
+  formatChar_parameter_interpolation [lb rwRef rb] = ‛\$\{_.top («rwRef»_stack)\}’
   formatChar_raw_character [c] = ‛«c»’
-  
+
+  before [lb ws1 name ws2 before_args ws3 rb] = ‛_.«name» («before_args»)’
+  supportArgsForInterpolation [s more*] = ‛\`«s»\`«more»’
+  wsRewriteFormatString_for_interpolation [ws s] = ‛, \`«s»\`’
+  supportArgsForBefore [s more*] = ‛\`«s»\`«more»’
+  wsRewriteFormatString_for_before [ws s] = ‛, \`«s»\`’

@@ -9,11 +9,10 @@ let rule_name_stack = [];
 
 const grammar = String.raw`
 t2t {
-
-
+ 
   main = grammarDef applySyntactic<ParameterDef>* rewriteDef
 
-  grammarDef = "% grammar" spaces name spaces rule+
+  grammarDef = "% grammar" spaces name rule+
   ParameterDef = "% parameter" name
   rewriteDef = "% rewrite" spaces rewriteRule+
 
@@ -37,16 +36,18 @@ t2t {
 
 
   // rewrite parsing section
-  rewriteRule = rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces
+  rewriteRule = 
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
 
   rwRuleName = name
-  rwPredicateDef = name
-  rwIterPredicateDef = name ("+" | "*" | "?")
-  rwParenthesizedIterPredicateDef = "(" rwParenPredicateDef+ ")" ("+" | "*" | "?")
-  rwParameterDef = (rwParenthesizedIterPredicateDef | rwIterPredicateDef | rwPredicateDef)
-  rwParenPredicateDef = name spaces
+  rwArgDef = name
+  rwIterArgDef = name ("+" | "*" | "?")
+  rwParenthesizedIterArgDef = "(" rwParenArgDef+ ")" ("+" | "*" | "?")
+  rwParameterDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwArgDef)
+  rwParenArgDef = name spaces
 
-  rwPredicateRef = name
+  rwArgRef = name
 
   rewriteScope =
     | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
@@ -54,10 +55,19 @@ t2t {
     | #rewriteFormatString -- raw
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
-    | "⎨" spaces name spaces rewriteFormatString spaces "⎬" -- support_interpolation
-    | "⟪" rwPredicateRef "⟫" -- parameter_interpolation
-    | "«" rwPredicateRef "»" -- predicate_interpolation
+    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
+    | "⟪" rwArgRef "⟫" -- parameter_interpolation
+    | "«" rwArgRef "»" -- arg_interpolation
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
+
+  before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
+
+  supportArgsForInterpolation = rewriteFormatString wsRewriteFormatString_for_interpolation*
+  wsRewriteFormatString_for_interpolation = spaces rewriteFormatString
+  supportArgsForBefore = rewriteFormatString wsRewriteFormatString_for_before*
+  wsRewriteFormatString_for_before = spaces rewriteFormatString
+
+
 
 
 
@@ -70,41 +80,40 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "main");
 
-grammarDef = grammarDef.rwr ();
-ParameterDefs = ParameterDefs.rwr ().join ('');
-rewriteDef = rewriteDef.rwr ();
+grammarDef = grammarDef.rwr ()
+ParameterDefs = ParameterDefs.rwr ().join ('')
+rewriteDef = rewriteDef.rwr ()
 
 _.set_top (return_value_stack, `
-      'use strict'
+'use strict'
 
-      import {_} from './support.mjs';
-      import * as ohm from 'ohm-js';
+import {_} from './support.mjs';
+import * as ohm from 'ohm-js';
 
-      let return_value_stack = [];
-      let rule_name_stack = [];
-      ${ParameterDefs}
-      ${grammarDef}
-      ${rewriteDef}
+let return_value_stack = [];
+let rule_name_stack = [];
+${ParameterDefs}
+${grammarDef}
+${rewriteDef}
 
-      function main (src) {
-          let parser = ohm.grammar (grammar);
-          let cst = parser.match (src);
-          if (cst.succeeded ()) {
-              let cstSemantics = parser.createSemantics ();
-              cstSemantics.addOperation ('rwr', rewrite_code);
-              var generated_code = cstSemantics (cst).rwr ();
-              return generated_code;
-          } else {
-              console.log (parser.trace (src).toString ());
-              throw ("grammar error");
-          }
-      }
+function main (src) {
+    let parser = ohm.grammar (grammar);
+    let cst = parser.match (src);
+    if (cst.succeeded ()) {
+	let cstSemantics = parser.createSemantics ();
+	cstSemantics.addOperation ('rwr', rewrite_code);
+	var generated_code = cstSemantics (cst).rwr ();
+	return generated_code;
+    } else {
+	return parser.trace (src).toString ();
+    }
+}
 
-      import * as fs from 'fs';
-      let src = fs.readFileSync(0, 'utf-8');
-      var result = main (src);
-      console.log (result);
-      `);
+import * as fs from 'fs';
+let src = fs.readFileSync(0, 'utf-8');
+var result = main (src);
+console.log (result);
+`);
 
 
 rule_name_stack.pop ();
@@ -115,8 +124,8 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "ParameterDef");
 
-_p = _p.rwr ();
-name = name.rwr ();
+_p = _p.rwr ()
+name = name.rwr ()
 
 _.set_top (return_value_stack, `\nlet ${name}_stack = [];${_.memo_parameter (`${name}`)}`);
 
@@ -124,24 +133,23 @@ _.set_top (return_value_stack, `\nlet ${name}_stack = [];${_.memo_parameter (`${
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-grammarDef : function (_g, ws, name, ws2, rules, ) {
+grammarDef : function (_g, ws, name, rules, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "grammarDef");
 
-_g = _g.rwr ();
-ws = ws.rwr ();
-name = name.rwr ();
-ws2 = ws2.rwr ();
-rules = rules.rwr ().join ('');
+_g = _g.rwr ()
+ws = ws.rwr ()
+name = name.rwr ()
+rules = rules.rwr ().join ('')
 
 _.set_top (return_value_stack, `
-      const grammar = String.raw\`
-      ${name} {
-      ${rules}
-      }
-      \`;
-      `);
+const grammar = String.raw\`
+${name} {
+${rules}
+}
+\`;
+`);
 
 
 rule_name_stack.pop ();
@@ -152,9 +160,9 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteDef");
 
-_r = _r.rwr ();
-ws = ws.rwr ();
-rewriteRules = rewriteRules.rwr ().join ('');
+_r = _r.rwr ()
+ws = ws.rwr ()
+rewriteRules = rewriteRules.rwr ().join ('')
 
 _.set_top (return_value_stack, `const rewrite_code = {${rewriteRules}
     _terminal: function () { return this.sourceString; },
@@ -171,9 +179,9 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_parameter_as_string");
 
-lq = lq.rwr ();
-cs = cs.rwr ();
-rq = rq.rwr ();
+lq = lq.rwr ()
+cs = cs.rwr ()
+rq = rq.rwr ()
 
 _.set_top (return_value_stack, `"% parameter"`);
 
@@ -186,9 +194,9 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_rewrite_as_string");
 
-lq = lq.rwr ();
-cs = cs.rwr ();
-rq = rq.rwr ();
+lq = lq.rwr ()
+cs = cs.rwr ()
+rq = rq.rwr ()
 
 _.set_top (return_value_stack, `"% rewrite"`);
 
@@ -201,7 +209,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_basic");
 
-cs = cs.rwr ();
+cs = cs.rwr ()
 
 _.set_top (return_value_stack, `${cs}`);
 
@@ -214,8 +222,8 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "name");
 
-nameFirst = nameFirst.rwr ();
-nameRest = nameRest.rwr ().join ('');
+nameFirst = nameFirst.rwr ()
+nameRest = nameRest.rwr ().join ('')
 
 _.set_top (return_value_stack, `${nameFirst}${nameRest}`);
 
@@ -228,7 +236,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "nameFirst");
 
-c = c.rwr ();
+c = c.rwr ()
 
 _.set_top (return_value_stack, `${c}`);
 
@@ -241,7 +249,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "nameRest");
 
-c = c.rwr ();
+c = c.rwr ()
 
 _.set_top (return_value_stack, `${c}`);
 
@@ -249,41 +257,77 @@ _.set_top (return_value_stack, `${c}`);
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rewriteRule : function (rwName, ws1, lb, ws2, rwParameterDefs, ws3, rb, ws4, _eq, ws5, rewriteScope, ws6, ) {
+rewriteRule_withbefore : function (rwName, ws1, lb, ws2, rwParameterDefs, ws3, rb, ws4, before, ws7, _eq, ws5, rewriteScope, ws6, ) {
+let _pre = _.reset_stacks (``);
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "rewriteRule");
+_.set_top (rule_name_stack, "rewriteRule_withbefore");
 
-rwName = rwName.rwr ();
-ws1 = ws1.rwr ();
-lb = lb.rwr ();
-ws2 = ws2.rwr ();
-rwParameterDefs = rwParameterDefs.rwr ().join ('');
-ws3 = ws3.rwr ().join ('');
-rb = rb.rwr ();
-ws4 = ws4.rwr ();
-_eq = _eq.rwr ();
-ws5 = ws5.rwr ();
-rewriteScope = rewriteScope.rwr ();
-ws6 = ws6.rwr ();
+rwName = rwName.rwr ()
+ws1 = ws1.rwr ()
+lb = lb.rwr ()
+ws2 = ws2.rwr ()
+rwParameterDefs = rwParameterDefs.rwr ().join ('')
+ws3 = ws3.rwr ().join ('')
+rb = rb.rwr ()
+ws4 = ws4.rwr ()
+before = before.rwr ()
+ws7 = ws7.rwr ()
+_eq = _eq.rwr ()
+ws5 = ws5.rwr ()
+rewriteScope = rewriteScope.rwr ()
+ws6 = ws6.rwr ()
 
-
-_.pre_reset_stacks (``);
 _.set_top (return_value_stack, `
-      ${rwName} : function (${rwParameterDefs}) {
-      return_value_stack.push ("");
-      rule_name_stack.push ("");
-      _.set_top (rule_name_stack, "${rwName}");
-      ${_.foreach_parameter (`_stack.push ('');`)}
-      ${_.predicate_expansions_as_string (``)}
-      ${rewriteScope}
-      ${_.foreach_parameter (`_stack.pop ();`)}
-      rule_name_stack.pop ();
-      return return_value_stack.pop ();
-      },
-    `);
+${rwName} : function (${rwParameterDefs}) {
+let _pre = ${before};
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "${rwName}");
+${_.foreach_parameter (`☐_stack.push ('');`)}
+${_.args_as_string (``)}
+${rewriteScope}
+${_.foreach_parameter (`☐_stack.pop ('');`)}
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},`);
 
-_.post_reset_stacks (``);
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+rewriteRule_plain : function (rwName, ws1, lb, ws2, rwParameterDefs, ws3, rb, ws4, _eq, ws5, rewriteScope, ws6, ) {
+let _pre = _.reset_stacks (``);
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "rewriteRule_plain");
+
+rwName = rwName.rwr ()
+ws1 = ws1.rwr ()
+lb = lb.rwr ()
+ws2 = ws2.rwr ()
+rwParameterDefs = rwParameterDefs.rwr ().join ('')
+ws3 = ws3.rwr ().join ('')
+rb = rb.rwr ()
+ws4 = ws4.rwr ()
+_eq = _eq.rwr ()
+ws5 = ws5.rwr ()
+rewriteScope = rewriteScope.rwr ()
+ws6 = ws6.rwr ()
+
+_.set_top (return_value_stack, `
+${rwName} : function (${rwParameterDefs}) {
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "${rwName}");
+${_.foreach_parameter (`☐_stack.push ('');`)}
+${_.args_as_string (``)}
+${rewriteScope}
+${_.foreach_parameter (`☐_stack.pop ('');`)}
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},`);
+
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();
@@ -293,7 +337,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwRuleName");
 
-name = name.rwr ();
+name = name.rwr ()
 
 _.set_top (return_value_stack, `${name}`);
 
@@ -301,42 +345,42 @@ _.set_top (return_value_stack, `${name}`);
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rwPredicateDef : function (name, ) {
+rwArgDef : function (name, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "rwPredicateDef");
+_.set_top (rule_name_stack, "rwArgDef");
 
-name = name.rwr ();
+name = name.rwr ()
 
-_.set_top (return_value_stack, `${name}, ${_.memo_predicate (`name`)}`);
+_.set_top (return_value_stack, `${name}, ${_.memo_arg (`${name}`, `☐ = ☐.rwr ()\n`)}`);
 
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rwIterPredicateDef : function (name, op, ) {
+rwIterArgDef : function (name, op, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "rwIterPredicateDef");
+_.set_top (rule_name_stack, "rwIterArgDef");
 
-name = name.rwr ();
-op = op.rwr ();
+name = name.rwr ()
+op = op.rwr ()
 
-_.set_top (return_value_stack, `${name}, ${_.memo_iter_predicate (`name`)}`);
+_.set_top (return_value_stack, `${name}, ${_.memo_arg (`${name}`, `☐ = ☐.rwr ().join ('')\n`)}`);
 
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rwParenthesizedIterPredicateDef : function (lb, defs, rb, op, ) {
+rwParenthesizedIterArgDef : function (lb, defs, rb, op, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "rwParenthesizedIterPredicateDef");
+_.set_top (rule_name_stack, "rwParenthesizedIterArgDef");
 
-lb = lb.rwr ();
-defs = defs.rwr ().join ('');
-rb = rb.rwr ();
-op = op.rwr ();
+lb = lb.rwr ()
+defs = defs.rwr ().join ('')
+rb = rb.rwr ()
+op = op.rwr ()
 
 _.set_top (return_value_stack, `${defs}`);
 
@@ -349,7 +393,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwParameterDef");
 
-def = def.rwr ();
+def = def.rwr ()
 
 _.set_top (return_value_stack, `${def}`);
 
@@ -357,12 +401,12 @@ _.set_top (return_value_stack, `${def}`);
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rwPredicateRef : function (name, ) {
+rwArgRef : function (name, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "rwPredicateRef");
+_.set_top (rule_name_stack, "rwArgRef");
 
-name = name.rwr ();
+name = name.rwr ()
 
 _.set_top (return_value_stack, `${name}`);
 
@@ -370,15 +414,15 @@ _.set_top (return_value_stack, `${name}`);
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rwParenPredicateDef : function (name, ws, ) {
+rwParenArgDef : function (name, ws, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "rwParenPredicateDef");
+_.set_top (rule_name_stack, "rwParenArgDef");
 
-name = name.rwr ();
-ws = ws.rwr ();
+name = name.rwr ()
+ws = ws.rwr ()
 
-_.set_top (return_value_stack, `${name}, ${_.memo_iter_predicate (`name`)}`);
+_.set_top (return_value_stack, `${name}, ${_.memo_arg (`${name}`, `☐ = ☐.rwr ().join ('')\n`)}`);
 
 
 rule_name_stack.pop ();
@@ -389,20 +433,20 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_within_support_wrapper");
 
-lb = lb.rwr ();
-ws1 = ws1.rwr ();
-lb2 = lb2.rwr ();
-ws2 = ws2.rwr ();
-name = name.rwr ();
-ws3 = ws3.rwr ();
-s = s.rwr ();
-ws4 = ws4.rwr ();
-rb2 = rb2.rwr ();
-ws5 = ws5.rwr ();
-scope = scope.rwr ();
-ws6 = ws6.rwr ();
-rb = rb.rwr ();
-ws7 = ws7.rwr ();
+lb = lb.rwr ()
+ws1 = ws1.rwr ()
+lb2 = lb2.rwr ()
+ws2 = ws2.rwr ()
+name = name.rwr ()
+ws3 = ws3.rwr ()
+s = s.rwr ()
+ws4 = ws4.rwr ()
+rb2 = rb2.rwr ()
+ws5 = ws5.rwr ()
+scope = scope.rwr ()
+ws6 = ws6.rwr ()
+rb = rb.rwr ()
+ws7 = ws7.rwr ()
 
 _.set_top (return_value_stack, `
 _.pre_${name} (\`${s}\`);
@@ -418,18 +462,18 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_with_parameter");
 
-lb = lb.rwr ();
-ws1 = ws1.rwr ();
-name = name.rwr ();
-ws2 = ws2.rwr ();
-_eq = _eq.rwr ();
-ws3 = ws3.rwr ();
-rewriteFormatString = rewriteFormatString.rwr ();
-ws4 = ws4.rwr ();
-rewriteScope = rewriteScope.rwr ();
-ws5 = ws5.rwr ();
-rb = rb.rwr ();
-ws6 = ws6.rwr ();
+lb = lb.rwr ()
+ws1 = ws1.rwr ()
+name = name.rwr ()
+ws2 = ws2.rwr ()
+_eq = _eq.rwr ()
+ws3 = ws3.rwr ()
+rewriteFormatString = rewriteFormatString.rwr ()
+ws4 = ws4.rwr ()
+rewriteScope = rewriteScope.rwr ()
+ws5 = ws5.rwr ()
+rb = rb.rwr ()
+ws6 = ws6.rwr ()
 
 _.set_top (return_value_stack, `_.set_top (${name}_stack, \`${rewriteFormatString}\`);\n${rewriteScope}`);
 
@@ -442,7 +486,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_raw");
 
-rewriteFormatString = rewriteFormatString.rwr ();
+rewriteFormatString = rewriteFormatString.rwr ()
 
 _.set_top (return_value_stack, `_.set_top (return_value_stack, \`${rewriteFormatString}\`);\n`);
 
@@ -455,9 +499,9 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteFormatString");
 
-lq = lq.rwr ();
-formatChars = formatChars.rwr ().join ('');
-rq = rq.rwr ();
+lq = lq.rwr ()
+formatChars = formatChars.rwr ().join ('')
+rq = rq.rwr ()
 
 _.set_top (return_value_stack, `${formatChars}`);
 
@@ -465,35 +509,35 @@ _.set_top (return_value_stack, `${formatChars}`);
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-formatChar_support_interpolation : function (lb, ws1, name, ws2, s, ws3, rb, ) {
+formatChar_support_interpolation : function (lb, ws1, name, ws2, interpolation_args, ws3, rb, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_support_interpolation");
 
-lb = lb.rwr ();
-ws1 = ws1.rwr ();
-name = name.rwr ();
-ws2 = ws2.rwr ();
-s = s.rwr ();
-ws3 = ws3.rwr ();
-rb = rb.rwr ();
+lb = lb.rwr ()
+ws1 = ws1.rwr ()
+name = name.rwr ()
+ws2 = ws2.rwr ()
+interpolation_args = interpolation_args.rwr ()
+ws3 = ws3.rwr ()
+rb = rb.rwr ()
 
-_.set_top (return_value_stack, `\$\{_.${name} (\`${s}\`)\}`);
+_.set_top (return_value_stack, `\$\{_.${name} (${interpolation_args})\}`);
 
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-formatChar_predicate_interpolation : function (lb, rwRef, rb, ) {
+formatChar_arg_interpolation : function (lb, rwRef, rb, ) {
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "formatChar_predicate_interpolation");
+_.set_top (rule_name_stack, "formatChar_arg_interpolation");
 
-lb = lb.rwr ();
-rwRef = rwRef.rwr ();
-rb = rb.rwr ();
+lb = lb.rwr ()
+rwRef = rwRef.rwr ()
+rb = rb.rwr ()
 
-_.set_top (return_value_stack, `\\\$\\\{${rwRef}\\\}`);
+_.set_top (return_value_stack, `\$\{${rwRef}\}`);
 
 
 rule_name_stack.pop ();
@@ -504,11 +548,11 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_parameter_interpolation");
 
-lb = lb.rwr ();
-rwRef = rwRef.rwr ();
-rb = rb.rwr ();
+lb = lb.rwr ()
+rwRef = rwRef.rwr ()
+rb = rb.rwr ()
 
-_.set_top (return_value_stack, `\\\$\\\{_.top (${rwRef}_stack)\\\}`);
+_.set_top (return_value_stack, `\$\{_.top (${rwRef}_stack)\}`);
 
 
 rule_name_stack.pop ();
@@ -519,9 +563,84 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_raw_character");
 
-c = c.rwr ();
+c = c.rwr ()
 
 _.set_top (return_value_stack, `${c}`);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+before : function (lb, ws1, name, ws2, before_args, ws3, rb, ) {
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "before");
+
+lb = lb.rwr ()
+ws1 = ws1.rwr ()
+name = name.rwr ()
+ws2 = ws2.rwr ()
+before_args = before_args.rwr ()
+ws3 = ws3.rwr ()
+rb = rb.rwr ()
+
+_.set_top (return_value_stack, `_.${name} (${before_args})`);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+supportArgsForInterpolation : function (s, more, ) {
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "supportArgsForInterpolation");
+
+s = s.rwr ()
+more = more.rwr ().join ('')
+
+_.set_top (return_value_stack, `\`${s}\`${more}`);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+wsRewriteFormatString_for_interpolation : function (ws, s, ) {
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "wsRewriteFormatString_for_interpolation");
+
+ws = ws.rwr ()
+s = s.rwr ()
+
+_.set_top (return_value_stack, `, \`${s}\``);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+supportArgsForBefore : function (s, more, ) {
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "supportArgsForBefore");
+
+s = s.rwr ()
+more = more.rwr ().join ('')
+
+_.set_top (return_value_stack, `\`${s}\`${more}`);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+wsRewriteFormatString_for_before : function (ws, s, ) {
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "wsRewriteFormatString_for_before");
+
+ws = ws.rwr ()
+s = s.rwr ()
+
+_.set_top (return_value_stack, `, \`${s}\``);
 
 
 rule_name_stack.pop ();
@@ -541,8 +660,7 @@ function main (src) {
 	var generated_code = cstSemantics (cst).rwr ();
 	return generated_code;
     } else {
-	console.log (parser.trace (src).toString ());
-	throw ("grammar error");
+	return parser.trace (src).toString ();
     }
 }
 

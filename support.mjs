@@ -6,13 +6,13 @@ let _ = {
 
     // for rewriter
     parameter_names : [],
-    predicate_expansions : [],
+    argnames : [],
+    evaled_args : [],
 
-    pre_reset_stacks : function () { 
-	_.predicate_names = []; 
-	_.predicate_expansions = [];
+    reset_stacks : function () { 
+	_.argnames = [];
+	_.evaled_args = [];
     },
-    post_reset_stacks : function () { },
 
     memo_parameter : function (str) {
 	_.parameter_names.push (str); 
@@ -20,18 +20,26 @@ let _ = {
     },
     foreach_parameter : function (str) {
 	let s = [];
-	_.parameter_names.forEach (p => s.push (`${p}${str}\n`));
+	_.parameter_names.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
 	return s.join ('');
     },
 
-    memo_predicate : function (s) { _.predicate_expansions.push (`${s} = ${s}.rwr ();\n`); return ""; },
-    memo_iter_predicate : function (s) { _.predicate_expansions.push (`${s} = ${s}.rwr ().join ('');\n`); return ""; },
-    predicate_expansions_as_string : function () { return _.predicate_expansions.join (''); },
+    foreach_arg : function (str) {
+	let s = [`//foreach_arg (${str})\n`];
+	_.evaled_args.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
+	return s.join ('');
+    },
+
+    memo_arg : function (name, s) { _.argnames.push (name); _.evaled_args.push (s.replaceAll ("☐", `${name}`)); return ""; },
+    args_as_string : function () { return _.evaled_args.join (''); },
 
     pre_print : function (s) {console.log (`pre: ${s}`);},
-    print : function (s) {console.log (`mid: ${s}`);},
+    print : function (s) {console.log (`mid: ${s}`); return "";},
     post_print : function (s) {console.log (`post: ${s}`);},
 
+    print2 : function (s1, s2) {console.log (`print2: ${s1} ${s2}`); return "";},
+
+    
 
 };
 
