@@ -285,7 +285,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "${rwName}");
 ${_.foreach_parameter (`☐_stack.push ('');`)}
-${_.arg_expansions_as_string (``)}
+${_.args_as_string (``)}
 ${rewriteScope}
 ${_.foreach_parameter (`☐_stack.pop ('');`)}
 rule_name_stack.pop ();
@@ -321,7 +321,7 @@ return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "${rwName}");
 ${_.foreach_parameter (`☐_stack.push ('');`)}
-${_.arg_expansions_as_string (``)}
+${_.args_as_string (``)}
 ${rewriteScope}
 ${_.foreach_parameter (`☐_stack.pop ('');`)}
 rule_name_stack.pop ();
@@ -366,7 +366,7 @@ _.set_top (rule_name_stack, "rwIterArgDef");
 name = name.rwr ()
 op = op.rwr ()
 
-_.set_top (return_value_stack, `${name}, ${_.memo_iter_arg (`${name}`, `☐ = ☐.rwr ().join ('')\n`)}`);
+_.set_top (return_value_stack, `${name}, ${_.memo_arg (`${name}`, `☐ = ☐.rwr ().join ('')\n`)}`);
 
 
 rule_name_stack.pop ();
@@ -422,7 +422,7 @@ _.set_top (rule_name_stack, "rwParenArgDef");
 name = name.rwr ()
 ws = ws.rwr ()
 
-_.set_top (return_value_stack, `${name}, ${_.memo_iter_arg (`${name}`, `☐ = ☐.rwr ().join ('')\n`)}`);
+_.set_top (return_value_stack, `${name}, ${_.memo_arg (`${name}`, `☐ = ☐.rwr ().join ('')\n`)}`);
 
 
 rule_name_stack.pop ();
@@ -449,9 +449,9 @@ rb = rb.rwr ()
 ws7 = ws7.rwr ()
 
 _.set_top (return_value_stack, `
-_.pre_${name} (\\\`${s}\\\`);
+_.pre_${name} (\`${s}\`);
 ${scope}
-_.post_${name} (\\\`${s}\\\`);`);
+_.post_${name} (\`${s}\`);`);
 
 
 rule_name_stack.pop ();
@@ -475,7 +475,7 @@ ws5 = ws5.rwr ()
 rb = rb.rwr ()
 ws6 = ws6.rwr ()
 
-_.set_top (return_value_stack, `_.set_top (${name}_stack, \\\`${rewriteFormatString}\\\`);\n${rewriteScope}`);
+_.set_top (return_value_stack, `_.set_top (${name}_stack, \`${rewriteFormatString}\`);\n${rewriteScope}`);
 
 
 rule_name_stack.pop ();
@@ -522,7 +522,7 @@ interpolation_args = interpolation_args.rwr ()
 ws3 = ws3.rwr ()
 rb = rb.rwr ()
 
-_.set_top (return_value_stack, `\\\$\\\{_.${name} (${interpolation_args})\\\}`);
+_.set_top (return_value_stack, `\$\{_.${name} (${interpolation_args})\}`);
 
 
 rule_name_stack.pop ();
@@ -537,7 +537,7 @@ lb = lb.rwr ()
 rwRef = rwRef.rwr ()
 rb = rb.rwr ()
 
-_.set_top (return_value_stack, `\\\$\\\{${rwRef}\\\}`);
+_.set_top (return_value_stack, `\$\{${rwRef}\}`);
 
 
 rule_name_stack.pop ();
@@ -552,7 +552,7 @@ lb = lb.rwr ()
 rwRef = rwRef.rwr ()
 rb = rb.rwr ()
 
-_.set_top (return_value_stack, `\\\$\\\{_.top (${rwRef}_stack)\\\}`);
+_.set_top (return_value_stack, `\$\{_.top (${rwRef}_stack)\}`);
 
 
 rule_name_stack.pop ();
@@ -598,7 +598,7 @@ _.set_top (rule_name_stack, "supportArgsForInterpolation");
 s = s.rwr ()
 more = more.rwr ().join ('')
 
-_.set_top (return_value_stack, `\\\`${s}\\\`${more}`);
+_.set_top (return_value_stack, `\`${s}\`${more}`);
 
 
 rule_name_stack.pop ();
@@ -612,7 +612,7 @@ _.set_top (rule_name_stack, "wsRewriteFormatString_for_interpolation");
 ws = ws.rwr ()
 s = s.rwr ()
 
-_.set_top (return_value_stack, `, \\\`${s}\\\``);
+_.set_top (return_value_stack, `, \`${s}\``);
 
 
 rule_name_stack.pop ();

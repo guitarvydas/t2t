@@ -18,15 +18,17 @@ example {
 `;
 
 const rewrite_code = {
-Main : function (_pA, /*memo_arg _pA*/
+Main : function (_pA, /*memo_arg ☐ = ☐.rwr ()
+*/
 ) {
 let _pre = _.print (`pre down`);
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "Main");
 
+_pA = _pA.rwr ()
 
-_.set_top (return_value_stack, `... \$\{_.print (\`xxx middle\`)\} \$\{_pA\}`);
+_.set_top (return_value_stack, `... ${_.print (`xxx middle`)} ${_pA}`);
 
 
 rule_name_stack.pop ();
