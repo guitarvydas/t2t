@@ -6,12 +6,12 @@ let _ = {
 
     // for rewriter
     parameter_names : [],
-    args : [],
-    arg_joins : [],
+    argnames : [],
+    evaled_args : [],
 
     reset_stacks : function () { 
-	_.args = [],
-	_.arg_joins = [];
+	_.argnames = [];
+	_.evaled_args = [];
     },
 
     memo_parameter : function (str) {
@@ -26,13 +26,12 @@ let _ = {
 
     foreach_arg : function (str) {
 	let s = [`//foreach_arg (${str})\n`];
-	_.arg_joins.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
+	_.evaled_args.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
 	return s.join ('');
     },
 
-    memo_arg : function (s) { _.args.push (s); return `/*memo_arg ${s}*/\n`; },
-    memo_iter_arg : function (s) { _.arg_joins.push (`${s} = ${s}.join ('');\n`); return `/*memo_iter_arg ${s}*/\n`; },
-    arg_expansions_as_string : function () { return _.arg_joins.join (''); },
+    memo_arg : function (name, s) { _.argnames.push (name); _.evaled_args.push (s.replaceAll ("☐", `${name}`)); return `/*memo_arg ${s}*/\n`; },
+    args_as_string : function () { return _.evaled_args.join (''); },
 
     pre_print : function (s) {console.log (`pre: ${s}`);},
     print : function (s) {console.log (`mid: ${s}`); return "";},

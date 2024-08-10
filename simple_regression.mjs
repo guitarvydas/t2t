@@ -7,42 +7,29 @@ import * as ohm from 'ohm-js';
 let return_value_stack = [];
 let rule_name_stack = [];
 
-let sA_stack = [];
-let sB_stack = [];
-let sC_stack = [];
 
 const grammar = String.raw`
 example {
 
-  Main = "a" (";" "b")+ "c"
+  Main = "a"
 
 
 }
 `;
 
 const rewrite_code = {
-Main : function (_pA, /*memo_arg _pA*/
+Main : function (_pA, /*memo_arg ☐ = ☐.rwr ()
+*/
 ) {
-let _pre = _.print (\`pre down\`);
+let _pre = _.print (`pre down`);
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "Main");
-name_stack.push ('');
-name_stack.push ('');
-name_stack.push ('');
 
+_pA = _pA.rwr ()
 
-_.set_top (sA_stack, \`\$\{_pA\}\`);
-_.set_top (sB_stack, \`\$\{_pBs\}\`);
-_.set_top (sC_stack, \`\$\{_pC\}\`);
+_.set_top (return_value_stack, `... ${_.print (`xxx middle`)} ${_pA}`);
 
-_.pre_print (\`hello\`);
-_.set_top (return_value_stack, \`... \$\{_.print (middle)\} \$\{_pA\}\$\{_pBsemis\}\$\{_.top (sB_stack)\}\$\{_pC\}...\`);
-
-_.post_print (\`hello\`);
-name_stack.pop ('');
-name_stack.pop ('');
-name_stack.pop ('');
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();
