@@ -15,6 +15,16 @@ all: t2t.mjs
 t2t.mjs:
 	echo "To build t2t.mjs, use repo 'build-t2t'"
 
+##
+
+README.md: doc/README.docx
+	pandoc -s doc/README.docx -t markdown -o README.md
+
+doc/README.docx:
+	echo 'create a .docx file in doc/README.docx using whatever tools you wish to use'
+	echo '(if using Apple Pages, export the file in .docx format)'
+	echo '(of course, you can skip all this and just write README.md directly in markdown)'
+
 ## house-keeping
 
 clean:
