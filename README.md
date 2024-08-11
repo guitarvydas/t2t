@@ -186,7 +186,7 @@ T2t is but a single part of a simplified pipeline. You can even string
 several SCNs together one after the other to chip away at creating a
 problem solution.
 
-Grammar
+## Grammar
 
 The grammar used for specifying new SCNs is based on OhmJS.
 
@@ -263,7 +263,7 @@ You can ignore this section until the need arises.
 
 Each scoped parameter is declared using the syntax
 
-\% parameter *name*
+    `% parameter *name*`
 
 As described below, scoped parameters come into existence at the
 beginning of a scope and disappear at the end of the same scope.
@@ -313,7 +313,7 @@ Main [_pA (_pBsemis _pBs)+ _pC _pD+] ⎨print ‛pre down’⎬= ⎡ sA=‛«_pA
 
 ```
 
-The *rewrite* section begins with "% rewrite".
+The *rewrite* section begins with `% rewrite`.
 
 There must be one rewrite rule for every grammar rule. (See below for
 dealing with OhmJS grammars rules that involve alternation with *case
@@ -321,15 +321,11 @@ labels*).
 
 Simplifying, a rewrite rule consists of several parts
 
-A name
-
-Parameter list
-
-Optional support routine call.
-
-## =
-
-Rewrite string specification.
+- A name
+- Parameter list
+- Optional support routine call.
+- =
+- Rewrite string specification.
 
 Rewrite strings can, optionally, be enclosed in bracketed *scopes* that
 are preceded by scoped parameter definitions or support calls
@@ -349,7 +345,7 @@ In the above example, the rewrite rule name is "Main".
 
 ### Parameter List
 
-A rule's parameter list is bracketed by square brackets "\[\...\]" and
+A rule's parameter list is bracketed by square brackets `[...]` and
 contains arbitrary names for each predicate matched by the corresponding
 grammar rule.
 
@@ -357,7 +353,7 @@ Unlike other PEG libraries, programmers are not given the choice of
 which matches to tag with names - *all* matches must be named[^4].
 
 Each parameter must be adorned with corresponding OhmJS grammar syntax,
-like iteration operators (+ / \* / ?) and parentheses.
+like iteration operators (`+` / `*` / `?`) and parentheses.
 
 Parameter names adhere to Javascript standards, i.e. the first character
 must be a letter or an underscore, following characters may be letters,
@@ -370,10 +366,10 @@ In the above example, the parameter list is:
     [_pA (_pBsemis _pBs)+ _pC _pD+]
 ```
 
-Which defines 5 parameters with names "\_pA", "pBsemis", "\_pBs", "\_pC"
-and "\_pD" and corresponds, syntactically, with the rule "Main" in the
-above grammar. Three of the parameters are iterations, in this case "+"
-iterations - "\_pSemis", \_pBs and "\_pD".
+Which defines 5 parameters with names `_pA`, `pBsemis`, `_pBs`, `_pC`
+and `_pD` and corresponds, syntactically, with the rule "Main" in the
+above grammar. Three of the parameters are iterations, in this case `+`
+iterations - `_pSemis`, `_pBs` and `_pD`.
 
 In this example case, it was decided to prefix every parameter with the
 string "\_p"[^5], but, that was an arbitrary choice - any name would do.
@@ -383,34 +379,30 @@ string "\_p"[^5], but, that was an arbitrary choice - any name would do.
 The phrase
 
 ```
-    ⎨print ‛pre down[']{dir="rtl"}⎬
+    ⎨print ‛pre down’⎬
 ```
 
 specifies a call to a routine contained in the file *support.mjs*. In
 this case, the routine is called *print* and takes one argument.
-Arguments are bracketed by Unicode single quotes ‛\...[']{dir="rtl"}.
+Arguments are bracketed by Unicode single quotes `‛...’`.
 More than one bracketed argument can be supplied. The call is transpiled
 into Javascript, using Javascript's *template strings* as parameters:
 
 ```
-    print (\`pre down\`);
+    print (`pre down`);
 ```
 
 Arguments to support routines are expanded in the same way that rewrite
 strings are expanded (see below) and can contain:
 
 - Raw characters
-
 - String interpolation of rule parameters
-
 - String interpolation of scoped parameters.
-
 - String interpolation of a support routine call
-
 ### =
 
 The left-hand side of a rewrite rule is separated from the right-hand
-side by a single "=" character.
+side by a single `=` character.
 
 The left-hand side contains the rule name, the rule parameter list and
 the optional support routine call.
@@ -420,11 +412,10 @@ one or more scopes.
 
 ### Rewrite string specification
 
-A rewrite string is bracketed by Unicode quotes ‛\...[']{dir="rtl"}.
+A rewrite string is bracketed by Unicode quotes ‛...’.
 
 A rewrite string is composed of
-
-Raw characters
+#### Raw characters
 
 String interpolation of rule parameters, denoted by unicode brackets
 around a rule parameter name "«\...»"
@@ -439,54 +430,44 @@ String interpolation of a support routine call, "⎨*routine-name* ‛\...['
 the file *support.mjs* and must return a string.
 
 The above example contains examples of all four components (raw
-characters "\...", interpolation of rule parameters, e.g. "\_pC",
-interpolation of scoped parameters, e.g. "sB" and a support call to a
-routine named "print2" that takes two arguments, respectively:
+characters `...`, interpolation of rule parameters, e.g. `_pC`,
+interpolation of scoped parameters, e.g. `sB` and a support call to a
+routine named `print2` that takes two arguments, respectively:
 
-\...
-
+```
+...
 «\_pA» and «\_pSemis» and «\_pC» and «\_pD»
-
 ⟪sB⟫
-
-⎨print2 ‛middle[' ‛]{dir="rtl"}2nd arg[']{dir="rtl"}⎬
+⎨print2 ‛middle’ ‛2nd arg’⎬
+```
 
 The left-hand side of a rewrite rule is separated from the right-hand
-side by a single "=" character. The left-hand side contains the rule
+side by a single `=` character. The left-hand side contains the rule
 name, the rule parameter list and the optional support routine call. The
 right-hand side contains the rewrite string possible enveloped in one or
 more scopes.
 
 ### Scopes
 
-Scopes are bracketed by the Unicode brackets "⎡\... ⎦".
+Scopes are bracketed by the Unicode brackets `⎡...⎦`.
 
 The first item after the opening bracket must be
 
-A binding to a scoped variable, "sB=‛«\_pBs»'", or
-
-A call to a support routine "⎨print ‛hello[']{dir="rtl"}⎬"
+- A binding to a scoped variable, `sB=‛«_pBs»’`, or
+- A call to a support routine `⎨print ‛hello’⎬`
 
 The second item after the opening bracket must be
 
-a rewrite string
-
-another bracketed scope
+- a rewrite string
+- another bracketed scope
 
 A scope consists of exactly two items. Following the items, a
-close-scope bracket must appear "⎦".
+close-scope bracket must appear `⎦`.
 
 The first item after the opening bracket is treated in a scoped manner:
 
-In the case of scoped variables, the binding remains in effect
-throughout the whole scope, but is undone when the scope is exited
-(operationally, the binding is *pushed* onto a distinct stack on entry
-to the scope and *popped* on exit from the scope).
-
-In the case of a call to a support routine, the routine must be defined
-twice, with prefixes "pre\_" and "post\_"[^7]. The "pre\_" version of
-the routine is called on entry to the scope and the "post\_" version is
-called on exit from the scope.
+- In the case of scoped variables, the binding remains in effect throughout the whole scope, but is undone when the scope is exited (operationally, the binding is *pushed* onto a distinct stack on entry to the scope and *popped* on exit from the scope).
+- In the case of a call to a support routine, the routine must be defined twice, with prefixes `pre_` and `post_`[^7]. The `pre_` version of the routine is called on entry to the scope and the `post_` version is called on exit from the scope.
 
 Scopes are optional and used only in more complicated rewrites. In many
 cases, no scopes are needed and the right-hand-side of a rewrite rule
@@ -523,36 +504,28 @@ branch. The branch rule name is a concatenation of the rule name, an
 underscore, and, the branch name.
 
 For example, the OhmJS grammar snippet
-
+```
 AddExp
-
-= AddExp \"+\" MulExp \-- plus
-
-\| AddExp \"-\" MulExp \-- minus
-
-\| MulExp
+  = AddExp \"+\" MulExp \-- plus
+  | AddExp \"-\" MulExp \-- minus
+  | MulExp
+```
 
 Must be rewritten in *t2t* as
-
+```
 AddExp =
-
-\| AddExp \"+\" MulExp \-- plus
-
-\| AddExp \"-\" MulExp \-- minus
-
-\| MulExp \-- default
+  | AddExp \"+\" MulExp \-- plus
+  | AddExp \"-\" MulExp \-- minus
+  | MulExp \-- default
+```
 
 and the rewrite section must contain three different rules named
-
-AddExp_plus \[\...\] \...
-
-AddExp_minus \[\...\] \...
-
-AddExpr_default \[\...\] \...
+- AddExp_plus [...]...
+- AddExp_minus [...] ...
+- AddExpr_default [...] ...
 
 When named branches exist in the grammar, the rewrite section must not
-contain a rule not suffixed with a branch name, e.g. AddExp \[\...\]
-\...
+contain a rule that is not suffixed with a branch name, like `AddExp [...] ...`
 
 ## Support.mjs
 
@@ -562,19 +535,19 @@ transpiler *.mjs* code.
 This file must create a Javascript namespace and export it. In the
 example code, the namespace is called "\_". The actual name used is
 arbitrary, but, the use of longer names will uglify the rewrite
-specification.
+specification. Use the name "\_" unless there is a reason not to do so.
 
 This file is simply standard Javascript and is usually very small in
 length. The example code exports 6 functions. If you need to create many
 more exported functions, then it is likely that you are doing something
 wrong, or, need to use divide-and-conquer to an even greater extent.
 
-Maintaining and Upgrading t2t
+# Maintaining and Upgrading t2t
 
 You don't need to futz with the stuff described below, in order to
-simply [use]{.underline} *t2t* to build new SCNs.
+simply use *t2t* to build new SCNs.
 
-You only need to use the *build-t2t* repository if you want to upgrade /
+You only need to work with the *build-t2t* repository if you want to upgrade /
 maintain *t2t.mjs*.
 
 The main program, *t2t.mjs*, is created automatically using the
@@ -583,16 +556,14 @@ repository *build-t2t*.
 In fact, *t2t.mjs* is created using a bootstrap version of itself.
 
 The Repository for upgrading, modifying, fixing *t2t.mjs* is elsewhere,
-in
-
-[[https://github.com/guitarvydas/build-t2t]{.underline}](https://github.com/guitarvydas/build-t2t).
+in [https://github.com/guitarvydas/build-t2t](https://github.com/guitarvydas/build-t2t).
 
 *Build*-*t2t* can be considered to be an example of how to use Drawware
 and 0D technology to generate code generators.
 
 \[Collaborators are welcome, contact me if interested\].
 
-Appendix 1
+# Appendix 1
 
 T2T inhales the following (do-nothing) test code and produces the
 following Javascript program, using the following *support.mjs* file
@@ -600,235 +571,155 @@ following Javascript program, using the following *support.mjs* file
 
 \~\~\~\~\~\~
 
-\% grammar example
+```
+% grammar example
+  Main = "a" (";" "b")+ "c" "d"+
 
-Main = \"a\" (\";\" \"b\")+ \"c\" \"d\"+
+% parameter sA
+% parameter sB
+% parameter sC
 
-\% parameter sA
+% rewrite
+Main [_pA (_pBsemis _pBs)+ _pC _pD+] ⎨print ‛pre down’⎬= ⎡ sA=‛«_pA»’
+                                ⎡ sB=‛«_pBs»’
+                                  ⎡ sC=‛«_pC»’
+                                    ⎡ ⎨print ‛hello’⎬
+                                      ‛... ⎨print2 ‛middle’ ‛2nd arg’⎬ «_pA»«_pBsemis»⟪sB⟫«_pC»«_pD»...’ 
+                                    ⎦
+                                  ⎦
+                                ⎦
+                              ⎦
 
-\% parameter sB
-
-\% parameter sC
-
-\% rewrite
-
-Main \[\_pA (\_pBsemis \_pBs)+ \_pC \_pD+\] ⎨print ‛pre
-down['⎬]{dir="rtl"}= ⎡ sA=‛«\_pA»'
-
-⎡ sB=‛«\_pBs»'
-
-⎡ sC=‛«\_pC»'
-
-⎡ ⎨print ‛hello['⎬]{dir="rtl"}
-
-‛\... ⎨print2 ‛middle[' ‛]{dir="rtl"}2nd arg'⎬
-«\_pA»«\_pBsemis»⟪sB⟫«\_pC»«\_pD»\...[']{dir="rtl"}
-
-⎦
-
-⎦
-
-⎦
-
-⎦
-
+```
 \~\~\~\~\~\~
+```
 
-\'use strict\'
+'use strict'
 
-import {\_} from \'./support.mjs\';
+import {_} from './support.mjs';
+import * as ohm from 'ohm-js';
 
-import \* as ohm from \'ohm-js\';
+let return_value_stack = [];
+let rule_name_stack = [];
 
-let return_value_stack = \[\];
+let sA_stack = [];
+let sB_stack = [];
+let sC_stack = [];
 
-let rule_name_stack = \[\];
-
-let sA_stack = \[\];
-
-let sB_stack = \[\];
-
-let sC_stack = \[\];
-
-const grammar = String.raw\`
-
+const grammar = String.raw`
 example {
 
-Main = \"a\" (\";\" \"b\")+ \"c\" \"d\"+
+  Main = "a" (";" "b")+ "c" "d"+
+
 
 }
-
-\`;
+`;
 
 const rewrite_code = {
+    Main : function (_pA, _pBsemis, _pBs, _pC, _pD, ) {
+        let _pre = _.print (`pre down`);
+        return_value_stack.push ("");
+        rule_name_stack.push ("");
+        _.set_top (rule_name_stack, "Main");
+        sA_stack.push ('');
+        sB_stack.push ('');
+        sC_stack.push ('');
 
-Main : function (\_pA, \_pBsemis, \_pBs, \_pC, \_pD, ) {
+        _pA = _pA.rwr ()
+        _pBsemis = _pBsemis.rwr ().join ('')
+        _pBs = _pBs.rwr ().join ('')
+        _pC = _pC.rwr ()
+        _pD = _pD.rwr ().join ('')
 
-let \_pre = \_.print (\`pre down\`);
+        _.set_top (sA_stack, `${_pA}`);
+        _.set_top (sB_stack, `${_pBs}`);
+        _.set_top (sC_stack, `${_pC}`);
 
-return_value_stack.push (\"\");
+        _.pre_print (`hello`);
+        _.set_top (return_value_stack, `... ${_.print2 (`middle`, `2nd arg`)} ${_pA}${_pBsemis}${_.top (sB_stack)}${_pC}${_pD}...`);
 
-rule_name_stack.push (\"\");
+        _.post_print (`hello`);
+        sA_stack.pop ('');
+        sB_stack.pop ('');
+        sC_stack.pop ('');
 
-\_.set_top (rule_name_stack, \"Main\");
-
-sA_stack.push (\'\');
-
-sB_stack.push (\'\');
-
-sC_stack.push (\'\');
-
-\_pA = \_pA.rwr ()
-
-\_pBsemis = \_pBsemis.rwr ().join (\'\')
-
-\_pBs = \_pBs.rwr ().join (\'\')
-
-\_pC = \_pC.rwr ()
-
-\_pD = \_pD.rwr ().join (\'\')
-
-\_.set_top (sA_stack, \`\${\_pA}\`);
-
-\_.set_top (sB_stack, \`\${\_pBs}\`);
-
-\_.set_top (sC_stack, \`\${\_pC}\`);
-
-\_.pre_print (\`hello\`);
-
-\_.set_top (return_value_stack, \`\... \${\_.print2 (\`middle\`, \`2nd
-arg\`)} \${\_pA}\${\_pBsemis}\${\_.top
-(sB_stack)}\${\_pC}\${\_pD}\...\`);
-
-\_.post_print (\`hello\`);
-
-sA_stack.pop (\'\');
-
-sB_stack.pop (\'\');
-
-sC_stack.pop (\'\');
-
-rule_name_stack.pop ();
-
-return return_value_stack.pop ();
-
-},
-
-\_terminal: function () { return this.sourceString; },
-
-\_iter: function (\...children) { return children.map(c =\> c.rwr ()); }
-
+        rule_name_stack.pop ();
+        return return_value_stack.pop ();
+    },
+    _terminal: function () { return this.sourceString; },
+    _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
+
 
 function main (src) {
-
-let parser = ohm.grammar (grammar);
-
-let cst = parser.match (src);
-
-if (cst.succeeded ()) {
-
-let cstSemantics = parser.createSemantics ();
-
-cstSemantics.addOperation (\'rwr\', rewrite_code);
-
-var generated_code = cstSemantics (cst).rwr ();
-
-return generated_code;
-
-} else {
-
-return parser.trace (src).toString ();
-
+    let parser = ohm.grammar (grammar);
+    let cst = parser.match (src);
+    if (cst.succeeded ()) {
+        let cstSemantics = parser.createSemantics ();
+        cstSemantics.addOperation ('rwr', rewrite_code);
+        var generated_code = cstSemantics (cst).rwr ();
+        return generated_code;
+    } else {
+        return parser.trace (src).toString ();
+    }
 }
 
-}
-
-import \* as fs from \'fs\';
-
-let src = fs.readFileSync(0, \'utf-8\');
-
+import * as fs from 'fs';
+let src = fs.readFileSync(0, 'utf-8');
 var result = main (src);
-
 console.log (result);
 
+```
 \~\~\~\~\~\~
+```
+let _ = {
+    top : function (stack) { let v = stack.pop (); stack.push (v); return v; },
+    
+    set_top : function (stack, v) { stack.pop (); stack.push (v); return v; },
+        
 
-let \_ = {
+    // for rewriter
+    parameter_names : [],
+    argnames : [],
+    evaled_args : [],
 
-top : function (stack) { let v = stack.pop (); stack.push (v); return v;
-},
+    reset_stacks : function () { 
+        _.argnames = [];
+        _.evaled_args = [];
+    },
 
-set_top : function (stack, v) { stack.pop (); stack.push (v); return v;
-},
+    memo_parameter : function (str) {
+        _.parameter_names.push (str); 
+        return "";
+    },
+    foreach_parameter : function (str) {
+        let s = [];
+        _.parameter_names.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
+        return s.join ('');
+    },
 
-// for rewriter
+    foreach_arg : function (str) {
+        let s = [`//foreach_arg (${str})\n`];
+        _.evaled_args.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
+        return s.join ('');
+    },
 
-parameter_names : \[\],
+    memo_arg : function (name, s) { _.argnames.push (name); _.evaled_args.push (s.replaceAll ("☐", `${name}`)); return ""; },
+    args_as_string : function () { return _.evaled_args.join (''); },
 
-argnames : \[\],
+    // for examples
+    pre_print : function (s) {console.log (`pre: ${s}`);},
+    print : function (s) {console.log (`mid: ${s}`); return "";},
+    post_print : function (s) {console.log (`post: ${s}`);},
 
-evaled_args : \[\],
+    print2 : function (s1, s2) {console.log (`print2: ${s1} ${s2}`); return "";},
 
-reset_stacks : function () {
-
-\_.argnames = \[\];
-
-\_.evaled_args = \[\];
-
-},
-
-memo_parameter : function (str) {
-
-\_.parameter_names.push (str);
-
-return \"\";
-
-},
-
-foreach_parameter : function (str) {
-
-let s = \[\];
-
-\_.parameter_names.forEach (p =\> s.push (str.replaceAll (\"☐\",
-\`\${p}\`) + \"\\n\"));
-
-return s.join (\'\');
-
-},
-
-foreach_arg : function (str) {
-
-let s = \[\`//foreach_arg (\${str})\\n\`\];
-
-\_.evaled_args.forEach (p =\> s.push (str.replaceAll (\"☐\",
-\`\${p}\`) + \"\\n\"));
-
-return s.join (\'\');
-
-},
-
-memo_arg : function (name, s) { \_.argnames.push (name);
-\_.evaled_args.push (s.replaceAll (\"☐\", \`\${name}\`)); return \"\";
-},
-
-args_as_string : function () { return \_.evaled_args.join (\'\'); },
-
-// for examples
-
-pre_print : function (s) {console.log (\`pre: \${s}\`);},
-
-print : function (s) {console.log (\`mid: \${s}\`); return \"\";},
-
-post_print : function (s) {console.log (\`post: \${s}\`);},
-
-print2 : function (s1, s2) {console.log (\`print2: \${s1} \${s2}\`);
-return \"\";},
+    
 
 };
 
-export {\_};
-
+export {_};
+```
 [^1]: I call this DI, for Design Intent
 
 [^2]: The "%" will probably be changed to "#" in the future to look more
