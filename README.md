@@ -506,17 +506,17 @@ underscore, and, the branch name.
 For example, the OhmJS grammar snippet
 ```
 AddExp
-  = AddExp \"+\" MulExp \-- plus
-  | AddExp \"-\" MulExp \-- minus
+  = AddExp "+" MulExp -- plus
+  | AddExp "-" MulExp -- minus
   | MulExp
 ```
 
 Must be rewritten in *t2t* as
 ```
 AddExp =
-  | AddExp \"+\" MulExp \-- plus
-  | AddExp \"-\" MulExp \-- minus
-  | MulExp \-- default
+  | AddExp "+" MulExp -- plus
+  | AddExp "-" MulExp -- minus
+  | MulExp -- default
 ```
 
 and the rewrite section must contain three different rules named
