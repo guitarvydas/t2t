@@ -17,8 +17,9 @@ t2t.mjs:
 
 ##
 
-README.md: doc/README.docx
-	pandoc -s doc/README.docx -t markdown -o README.md
+readme: doc/README.docx
+#	pandoc -s doc/README.docx -t markdown -o README.md
+# broken - don't use this yet
 
 doc/README.docx:
 	echo 'create a .docx file in doc/README.docx using whatever tools you wish to use'
