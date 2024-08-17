@@ -72,19 +72,9 @@ let ds = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "Tailx");
-sA_stack.push (sA_stack [sA_stack.length-1]);
-sB_stack.push (sB_stack [sB_stack.length-1]);
-sC_stack.push (sC_stack [sC_stack.length-1]);
-
-ds = _ds.rwr ().join ('')
-
 ds = _ds.rwr ().join ('')
 
 _.set_top (return_value_stack, `... ${_.print2 (`Tail`, `arg2`)} (sA=${_.top (sA_stack)} sB=${_.top (sB_stack)} sC=${_.top (sC_stack)} ${ds}...)`);
-
-sA_stack.pop ();
-sB_stack.pop ();
-sC_stack.pop ();
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();

@@ -38,6 +38,7 @@ t2t {
   // rewrite parsing section
   rewriteRule = 
     | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScopeRaw spaces -- plain_no_scope
     | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
 
   rwRuleName = name
@@ -52,7 +53,9 @@ t2t {
   rewriteScope =
     | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
     | "⎡" spaces name spaces "=" spaces rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
-    | #rewriteFormatString -- raw
+    | rewriteScopeRaw -- raw
+  rewriteScopeRaw = #rewriteFormatString
+  
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
     | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
@@ -345,6 +348,53 @@ return return_value_stack.pop ();
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
+rewriteRule_plain_no_scope : function (_rwName, _ws1, _lb, _ws2, _rwParameterDefs, _ws3, _rb, _ws4, __eq, _ws5, _raw, _ws6, ) {
+let rwName = undefined;
+let ws1 = undefined;
+let lb = undefined;
+let ws2 = undefined;
+let rwParameterDefs = undefined;
+let ws3 = undefined;
+let rb = undefined;
+let ws4 = undefined;
+let _eq = undefined;
+let ws5 = undefined;
+let raw = undefined;
+let ws6 = undefined;
+
+let _pre = _.reset_stacks (``);
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "rewriteRule_plain_no_scope");
+
+rwName = _rwName.rwr ()
+ws1 = _ws1.rwr ()
+lb = _lb.rwr ()
+ws2 = _ws2.rwr ()
+rwParameterDefs = _rwParameterDefs.rwr ().join ('')
+ws3 = _ws3.rwr ().join ('')
+rb = _rb.rwr ()
+ws4 = _ws4.rwr ()
+_eq = __eq.rwr ()
+ws5 = _ws5.rwr ()
+raw = _raw.rwr ()
+ws6 = _ws6.rwr ()
+
+_.set_top (return_value_stack, `
+${rwName} : function (${rwParameterDefs}) {
+${_.foreach_arg (`let ☐ = undefined;`)}
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "${rwName}");
+${raw}
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},`);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
 rewriteRule_plain : function (_rwName, _ws1, _lb, _ws2, _rwParameterDefs, _ws3, _rb, _ws4, __eq, _ws5, _rewriteScope, _ws6, ) {
 let rwName = undefined;
 let ws1 = undefined;
@@ -591,12 +641,27 @@ _.set_top (return_value_stack, `_.set_top (${name}_stack, \`${rewriteFormatStrin
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rewriteScope_raw : function (_rewriteFormatString, ) {
-let rewriteFormatString = undefined;
+rewriteScope_raw : function (_x, ) {
+let x = undefined;
 
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_raw");
+
+x = _x.rwr ()
+
+_.set_top (return_value_stack, `${x}`);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+rewriteScopeRaw : function (_rewriteFormatString, ) {
+let rewriteFormatString = undefined;
+
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "rewriteScopeRaw");
 
 rewriteFormatString = _rewriteFormatString.rwr ()
 
