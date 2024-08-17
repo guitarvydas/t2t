@@ -6,12 +6,18 @@ SPEC=simple2.t2t
 #TEST=test1.txt
 TEST=test2.txt
 
-all: ../t2t.mjs
-	node ../t2t.mjs <${SPEC} >rewriter.mjs
+all: ./t2t.mjs ./support.mjs
+	node ./t2t.mjs <${SPEC} >rewriter.mjs
 	node rewriter.mjs <${TEST}
 
 
 ##
+./t2t.mjs : ../t2t.mjs
+	cp ../t2t.mjs .
+
+./support.mjs : ../support.mjs
+	cp ../support.mjs .
+
 ../t2t.mjs:
 	echo "To build t2t.mjs, use repo 'build-t2t'"
 

@@ -25,9 +25,9 @@ let _ = {
     },
 
     foreach_arg : function (str) {
-        let s = [`//foreach_arg (${str})\n`];
-        _.evaled_args.forEach (p => s.push (str.replaceAll ("☐", `${p}`) + "\n"));
-        return s.join ('');
+        let s = [`//** foreach_arg (${str})`, `//** argnames=${_.argnames}`];
+        _.argnames.forEach (p => s.push (str.replaceAll ("☐", `${p}`)));
+        return s.join ('\n');
     },
 
     memo_arg : function (name, s) { _.argnames.push (name); _.evaled_args.push (s.replaceAll ("☐", `${name}`)); return ""; },
