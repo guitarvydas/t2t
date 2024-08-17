@@ -333,7 +333,7 @@ let _pre = ${before};
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "${rwName}");
-${_.foreach_parameter (`☐_stack.push ('');`)}
+${_.foreach_parameter (`☐_stack.push (☐_stack [☐_stack.length-1]);`)}
 ${_.args_as_string (``)}
 ${rewriteScope}
 ${_.foreach_parameter (`☐_stack.pop ();`)}
@@ -383,7 +383,7 @@ ${_.foreach_arg (`let ☐ = undefined;`)}
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "${rwName}");
-${_.foreach_parameter (`☐_stack.push ('');`)}
+${_.foreach_parameter (`☐_stack.push (☐_stack [☐_stack.length-1]);`)}
 ${_.args_as_string (``)}
 ${rewriteScope}
 ${_.foreach_parameter (`☐_stack.pop ();`)}

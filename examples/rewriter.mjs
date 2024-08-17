@@ -34,9 +34,9 @@ let _pre = _.print (`pre down`);
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "Main");
-sA_stack.push ('');
-sB_stack.push ('');
-sC_stack.push ('');
+sA_stack.push (sA_stack [sA_stack.length-1]);
+sB_stack.push (sB_stack [sB_stack.length-1]);
+sC_stack.push (sC_stack [sC_stack.length-1]);
 
 _pA = __pA.rwr ()
 _pBsemis = __pBsemis.rwr ().join ('')
@@ -72,9 +72,9 @@ let ds = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "Tailx");
-sA_stack.push ('');
-sB_stack.push ('');
-sC_stack.push ('');
+sA_stack.push (sA_stack [sA_stack.length-1]);
+sB_stack.push (sB_stack [sB_stack.length-1]);
+sC_stack.push (sC_stack [sC_stack.length-1]);
 
 ds = _ds.rwr ().join ('')
 
