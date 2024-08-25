@@ -879,7 +879,8 @@ function main (src) {
 	var generated_code = cstSemantics (cst).rwr ();
 	return generated_code;
     } else {
-	return parser.trace (src).toString ();
+	console.error (cst.message);
+	return "";
     }
 }
 
