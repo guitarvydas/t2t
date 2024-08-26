@@ -112,7 +112,7 @@ function main (src) {
 	var generated_code = cstSemantics (cst).rwr ();
 	return generated_code;
     } else {
-	return parser.trace (src).toString ();
+        return cst.message;	
     }
 }
 
