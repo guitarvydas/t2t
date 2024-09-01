@@ -61,6 +61,7 @@ t2t {
     | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
     | "⟪" rwArgRef "⟫" -- parameter_interpolation
     | "«" rwArgRef "»" -- arg_interpolation
+    | "\\" any -- escaped
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
 
   before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
@@ -750,6 +751,23 @@ rwRef = _rwRef.rwr ()
 rb = _rb.rwr ()
 
 _.set_top (return_value_stack, `\$\{_.top (${rwRef}_stack)\}`);
+
+
+rule_name_stack.pop ();
+return return_value_stack.pop ();
+},
+formatChar_escaped : function (__bslash, _c, ) {
+let _bslash = undefined;
+let c = undefined;
+
+return_value_stack.push ("");
+rule_name_stack.push ("");
+_.set_top (rule_name_stack, "formatChar_escaped");
+
+_bslash = __bslash.rwr ()
+c = _c.rwr ()
+
+_.set_top (return_value_stack, `${_bslash}${c}`);
 
 
 rule_name_stack.pop ();
