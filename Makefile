@@ -13,8 +13,9 @@ all: testfold
 
 testfold: 
 	make t2t.mjs
-	node t2t.mjs <test.t2t >test.mjs
-	node test.mjs <test.txt
+	node experimental-t2t.mjs test.grammar test.rewrite test.t2t
+	# node experimental-t2t.mjs <test.t2t >test.mjs
+	# node test.mjs <test.txt
 
 ##
 t2t.mjs: t2t.t2t support.mjs

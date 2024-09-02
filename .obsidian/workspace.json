@@ -148,16 +148,16 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
+    "#experimental-t2t.mjs#",
+    "test.rewrite",
+    "test.grammar~",
+    "#t2t.t2t#",
+    "test.grammar",
+    "#test.grammar#",
+    "experimental-t2t.mjs~",
+    "experimental-t2t.mjs",
     "#test.t2t#",
     "test.txt",
-    "t2t.mjs",
-    "t2t.mjs.mjs",
-    "junk.junk",
-    "#modified-t2t.mjs#",
-    "#regression.mjs#",
-    "modified-t2t.mjs~",
-    "#t2t.t2t#",
-    "modified-t2t.mjs",
-    "#t2t.mjs#"
+    "t2t.mjs"
   ]
 }
