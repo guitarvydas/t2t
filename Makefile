@@ -2,7 +2,7 @@ SPEC=<your text-to-text specification>.t2t
 
 TEST=<your DSL to be transpiled>
 
-all: t2t.mjs
+all: regression
 
 
 # to use t2t, write a spec, then generate your rewriter app
@@ -12,8 +12,18 @@ all: t2t.mjs
 
 
 ##
-t2t.mjs:
-	echo "To build t2t.mjs, use repo 'build-t2t'"
+t2t.mjs: t2t.t2t support.mjs
+	node bootstrap-t2t.mjs <t2t.t2t >t2t.mjs
+
+test:
+	# working on rwArgDef return value in test-regression.mjs and looking at multiple args with same name in b.mjs
+	node test-regression.mjs <test.t2t >b.mjs
+
+regression:
+	node modified-t2t.mjs <t2t.t2t >regression.mjs
+	node modified-t2t.mjs <test.t2t >a.mjs
+	node regression.mjs <test.t2t >b.mjs
+	diff -b a.mjs b.mjs
 
 ##
 
