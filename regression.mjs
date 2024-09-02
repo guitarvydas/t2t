@@ -480,7 +480,7 @@ name = _name.rwr ()
 op = _op.rwr ()
 
 
-_.set_top (return_value_stack, `_${name}, ${_.memo_arg (`${name}`, `☐ % _☐.rwr ().join ('')\n`)}`);
+_.set_top (return_value_stack, `_${name}, ${_.memo_arg (`${name}`, `☐ = _☐.rwr ().join ('')\n`)}`);
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();

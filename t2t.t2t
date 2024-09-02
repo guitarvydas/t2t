@@ -166,7 +166,7 @@ return return_value_stack.pop ();
 
   rwRuleName [name] =‛«name»’
   rwArgDef [name] =‛_«name», ⎨memo_arg ‛«name»’ ‛☐ = _☐.rwr ()\n’⎬’
-  rwIterArgDef [name op] = ‛_«name», ⎨memo_arg ‛«name»’  ‛☐ % _☐.rwr ().join ('')\n’⎬’
+  rwIterArgDef [name op] = ‛_«name», ⎨memo_arg ‛«name»’  ‛☐ = _☐.rwr ().join ('')\n’⎬’
   rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
   rwArgRef [name] =‛«name»’

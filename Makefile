@@ -17,8 +17,8 @@ t2t.mjs: t2t.t2t support.mjs
 
 regression:
 	node modified-t2t.mjs <t2t.t2t >regression.mjs
-	node modified-t2t.mjs <test.t2t >a.mjs
-	node regression.mjs <test.t2t >b.mjs
+	node modified-t2t.mjs <t2t.t2t >a.mjs
+	node regression.mjs <t2t.t2t >b.mjs
 	diff -b a.mjs b.mjs
 
 ##
