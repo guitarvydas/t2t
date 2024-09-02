@@ -17,19 +17,14 @@ t2t {
 `;
 
 const rewrite_code = {
-main : function (%1%_grammarDef, ) {
-//%2%grammarDef,%2%grammarDef
-let %2%grammarDef = undefined;
-let %2%grammarDef = undefined;
+main : function (_grammarDef, ) {
+//grammarDef,grammarDef
+let grammarDef = undefined;
+let grammarDef = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "main");
-%2%grammarDef = _%2%grammarDef.rwr ()
-%2%grammarDef = _%2%grammarDef.rwr ()
-
-_.set_top (return_value_stack, `
-blah,blah,blah`);
-
+A
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },

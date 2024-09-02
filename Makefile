@@ -15,10 +15,6 @@ all: regression
 t2t.mjs: t2t.t2t support.mjs
 	node bootstrap-t2t.mjs <t2t.t2t >t2t.mjs
 
-test:
-	# working on rwArgDef return value in test-regression.mjs and looking at multiple args with same name in b.mjs
-	node test-regression.mjs <test.t2t >b.mjs
-
 regression:
 	node modified-t2t.mjs <t2t.t2t >regression.mjs
 	node modified-t2t.mjs <test.t2t >a.mjs

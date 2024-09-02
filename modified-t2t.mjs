@@ -311,21 +311,6 @@ ${rules}
 	rewriteScope = _rewriteScope.rwr ()
 	ws6 = _ws6.rwr ()
 
-	// rwName = _rwName.rwr ()
-	// ws1 = _ws1.rwr ()
-	// lb = _lb.rwr ()
-	// ws2 = _ws2.rwr ()
-	// rwParameterDefs = _rwParameterDefs.rwr ().join ('')
-	// ws3 = _ws3.rwr ().join ('')
-	// rb = _rb.rwr ()
-	// ws4 = _ws4.rwr ()
-	// before = _before.rwr ()
-	// ws7 = _ws7.rwr ()
-	// _eq = __eq.rwr ()
-	// ws5 = _ws5.rwr ()
-	// rewriteScope = _rewriteScope.rwr ()
-	// ws6 = _ws6.rwr ()
-
 	_.set_top (return_value_stack, `
 ${rwName} : function (${rwParameterDefs}) {
 ${_.foreach_arg (`let ☐ = undefined;`)}
@@ -377,26 +362,13 @@ return return_value_stack.pop ();
 	raw = _raw.rwr ()
 	ws6 = _ws6.rwr ()
 
-	// rwName = _rwName.rwr ()
-	// ws1 = _ws1.rwr ()
-	// lb = _lb.rwr ()
-	// ws2 = _ws2.rwr ()
-	// rwParameterDefs = _rwParameterDefs.rwr ().join ('')
-	// ws3 = _ws3.rwr ().join ('')
-	// rb = _rb.rwr ()
-	// ws4 = _ws4.rwr ()
-	// _eq = __eq.rwr ()
-	// ws5 = _ws5.rwr ()
-	// raw = _raw.rwr ()
-	// ws6 = _ws6.rwr ()
-
 	_.set_top (return_value_stack, `
 ${rwName} : function (${rwParameterDefs}) {
 ${_.foreach_arg (`let ☐ = undefined;`)}
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "${rwName}");
-${raw}
+«raw»
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },`);
@@ -436,19 +408,6 @@ return return_value_stack.pop ();
 	ws5 = _ws5.rwr ()
 	rewriteScope = _rewriteScope.rwr ()
 	ws6 = _ws6.rwr ()
-
-	// rwName = _rwName.rwr ()
-	// ws1 = _ws1.rwr ()
-	// lb = _lb.rwr ()
-	// ws2 = _ws2.rwr ()
-	// rwParameterDefs = _rwParameterDefs.rwr ().join ('')
-	// ws3 = _ws3.rwr ().join ('')
-	// rb = _rb.rwr ()
-	// ws4 = _ws4.rwr ()
-	// _eq = __eq.rwr ()
-	// ws5 = _ws5.rwr ()
-	// rewriteScope = _rewriteScope.rwr ()
-	// ws6 = _ws6.rwr ()
 
 	_.set_top (return_value_stack, `
 ${rwName} : function (${rwParameterDefs}) {
@@ -606,7 +565,8 @@ return return_value_stack.pop ();
 	_.set_top (return_value_stack, `
 _.pre_${name} (\`${s}\`);
 ${scope}
-_.post_${name} (\`${s}\`);`);
+_.post_${name} (\`${s}\`);
+`);
 
 	rule_name_stack.pop ();
 	return return_value_stack.pop ();
@@ -667,7 +627,7 @@ _.post_${name} (\`${s}\`);`);
 	_.set_top (rule_name_stack, "rewriteScopeRaw");
 	rewriteFormatString = _rewriteFormatString.rwr ()
 
-	_.set_top (return_value_stack, `${_.args_as_string (``)}\n_.set_top (return_value_stack, \`${rewriteFormatString}\`);\n`);
+	_.set_top (return_value_stack, `\n_.set_top (return_value_stack, \`${rewriteFormatString}\`);\n`);
 
 	rule_name_stack.pop ();
 	return return_value_stack.pop ();

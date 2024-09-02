@@ -164,10 +164,10 @@ return return_value_stack.pop ();
   
 
   rwRuleName [name] =‛«name»’
-  rwArgDef [name] =‛_«name», ⎨memo_arg ‛%2%«name»’ ‛☐ = _☐.rwr ()\n’⎬’
+  rwArgDef [name] =‛_«name», ⎨memo_arg ‛«name»’ ‛☐ = _☐.rwr ()\n’⎬’
   rwIterArgDef [name op] = ‛_«name», ⎨memo_arg ‛«name»’  ‛☐ % _☐.rwr ().join ('')\n’⎬’
   rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
-  rwParameterDef [def] = ‛%1%«def»’
+  rwParameterDef [def] = ‛«def»’
   rwArgRef [name] =‛«name»’
   rwParenArgDef [name ws] = ‛_«name», ⎨memo_arg ‛«name»’  ‛☐ = _☐.rwr ().join ('')\n’⎬’
 
@@ -178,7 +178,7 @@ _.post_«name» (\`«s»\`);’
 
   rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛_.set_top («name»_stack, \`«rewriteFormatString»\`);\n«rewriteScope»’
   rewriteScope_raw [x] = ‛«x»’
-  rewriteScopeRaw [rewriteFormatString] = ‛⎨args_as_string ‛’⎬\n_.set_top (return_value_stack, \`«rewriteFormatString»\`);\n’
+  rewriteScopeRaw [rewriteFormatString] = ‛\n_.set_top (return_value_stack, \`«rewriteFormatString»\`);\n’
   
   rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
   formatChar_support_interpolation [lb ws1 name ws2 interpolation_args ws3 rb] = ‛\$\{_.«name» («interpolation_args»)\}’
