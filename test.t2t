@@ -1,4 +1,0 @@
-% grammar t2t 
-  Main = "a"
-% rewrite
-  Main [c] = ‛hello world «c»’

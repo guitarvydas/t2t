@@ -91,22 +91,15 @@ const t2t_rewrite_code = {
 
 
 	_.set_top (return_value_stack, `
-'use strict'
-
-import {_} from './support.mjs';
-import * as ohm from 'ohm-js';
-
-let return_value_stack = [];
-let rule_name_stack = [];
 ${ParameterDefs}
 ${rewriteDef}
 
-function main (src) {
-    let parser = ohm.grammar (grammar);
+function t2t_phase2 (grammr, sem, scn) {
+    let parser = ohm.grammar (grammr);
     let cst = parser.match (src);
     if (cst.succeeded ()) {
 	let cstSemantics = parser.createSemantics ();
-	cstSemantics.addOperation ('rwr', rewrite_code);
+	cstSemantics.addOperation ('rwr', sem);
 	var generated_code = cstSemantics (cst).rwr ();
 	return generated_code;
     } else {
@@ -114,10 +107,8 @@ function main (src) {
     }
 }
 
-import * as fs from 'fs';
-let src = fs.readFileSync(0, 'utf-8');
-var result = main (src);
-console.log (result);
+t2t_phase2 (dslGrammar, rewrite_js, src);
+
 `);
 
 	rule_name_stack.pop ();
@@ -166,7 +157,7 @@ console.log (result);
 	ws5 = _ws5.rwr ()
 
 
-	_.set_top (return_value_stack, `const rewrite_code = {${rewriteRules}
+	_.set_top (return_value_stack, `const rewrite_js = {${rewriteRules}
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
@@ -859,15 +850,15 @@ function transpile_t2t (grammar_spec, rewrite_spec) {
 }
 
 import * as fs from 'fs';
-console.log (process.argv.slice(2));
 const argv = process.argv.slice(2);
-console.log (argv);
 let dslGrammarFilename = argv[0];
 let dslRewriteFilename = argv[1];
 let srcFilename = argv[2];
 let src = fs.readFileSync(srcFilename, 'utf-8');
 let dslGrammar = fs.readFileSync(dslGrammarFilename, 'utf-8');
 let dslRewrite = fs.readFileSync(dslRewriteFilename, 'utf-8');
-var rewrite_js = transpile_t2t (t2t_grammar, dslRewrite);
-console.log (rewrite_js);
+var phase2 = transpile_t2t (t2t_grammar, dslRewrite);
+var result = eval (phase2);
+console.log (result);
+
 

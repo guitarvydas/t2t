@@ -5,17 +5,8 @@ TEST=<your DSL to be transpiled>
 all: testfold
 
 
-# to use t2t, write a spec, then generate your rewriter app
-#	node t2t.mjs <${SPEC} >rewriter.mjs
-# then, use your rewriter app to transpile your test DSL
-#	node rewriter.mjs <${TEST}
-
-
 testfold: 
-	make t2t.mjs
-	node experimental-t2t.mjs test.grammar test.rewrite test.t2t
-	# node experimental-t2t.mjs <test.t2t >test.mjs
-	# node test.mjs <test.txt
+	@node experimental-t2t.mjs test.grammar test.rewrite test.txt
 
 ##
 t2t.mjs: t2t.t2t support.mjs
