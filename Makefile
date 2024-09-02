@@ -4,18 +4,17 @@ TEST=<your DSL to be transpiled>
 
 all: testfold
 
-
-testfold: 
-	@node experimental-t2t.mjs test.grammar test.rewrite test.txt
+testfold:
+	node t2t.mjs test.grammar test.rewrite test.txt
 
 ##
-t2t.mjs: t2t.t2t support.mjs
-	node modified-t2t.mjs <t2t.t2t >t2t.mjs
+t2t-gen.mjs: t2t-gen.t2t support.mjs
+	node phase1-t2t.mjs <t2t-gen.t2t >t2t-gen.mjs
 
 regression:
-	node modified-t2t.mjs <t2t.t2t >regression.mjs
-	node modified-t2t.mjs <t2t.t2t >a.mjs
-	node regression.mjs <t2t.t2t >b.mjs
+	node phase1-t2t.mjs <t2t-gen.t2t >regression.mjs
+	node phase1-t2t.mjs <t2t-gen.t2t >a.mjs
+	node regression.mjs <t2t-gen.t2t >b.mjs
 	diff -b a.mjs b.mjs
 
 ##

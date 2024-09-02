@@ -13,16 +13,16 @@ t2t {
  
   main = grammarDef applySyntactic<ParameterDef>* rewriteDef
 
-  grammarDef = "% grammar" spaces name rule+
+  grammarDef = "% grammar" spaces name spaces "{" spaces rule+ spaces "}"
   ParameterDef = "% parameter" name
-  rewriteDef = "% rewrite" spaces rewriteRule+
+  rewriteDef = "% rewrite" spaces name spaces "{" spaces rewriteRule+ spaces "}"
 
 
   // just pass the grammar through to OhmJS - it parses and checks the grammar
   rule =
     | "\"" "% parameter" "\"" -- parameter_as_string
     | "\"" "% rewrite" "\"" -- rewrite_as_string
-    | ~"% parameter" ~"% rewrite" any -- basic
+    | ~"}" ~"% parameter" ~"% rewrite" any -- basic
 
   name  (a name)
     = nameFirst nameRest*
@@ -143,23 +143,33 @@ _.set_top (return_value_stack, `\nlet ${name}_stack = [];${_.memo_parameter (`${
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-grammarDef : function (__g, _ws, _name, _rules, ) {
-//_g,ws,name,rules
+grammarDef : function (__g, _ws, _name, _ws2, _lb, _ws3, _rules, _ws4, _rb, ) {
+//_g,ws,name,ws2,lb,ws3,rules,ws4,rb
 let _g = undefined;
 let ws = undefined;
 let name = undefined;
+let ws2 = undefined;
+let lb = undefined;
+let ws3 = undefined;
 let rules = undefined;
+let ws4 = undefined;
+let rb = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "grammarDef");
 _g = __g.rwr ()
 ws = _ws.rwr ()
 name = _name.rwr ()
+ws2 = _ws2.rwr ()
+lb = _lb.rwr ()
+ws3 = _ws3.rwr ()
 rules = _rules.rwr ().join ('')
+ws4 = _ws4.rwr ()
+rb = _rb.rwr ()
 
 
 _.set_top (return_value_stack, `
-const grammar = String.raw\`
+const t2t_grammar = String.raw\`
 ${name} {
 ${rules}
 }
@@ -169,17 +179,29 @@ ${rules}
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
-rewriteDef : function (__r, _ws, _rewriteRules, ) {
-//_r,ws,rewriteRules
+rewriteDef : function (__r, _ws, _name, _ws2, _lb, _ws3, _rewriteRules, _ws4, _rb, ) {
+//_r,ws,name,ws2,lb,ws3,rewriteRules,ws4,rb
 let _r = undefined;
 let ws = undefined;
+let name = undefined;
+let ws2 = undefined;
+let lb = undefined;
+let ws3 = undefined;
 let rewriteRules = undefined;
+let ws4 = undefined;
+let rb = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteDef");
 _r = __r.rwr ()
 ws = _ws.rwr ()
+name = _name.rwr ()
+ws2 = _ws2.rwr ()
+lb = _lb.rwr ()
+ws3 = _ws3.rwr ()
 rewriteRules = _rewriteRules.rwr ().join ('')
+ws4 = _ws4.rwr ()
+rb = _rb.rwr ()
 
 
 _.set_top (return_value_stack, `const rewrite_code = {${rewriteRules}

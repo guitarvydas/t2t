@@ -99,7 +99,7 @@ console.log (result);
   ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
 
   grammarDef [_g ws name ws2 lb ws3 rules+ ws4 rb] = ‛
-const grammar = String.raw\`
+const t2t_grammar = String.raw\`
 «name» {
 «rules»
 }
