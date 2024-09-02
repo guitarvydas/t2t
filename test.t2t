@@ -1,5 +1,4 @@
 % grammar t2t 
-  main = grammarDef
+  Main = "a"
 % rewrite
-  main [grammarDef] = ‛
-blah,blah,blah’
+  Main [c] = ‛hello world «c»’

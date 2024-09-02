@@ -11,22 +11,22 @@ let rule_name_stack = [];
 const grammar = String.raw`
 t2t {
  
-  main = grammarDef
+  Main = "a"
 
 }
 `;
 
 const rewrite_code = {
-main : function (_grammarDef, ) {
-//grammarDef
-let grammarDef = undefined;
+Main : function (_c, ) {
+//c
+let c = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
-_.set_top (rule_name_stack, "main");
-grammarDef = _grammarDef.rwr ()
+_.set_top (rule_name_stack, "Main");
+c = _c.rwr ()
 
-_.set_top (return_value_stack, `
-blah,blah,blah`);
+
+_.set_top (return_value_stack, `hello world ${c}`);
 
 rule_name_stack.pop ();
 return return_value_stack.pop ();

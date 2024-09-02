@@ -2,7 +2,7 @@ SPEC=<your text-to-text specification>.t2t
 
 TEST=<your DSL to be transpiled>
 
-all: regression
+all: testfold
 
 
 # to use t2t, write a spec, then generate your rewriter app
@@ -11,9 +11,14 @@ all: regression
 #	node rewriter.mjs <${TEST}
 
 
+testfold: 
+	make t2t.mjs
+	node t2t.mjs <test.t2t >test.mjs
+	node test.mjs <test.txt
+
 ##
 t2t.mjs: t2t.t2t support.mjs
-	node bootstrap-t2t.mjs <t2t.t2t >t2t.mjs
+	node modified-t2t.mjs <t2t.t2t >t2t.mjs
 
 regression:
 	node modified-t2t.mjs <t2t.t2t >regression.mjs
