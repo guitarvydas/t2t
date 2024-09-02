@@ -1,0 +1,4 @@
+% rewrite
+t2t  {
+  Main [c] = ‛hello world «c»’
+}

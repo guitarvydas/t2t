@@ -1,5 +1,0 @@
-% grammar t2t 
-  main = grammarDef
-% rewrite
-  main [grammarDef] = ‛
-blah,blah,blah’
