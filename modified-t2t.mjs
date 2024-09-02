@@ -368,7 +368,8 @@ ${_.foreach_arg (`let ☐ = undefined;`)}
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "${rwName}");
-«raw»
+${_.args_as_string (``)}
+${raw}
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },`);
@@ -606,7 +607,7 @@ _.post_${name} (\`${s}\`);
 	rule_name_stack.pop ();
 	return return_value_stack.pop ();
     },
-    rewriteScope_raw : function (_x, ) {
+     rewriteScope_raw : function (_x, ) {
 	//x
 	let x = undefined;
 	return_value_stack.push ("");

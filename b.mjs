@@ -18,13 +18,17 @@ t2t {
 
 const rewrite_code = {
 main : function (_grammarDef, ) {
-//grammarDef,grammarDef
-let grammarDef = undefined;
+//grammarDef
 let grammarDef = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "main");
-A
+grammarDef = _grammarDef.rwr ()
+
+
+_.set_top (return_value_stack, `
+blah,blah,blah`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },

@@ -88,7 +88,42 @@ let rewriteDef = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "main");
-«raw»
+grammarDef = _grammarDef.rwr ()
+ParameterDefs = _ParameterDefs.rwr ().join ('')
+rewriteDef = _rewriteDef.rwr ()
+
+
+_.set_top (return_value_stack, `
+'use strict'
+
+import {_} from './support.mjs';
+import * as ohm from 'ohm-js';
+
+let return_value_stack = [];
+let rule_name_stack = [];
+${ParameterDefs}
+${grammarDef}
+${rewriteDef}
+
+function main (src) {
+    let parser = ohm.grammar (grammar);
+    let cst = parser.match (src);
+    if (cst.succeeded ()) {
+	let cstSemantics = parser.createSemantics ();
+	cstSemantics.addOperation ('rwr', rewrite_code);
+	var generated_code = cstSemantics (cst).rwr ();
+	return generated_code;
+    } else {
+        return cst.message;	
+    }
+}
+
+import * as fs from 'fs';
+let src = fs.readFileSync(0, 'utf-8');
+var result = main (src);
+console.log (result);
+`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -99,7 +134,12 @@ let name = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "ParameterDef");
-«raw»
+_p = __p.rwr ()
+name = _name.rwr ()
+
+
+_.set_top (return_value_stack, `\nlet ${name}_stack = [];${_.memo_parameter (`${name}`)}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -112,7 +152,20 @@ let rules = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "grammarDef");
-«raw»
+_g = __g.rwr ()
+ws = _ws.rwr ()
+name = _name.rwr ()
+rules = _rules.rwr ().join ('')
+
+
+_.set_top (return_value_stack, `
+const grammar = String.raw\`
+${name} {
+${rules}
+}
+\`;
+`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -124,7 +177,17 @@ let rewriteRules = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteDef");
-«raw»
+_r = __r.rwr ()
+ws = _ws.rwr ()
+rewriteRules = _rewriteRules.rwr ().join ('')
+
+
+_.set_top (return_value_stack, `const rewrite_code = {${rewriteRules}
+    _terminal: function () { return this.sourceString; },
+    _iter: function (...children) { return children.map(c => c.rwr ()); }
+};
+`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -136,7 +199,13 @@ let rq = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_parameter_as_string");
-«raw»
+lq = _lq.rwr ()
+cs = _cs.rwr ()
+rq = _rq.rwr ()
+
+
+_.set_top (return_value_stack, `"% parameter"`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -148,7 +217,13 @@ let rq = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_rewrite_as_string");
-«raw»
+lq = _lq.rwr ()
+cs = _cs.rwr ()
+rq = _rq.rwr ()
+
+
+_.set_top (return_value_stack, `"% rewrite"`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -158,7 +233,11 @@ let cs = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rule_basic");
-«raw»
+cs = _cs.rwr ()
+
+
+_.set_top (return_value_stack, `${cs}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -169,7 +248,12 @@ let nameRest = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "name");
-«raw»
+nameFirst = _nameFirst.rwr ()
+nameRest = _nameRest.rwr ().join ('')
+
+
+_.set_top (return_value_stack, `${nameFirst}${nameRest}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -179,7 +263,11 @@ let c = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "nameFirst");
-«raw»
+c = _c.rwr ()
+
+
+_.set_top (return_value_stack, `${c}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -189,7 +277,11 @@ let c = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "nameRest");
-«raw»
+c = _c.rwr ()
+
+
+_.set_top (return_value_stack, `${c}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -288,6 +380,7 @@ ${_.foreach_arg (`let ☐ = undefined;`)}
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "${rwName}");
+${_.args_as_string (``)}
 ${raw}
 rule_name_stack.pop ();
 return return_value_stack.pop ();
@@ -354,7 +447,11 @@ let name = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwRuleName");
-«raw»
+name = _name.rwr ()
+
+
+_.set_top (return_value_stack, `${name}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -364,7 +461,11 @@ let name = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwArgDef");
-«raw»
+name = _name.rwr ()
+
+
+_.set_top (return_value_stack, `_${name}, ${_.memo_arg (`${name}`, `☐ = _☐.rwr ()\n`)}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -375,7 +476,12 @@ let op = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwIterArgDef");
-«raw»
+name = _name.rwr ()
+op = _op.rwr ()
+
+
+_.set_top (return_value_stack, `_${name}, ${_.memo_arg (`${name}`, `☐ % _☐.rwr ().join ('')\n`)}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -388,7 +494,14 @@ let op = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwParenthesizedIterArgDef");
-«raw»
+lb = _lb.rwr ()
+defs = _defs.rwr ().join ('')
+rb = _rb.rwr ()
+op = _op.rwr ()
+
+
+_.set_top (return_value_stack, `${defs}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -398,7 +511,11 @@ let def = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwParameterDef");
-«raw»
+def = _def.rwr ()
+
+
+_.set_top (return_value_stack, `${def}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -408,7 +525,11 @@ let name = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwArgRef");
-«raw»
+name = _name.rwr ()
+
+
+_.set_top (return_value_stack, `${name}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -419,7 +540,12 @@ let ws = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rwParenArgDef");
-«raw»
+name = _name.rwr ()
+ws = _ws.rwr ()
+
+
+_.set_top (return_value_stack, `_${name}, ${_.memo_arg (`${name}`, `☐ = _☐.rwr ().join ('')\n`)}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -442,7 +568,27 @@ let ws7 = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_within_support_wrapper");
-«raw»
+lb = _lb.rwr ()
+ws1 = _ws1.rwr ()
+lb2 = _lb2.rwr ()
+ws2 = _ws2.rwr ()
+name = _name.rwr ()
+ws3 = _ws3.rwr ()
+s = _s.rwr ()
+ws4 = _ws4.rwr ()
+rb2 = _rb2.rwr ()
+ws5 = _ws5.rwr ()
+scope = _scope.rwr ()
+ws6 = _ws6.rwr ()
+rb = _rb.rwr ()
+ws7 = _ws7.rwr ()
+
+
+_.set_top (return_value_stack, `
+_.pre_${name} (\`${s}\`);
+${scope}
+_.post_${name} (\`${s}\`);`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -463,7 +609,22 @@ let ws6 = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_with_parameter");
-«raw»
+lb = _lb.rwr ()
+ws1 = _ws1.rwr ()
+name = _name.rwr ()
+ws2 = _ws2.rwr ()
+_eq = __eq.rwr ()
+ws3 = _ws3.rwr ()
+rewriteFormatString = _rewriteFormatString.rwr ()
+ws4 = _ws4.rwr ()
+rewriteScope = _rewriteScope.rwr ()
+ws5 = _ws5.rwr ()
+rb = _rb.rwr ()
+ws6 = _ws6.rwr ()
+
+
+_.set_top (return_value_stack, `_.set_top (${name}_stack, \`${rewriteFormatString}\`);\n${rewriteScope}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -473,7 +634,11 @@ let x = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScope_raw");
-«raw»
+x = _x.rwr ()
+
+
+_.set_top (return_value_stack, `${x}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -483,7 +648,11 @@ let rewriteFormatString = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteScopeRaw");
-«raw»
+rewriteFormatString = _rewriteFormatString.rwr ()
+
+
+_.set_top (return_value_stack, `\n_.set_top (return_value_stack, \`${rewriteFormatString}\`);\n`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -495,7 +664,13 @@ let rq = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "rewriteFormatString");
-«raw»
+lq = _lq.rwr ()
+formatChars = _formatChars.rwr ().join ('')
+rq = _rq.rwr ()
+
+
+_.set_top (return_value_stack, `${formatChars}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -511,7 +686,17 @@ let rb = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_support_interpolation");
-«raw»
+lb = _lb.rwr ()
+ws1 = _ws1.rwr ()
+name = _name.rwr ()
+ws2 = _ws2.rwr ()
+interpolation_args = _interpolation_args.rwr ()
+ws3 = _ws3.rwr ()
+rb = _rb.rwr ()
+
+
+_.set_top (return_value_stack, `\$\{_.${name} (${interpolation_args})\}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -523,7 +708,13 @@ let rb = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_arg_interpolation");
-«raw»
+lb = _lb.rwr ()
+rwRef = _rwRef.rwr ()
+rb = _rb.rwr ()
+
+
+_.set_top (return_value_stack, `\$\{${rwRef}\}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -535,7 +726,13 @@ let rb = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_parameter_interpolation");
-«raw»
+lb = _lb.rwr ()
+rwRef = _rwRef.rwr ()
+rb = _rb.rwr ()
+
+
+_.set_top (return_value_stack, `\$\{_.top (${rwRef}_stack)\}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -546,7 +743,12 @@ let c = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_escaped");
-«raw»
+_bslash = __bslash.rwr ()
+c = _c.rwr ()
+
+
+_.set_top (return_value_stack, `${_bslash}${c}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -556,7 +758,11 @@ let c = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "formatChar_raw_character");
-«raw»
+c = _c.rwr ()
+
+
+_.set_top (return_value_stack, `${c}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -572,7 +778,17 @@ let rb = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "before");
-«raw»
+lb = _lb.rwr ()
+ws1 = _ws1.rwr ()
+name = _name.rwr ()
+ws2 = _ws2.rwr ()
+before_args = _before_args.rwr ()
+ws3 = _ws3.rwr ()
+rb = _rb.rwr ()
+
+
+_.set_top (return_value_stack, `_.${name} (${before_args})`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -583,7 +799,12 @@ let more = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "supportArgsForInterpolation");
-«raw»
+s = _s.rwr ()
+more = _more.rwr ().join ('')
+
+
+_.set_top (return_value_stack, `\`${s}\`${more}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -594,7 +815,12 @@ let s = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "wsRewriteFormatString_for_interpolation");
-«raw»
+ws = _ws.rwr ()
+s = _s.rwr ()
+
+
+_.set_top (return_value_stack, `, \`${s}\``);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -605,7 +831,12 @@ let more = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "supportArgsForBefore");
-«raw»
+s = _s.rwr ()
+more = _more.rwr ().join ('')
+
+
+_.set_top (return_value_stack, `\`${s}\`${more}`);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
@@ -616,7 +847,12 @@ let s = undefined;
 return_value_stack.push ("");
 rule_name_stack.push ("");
 _.set_top (rule_name_stack, "wsRewriteFormatString_for_before");
-«raw»
+ws = _ws.rwr ()
+s = _s.rwr ()
+
+
+_.set_top (return_value_stack, `, \`${s}\``);
+
 rule_name_stack.pop ();
 return return_value_stack.pop ();
 },
