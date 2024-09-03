@@ -1,10 +1,18 @@
-SPEC=<your text-to-text specification>.t2t
+# usage: node t2t.mjs <grammar> <rewrite> <src>
+#  this simply runs the program in <src> using the new syntax defined by <grammar> and <rewrite>
+#  basically, this lets you define a new DSL ("SCN" - Solution Centric Notation), and write and run a program written in the new DSL
 
-TEST=<your DSL to be transpiled>
+# for power-users (not recommended): node t2t-gen.mjs <grammar> <rewrite>
+#  this creates a Javascript program that can be used to parse and run the new syntax given by <grammar> and <rewrite>
+#  instead of actually running the new DSL, as above, this just creates a .js program that can inhale code written in the new DSL and
+#  produces a .js program that can run programs written in the new DSL
 
-all: testfold
+# wish-list: t2t.mjs and t2t-gen.mjs are incredibly similar give or take a few lines of code
+#  I guess that they should both be combined into a single program, but, I don't have the energy to do this right now, help would be appreciated
 
-testfold:
+all: testt2t
+
+testt2t:
 	node t2t.mjs test.grammar test.rewrite test.txt
 
 ##
