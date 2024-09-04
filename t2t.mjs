@@ -841,7 +841,6 @@ let srcFilename = argv[2];
 let dslGrammar = fs.readFileSync(dslGrammarFilename, 'utf-8');
 let dslRewrite = fs.readFileSync(dslRewriteFilename, 'utf-8');
 var generated = transpile_t2t (t2t_grammar, dslRewrite);
-if (srcFilename) {
     var boilerplate = `
 
     function t2t_phase2 (grammr, sem, scn) {
@@ -859,11 +858,9 @@ if (srcFilename) {
 
     t2t_phase2 (dslGrammar, rewrite_js, src);
     `;
+var phase2 = generated + boilerplate;
+if (srcFilename) {
     let src = fs.readFileSync(srcFilename, 'utf-8');
-    
-    var phase2 = generated + boilerplate;
-    console.log (phase2);
-    
     var result = eval (phase2);
     console.log (result);
 } else {
