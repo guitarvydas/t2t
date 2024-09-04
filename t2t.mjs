@@ -841,6 +841,7 @@ let srcFilename = argv[2];
 let dslGrammar = fs.readFileSync(dslGrammarFilename, 'utf-8');
 let dslRewrite = fs.readFileSync(dslRewriteFilename, 'utf-8');
 var generated = transpile_t2t (t2t_grammar, dslRewrite);
+if (srcFilename) {
     var boilerplate = `
 
     function t2t_phase2 (grammr, sem, scn) {
@@ -858,13 +859,44 @@ var generated = transpile_t2t (t2t_grammar, dslRewrite);
 
     t2t_phase2 (dslGrammar, rewrite_js, src);
     `;
-var phase2 = generated + boilerplate;
-if (srcFilename) {
+    var phase2 = generated + boilerplate;
     let src = fs.readFileSync(srcFilename, 'utf-8');
     var result = eval (phase2);
     console.log (result);
 } else {
-    console.log (phase2);
+    var pre_boilerplate = `
+	'use strict'
+
+	import {_} from './support.mjs';
+	import * as ohm from 'ohm-js';
+
+	let return_value_stack = [];
+	let rule_name_stack = [];
+
+	const grammar = String.raw\`
+    `;
+    var mid_boilerplate = `\`;`;
+    var post_boilerplate = `
+	function main (src) {
+	    let parser = ohm.grammar (grammar);
+	    let cst = parser.match (src);
+	    if (cst.succeeded ()) {
+		let cstSemantics = parser.createSemantics ();
+		cstSemantics.addOperation ('rwr', rewrite_js);
+		var generated_code = cstSemantics (cst).rwr ();
+		return generated_code;
+	    } else {
+		return cst.message;	
+	    }
+	}
+
+	import * as fs from 'fs';
+	let src = fs.readFileSync(0, 'utf-8');
+	var result = main (src);
+	console.log (result);
+    `;
+    var program = pre_boilerplate + dslGrammar + mid_boilerplate + generated + post_boilerplate;
+    console.log (program);
 }
 
 

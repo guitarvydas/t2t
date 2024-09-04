@@ -148,9 +148,10 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
+    "#regression.mjs#",
+    "#t2t.mjs#",
     "#junk.js#",
     "temp/#diff.rewrite#",
-    "#t2t.mjs#",
     "run-template.js",
     "temp/#modified-junk.mjs#",
     "temp/modified-junk.mjs~",
@@ -158,7 +159,6 @@
     "temp/modified-junk.mjs",
     "temp/modified-junk.js~",
     "temp/modified-junk.js",
-    "temp/orig-temp.js",
     "temp/NOTES.md",
     "doc/t2t workflow.png",
     "IDEwip/t2t IDE-3.png"
