@@ -85,6 +85,7 @@ rewriteDef = _rewriteDef.rwr ()
 _.set_top (return_value_stack, `
 ${ParameterDefs}
 ${rewriteDef}
+
 `);
 
 rule_name_stack.pop ();
@@ -137,18 +138,6 @@ _.set_top (return_value_stack, `const rewrite_js = {${rewriteRules}
 };
 
 
-function transpile_t2t (grammar_spec, rewrite_spec) {
-    let parser = ohm.grammar (grammar_spec);
-    let cst = parser.match (rewrite_spec);
-    if (cst.succeeded ()) {
-        let cstSemantics = parser.createSemantics ();
-        cstSemantics.addOperation ('rwr', rewrite_js);
-        var generated_code = cstSemantics (cst).rwr ();
-        return generated_code;
-    } else {
-        return cst.message;     
-    }
-}
 `);
 
 rule_name_stack.pop ();
@@ -793,6 +782,7 @@ return return_value_stack.pop ();
 };
 
 
+// ~~~~~~ stock main ~~~~~~
         function main (src) {
             let parser = ohm.grammar (grammar);
             let cst = parser.match (src);

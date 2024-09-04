@@ -1,7 +1,8 @@
 % rewrite t2t {
   main [ParameterDefs* rewriteDef] = ‛
-«ParameterDefs»
-«rewriteDef»
+${ParameterDefs}
+${rewriteDef}
+
 ’
 
   ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
@@ -12,18 +13,6 @@
 };
 
 
-function transpile_t2t (grammar_spec, rewrite_spec) {
-    let parser = ohm.grammar (grammar_spec);
-    let cst = parser.match (rewrite_spec);
-    if (cst.succeeded ()) {
-        let cstSemantics = parser.createSemantics ();
-        cstSemantics.addOperation ('rwr', rewrite_js);
-        var generated_code = cstSemantics (cst).rwr ();
-        return generated_code;
-    } else {
-        return cst.message;     
-    }
-}
 ’
 
   rule_parameter_as_string [lq cs rq] = ‛"% parameter"’

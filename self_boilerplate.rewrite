@@ -1,0 +1,7 @@
+% rewrite self_boilerplate {
+  main [front cut_mark back] = ‛«front»’
+  front [front_char+] = ‛«front_char»’
+  front_char [c] = ‛«c»’
+  back [any+] = ‛’
+  cut_mark [m1 cs* m2 nl] = ‛’
+}

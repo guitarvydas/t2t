@@ -843,6 +843,7 @@ if (srcFilename) {
     `;
     var mid_boilerplate = `\`;`;
     var post_boilerplate = `
+// ~~~~~~ stock main ~~~~~~
         function main (src) {
             let parser = ohm.grammar (grammar);
             let cst = parser.match (src);

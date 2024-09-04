@@ -18,7 +18,8 @@ testt2t-gen:
 	node gen.mjs <test.txt
 
 regression:
-	node t2t.mjs t2t.grammar t2t.rewrite >regression-t2t.mjs
+	node t2t.mjs t2t.grammar t2t.rewrite >temp
+	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite temp >regression-t2t.mjs
 	diff -w -B regression-t2t.mjs t2t.mjs
 	# node regression-t2t.mjs test.grammar test.rewrite test.txt
 
