@@ -1,19 +1,12 @@
 % rewrite t2t {
   main [ParameterDefs* rewriteDef] = ‛
-'use strict'
-
-import {_} from './support.mjs';
-import * as ohm from 'ohm-js';
-
-let return_value_stack = [];
-let rule_name_stack = [];
 «ParameterDefs»
 «rewriteDef»
 ’
 
   ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
 
-  rewriteDef [_r ws name ws2 lb ws3 rewriteRules+ ws4 rb ws5] = ‛const rewrite_code = {«rewriteRules»
+  rewriteDef [_r ws name ws2 lb ws3 rewriteRules+ ws4 rb ws5] = ‛const rewrite_js = {«rewriteRules»
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
 };

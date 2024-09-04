@@ -1,13 +1,13 @@
 
-	'use strict'
+        'use strict'
 
-	import {_} from './support.mjs';
-	import * as ohm from 'ohm-js';
+        import {_} from './support.mjs';
+        import * as ohm from 'ohm-js';
 
-	let return_value_stack = [];
-	let rule_name_stack = [];
+        let return_value_stack = [];
+        let rule_name_stack = [];
 
-	const grammar = String.raw`
+        const grammar = String.raw`
     t2t {
   main = applySyntactic<ParameterDef>* rewriteDef
 
@@ -83,13 +83,6 @@ rewriteDef = _rewriteDef.rwr ()
 
 
 _.set_top (return_value_stack, `
-'use strict'
-
-import {_} from './support.mjs';
-import * as ohm from 'ohm-js';
-
-let return_value_stack = [];
-let rule_name_stack = [];
 ${ParameterDefs}
 ${rewriteDef}
 `);
@@ -138,7 +131,7 @@ rb = _rb.rwr ()
 ws5 = _ws5.rwr ()
 
 
-_.set_top (return_value_stack, `const rewrite_code = {${rewriteRules}
+_.set_top (return_value_stack, `const rewrite_js = {${rewriteRules}
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
@@ -786,21 +779,21 @@ return return_value_stack.pop ();
 };
 
 
-	function main (src) {
-	    let parser = ohm.grammar (grammar);
-	    let cst = parser.match (src);
-	    if (cst.succeeded ()) {
-		let cstSemantics = parser.createSemantics ();
-		cstSemantics.addOperation ('rwr', rewrite_js);
-		var generated_code = cstSemantics (cst).rwr ();
-		return generated_code;
-	    } else {
-		return cst.message;	
-	    }
-	}
+        function main (src) {
+            let parser = ohm.grammar (grammar);
+            let cst = parser.match (src);
+            if (cst.succeeded ()) {
+                let cstSemantics = parser.createSemantics ();
+                cstSemantics.addOperation ('rwr', rewrite_js);
+                var generated_code = cstSemantics (cst).rwr ();
+                return generated_code;
+            } else {
+                return cst.message;     
+            }
+        }
 
-	import * as fs from 'fs';
-	let src = fs.readFileSync(0, 'utf-8');
-	var result = main (src);
-	console.log (result);
+        import * as fs from 'fs';
+        let src = fs.readFileSync(0, 'utf-8');
+        var result = main (src);
+        console.log (result);
     
