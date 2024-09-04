@@ -1,83 +1,4 @@
 
-'use strict'
-
-import {_} from './support.mjs';
-import * as ohm from 'ohm-js';
-
-let return_value_stack = [];
-let rule_name_stack = [];
-
-
-const t2t_grammar = String.raw`
-t2t {
- 
-  main = applySyntactic<ParameterDef>* rewriteDef
-
-  ParameterDef = "% parameter" name
-  rewriteDef = "% rewrite" spaces name spaces "{" spaces rewriteRule+ spaces "}" spaces
-
-
-  // just pass the grammar through to OhmJS - it parses and checks the grammar
-  rule =
-    | "\"" "% parameter" "\"" -- parameter_as_string
-    | "\"" "% rewrite" "\"" -- rewrite_as_string
-    | ~"% parameter" ~"% rewrite" any -- basic
-
-  name  (a name)
-    = nameFirst nameRest*
-
-  nameFirst
-    = "_"
-    | letter
-
-  nameRest
-    = "_"
-    | alnum
-
-
-  // rewrite parsing section
-  rewriteRule = 
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScopeRaw spaces -- plain_no_scope
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
-
-  rwRuleName = name
-  rwArgDef = name
-  rwIterArgDef = name ("+" | "*" | "?")
-  rwParenthesizedIterArgDef = "(" rwParenArgDef+ ")" ("+" | "*" | "?")
-  rwParameterDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwArgDef)
-  rwParenArgDef = name spaces
-
-  rwArgRef = name
-
-  rewriteScope =
-    | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
-    | "⎡" spaces name spaces "=" spaces rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
-    | rewriteScopeRaw -- raw
-  rewriteScopeRaw = #rewriteFormatString
-  
-  rewriteFormatString = "‛" formatChar* "’"
-  formatChar =
-    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
-    | "⟪" rwArgRef "⟫" -- parameter_interpolation
-    | "«" rwArgRef "»" -- arg_interpolation
-    | "\\" any -- escaped
-    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
-
-  before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
-
-  supportArgsForInterpolation = rewriteFormatString wsRewriteFormatString_for_interpolation*
-  wsRewriteFormatString_for_interpolation = spaces rewriteFormatString
-  supportArgsForBefore = rewriteFormatString wsRewriteFormatString_for_before*
-  wsRewriteFormatString_for_before = spaces rewriteFormatString
-
-
-
-
-
-}
-`;
-
 const t2t_rewrite_code = {
     main : function (_ParameterDefs, _rewriteDef, ) {
 	//ParameterDefs,rewriteDef
@@ -93,6 +14,22 @@ const t2t_rewrite_code = {
 	_.set_top (return_value_stack, `
 ${ParameterDefs}
 ${rewriteDef}
+
+function t2t_phase2 (grammr, sem, scn) {
+    let parser = ohm.grammar (grammr);
+    let cst = parser.match (src);
+    if (cst.succeeded ()) {
+	let cstSemantics = parser.createSemantics ();
+	cstSemantics.addOperation ('rwr', sem);
+	var generated_code = cstSemantics (cst).rwr ();
+	return generated_code;
+    } else {
+        return cst.message;	
+    }
+}
+
+t2t_phase2 (dslGrammar, rewrite_js, src);
+
 `);
 
 	rule_name_stack.pop ();
@@ -819,6 +756,7 @@ _.post_${name} (\`${s}\`);`);
     _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
 
+------------
 
 function transpile_t2t (grammar_spec, rewrite_spec) {
     let parser = ohm.grammar (grammar_spec);
@@ -840,30 +778,9 @@ let dslRewriteFilename = argv[1];
 let srcFilename = argv[2];
 let dslGrammar = fs.readFileSync(dslGrammarFilename, 'utf-8');
 let dslRewrite = fs.readFileSync(dslRewriteFilename, 'utf-8');
-var generated = transpile_t2t (t2t_grammar, dslRewrite);
+var phase2 = transpile_t2t (t2t_grammar, dslRewrite);
 if (srcFilename) {
-    var boilerplate = `
-
-    function t2t_phase2 (grammr, sem, scn) {
-	let parser = ohm.grammar (grammr);
-	let cst = parser.match (src);
-	if (cst.succeeded ()) {
-	    let cstSemantics = parser.createSemantics ();
-	    cstSemantics.addOperation ('rwr', sem);
-	    var generated_code = cstSemantics (cst).rwr ();
-	    return generated_code;
-	} else {
-	    return cst.message;	
-	}
-    }
-
-    t2t_phase2 (dslGrammar, rewrite_js, src);
-    `;
     let src = fs.readFileSync(srcFilename, 'utf-8');
-    
-    var phase2 = generated + boilerplate;
-    console.log (phase2);
-    
     var result = eval (phase2);
     console.log (result);
 } else {

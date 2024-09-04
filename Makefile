@@ -15,7 +15,12 @@ all: testt2t
 testt2t:
 	node t2t.mjs test.grammar test.rewrite test.txt
 
-##
+testt2t-gen:
+	node t2t.mjs test.grammar test.rewrite
+
+
+## obsolete - used during bootstrapping...
+
 t2t-gen.mjs: t2t-gen.t2t support.mjs
 	node phase1-t2t.mjs <t2t-gen.t2t >t2t-gen.mjs
 
