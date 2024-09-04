@@ -1,0 +1,54 @@
+--- main ---
+
+'use strict'
+
+import {_} from './support.mjs';
+import * as ohm from 'ohm-js';
+
+let return_value_stack = [];
+let rule_name_stack = [];
+«ParameterDefs»
+«grammarDef»
+«rewriteDef»
+
+function main (src) {
+    let parser = ohm.grammar (grammar);
+    let cst = parser.match (src);
+    if (cst.succeeded ()) {
+	let cstSemantics = parser.createSemantics ();
+	cstSemantics.addOperation ('rwr', rewrite_code);
+	var generated_code = cstSemantics (cst).rwr ();
+	return generated_code;
+    } else {
+        return cst.message;	
+    }
+}
+
+import * as fs from 'fs';
+let src = fs.readFileSync(0, 'utf-8');
+var result = main (src);
+console.log (result);
+’
+
+  ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
+
+  grammarDef [_g ws name rules+] = ‛
+const grammar = String.raw\`
+«name» {
+«rules»
+}
+\`;
+
+------
+
+
+  grammarDef [_g ws name rules+] = ‛
+const grammar = String.raw\`
+«name» {
+«rules»
+}
+\`;
+’
+
+------
+

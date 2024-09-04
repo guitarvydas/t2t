@@ -148,32 +148,19 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
-<<<<<<< HEAD
-    "test.t2t",
-    "t2t.t2t",
-    "modified-t2t.mjs",
-    "t2t-gen.mjs",
-    "t2t-gen.t2t",
-=======
-    "test.txt",
-    "test.rewrite",
-    "test.grammar",
-    "t2t.mjs",
-    "t2t-gen.t2t",
-    "t2t-gen.mjs",
-    "phase1-t2t.mjs",
->>>>>>> fold
+    "#regression.mjs#",
+    "#t2t.mjs#",
+    "#junk.js#",
+    "temp/#diff.rewrite#",
+    "run-template.js",
+    "temp/#modified-junk.mjs#",
+    "temp/modified-junk.mjs~",
+    "temp/support.mjs",
+    "temp/modified-junk.mjs",
+    "temp/modified-junk.js~",
+    "temp/modified-junk.js",
+    "temp/NOTES.md",
     "doc/t2t workflow.png",
-    "doc/t2t workflow.excalidraw",
-    "IDEwip/t2t IDE-4.excalidraw",
-    "IDEwip/t2t IDE-3.png",
-    "IDEwip",
-<<<<<<< HEAD
-    "phase1-t2t.mjs",
-    "#Makefile#",
-    "#experimental-t2t.mjs#"
-=======
-    "test.t2t"
->>>>>>> fold
+    "IDEwip/t2t IDE-3.png"
   ]
 }

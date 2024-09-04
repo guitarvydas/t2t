@@ -1,0 +1,62 @@
+  main = grammarDef applySyntactic<ParameterDef>* rewriteDef
+
+  grammarDef = "% grammar" spaces name rule+
+  ParameterDef = "% parameter" name
+  rewriteDef = "% rewrite" spaces rewriteRule+
+
+
+  // just pass the grammar through to OhmJS - it parses and checks the grammar
+  rule =
+    | "\"" "% parameter" "\"" -- parameter_as_string
+    | "\"" "% rewrite" "\"" -- rewrite_as_string
+    | ~"% parameter" ~"% rewrite" any -- basic
+
+  name  (a name)
+    = nameFirst nameRest*
+
+  nameFirst
+    = "_"
+    | letter
+
+  nameRest
+    = "_"
+    | alnum
+
+
+  // rewrite parsing section
+  rewriteRule = 
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScopeRaw spaces -- plain_no_scope
+    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
+
+  rwRuleName = name
+  rwArgDef = name
+  rwIterArgDef = name ("+" | "*" | "?")
+  rwParenthesizedIterArgDef = "(" rwParenArgDef+ ")" ("+" | "*" | "?")
+  rwParameterDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwArgDef)
+  rwParenArgDef = name spaces
+
+  rwArgRef = name
+
+  rewriteScope =
+    | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
+    | "⎡" spaces name spaces "=" spaces rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
+    | rewriteScopeRaw -- raw
+  rewriteScopeRaw = #rewriteFormatString
+  
+  rewriteFormatString = "‛" formatChar* "’"
+  formatChar =
+    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
+    | "⟪" rwArgRef "⟫" -- parameter_interpolation
+    | "«" rwArgRef "»" -- arg_interpolation
+    | "\\" any -- escaped
+    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
+
+  before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
+
+  supportArgsForInterpolation = rewriteFormatString wsRewriteFormatString_for_interpolation*
+  wsRewriteFormatString_for_interpolation = spaces rewriteFormatString
+  supportArgsForBefore = rewriteFormatString wsRewriteFormatString_for_before*
+  wsRewriteFormatString_for_before = spaces rewriteFormatString
+
+
