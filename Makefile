@@ -14,7 +14,8 @@ testt2t:
 	node t2t.mjs test.grammar test.rewrite test.txt
 
 testt2t-gen:
-	node t2t.mjs test.grammar test.rewrite
+	node t2t.mjs test.grammar test.rewrite >gen.mjs
+	node gen.mjs <test.txt
 
 regression:
 	node t2t.mjs t2t.grammar t2t.rewrite >regression-t2t.mjs

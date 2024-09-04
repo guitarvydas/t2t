@@ -148,6 +148,9 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
+    "gen.mjs",
+    "gen.js",
+    "#t2t.rewrite#",
     "junk~",
     "#t2t.mjs#",
     "regression-t2t.mjs~",
@@ -156,9 +159,6 @@
     "t2t.grammar~",
     "junk",
     "#t2t.grammar#",
-    "#Makefile#",
-    "t2t.rewrite~",
-    "t2t.rewrite",
     "temp/NOTES.md",
     "doc/t2t workflow.png",
     "IDEwip/t2t IDE-3.png"

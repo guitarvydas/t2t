@@ -10,20 +10,6 @@
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
-
-
-function transpile_t2t (grammar_spec, rewrite_spec) {
-    let parser = ohm.grammar (grammar_spec);
-    let cst = parser.match (rewrite_spec);
-    if (cst.succeeded ()) {
-        let cstSemantics = parser.createSemantics ();
-        cstSemantics.addOperation ('rwr', rewrite_js);
-        var generated_code = cstSemantics (cst).rwr ();
-        return generated_code;
-    } else {
-        return cst.message;     
-    }
-}
 ’
 
   rule_parameter_as_string [lq cs rq] = ‛"% parameter"’
