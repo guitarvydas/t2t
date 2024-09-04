@@ -25,7 +25,7 @@ let _ = {
     },
 
     foreach_arg : function (str) {
-        let s = [`//${_.argnames}`];
+        let s = [];
         _.argnames.forEach (p => s.push (str.replaceAll ("☐", `${p}`)));
         return s.join ('\n');
     },

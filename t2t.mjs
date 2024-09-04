@@ -8,7 +8,7 @@ let return_value_stack = [];
 let rule_name_stack = [];
 
 
-const t2t_grammar = String.raw`
+const grammar = String.raw`
 t2t {
  
   main = applySyntactic<ParameterDef>* rewriteDef
@@ -78,9 +78,8 @@ t2t {
 }
 `;
 
-const t2t_rewrite_code = {
+const rewrite_js = {
     main : function (_ParameterDefs, _rewriteDef, ) {
-	//ParameterDefs,rewriteDef
 	let ParameterDefs = undefined;
 	let rewriteDef = undefined;
 	return_value_stack.push ("");
@@ -99,7 +98,6 @@ ${rewriteDef}
 	return return_value_stack.pop ();
     },
     ParameterDef : function (__p, _name, ) {
-	//_p,name
 	let _p = undefined;
 	let name = undefined;
 	return_value_stack.push ("");
@@ -115,7 +113,6 @@ ${rewriteDef}
 	return return_value_stack.pop ();
     },
     rewriteDef : function (__r, _ws, _name, _ws2, _lb, _ws3, _rewriteRules, _ws4, _rb, _ws5) {
-	//_r,ws,rewriteRules
 	let _r = undefined;
 	let ws = undefined;
 	let rewriteRules = undefined;
@@ -151,7 +148,6 @@ ${rewriteDef}
 	return return_value_stack.pop ();
     },
     rule_parameter_as_string : function (_lq, _cs, _rq, ) {
-	//lq,cs,rq
 	let lq = undefined;
 	let cs = undefined;
 	let rq = undefined;
@@ -169,7 +165,6 @@ ${rewriteDef}
 	return return_value_stack.pop ();
     },
     rule_rewrite_as_string : function (_lq, _cs, _rq, ) {
-	//lq,cs,rq
 	let lq = undefined;
 	let cs = undefined;
 	let rq = undefined;
@@ -187,7 +182,6 @@ ${rewriteDef}
 	return return_value_stack.pop ();
     },
     rule_basic : function (_cs, ) {
-	//cs
 	let cs = undefined;
 	return_value_stack.push ("");
 	rule_name_stack.push ("");
@@ -217,7 +211,6 @@ ${rewriteDef}
 	return return_value_stack.pop ();
     },
     nameFirst : function (_c, ) {
-	//c
 	let c = undefined;
 	return_value_stack.push ("");
 	rule_name_stack.push ("");
@@ -245,7 +238,6 @@ ${rewriteDef}
 	return return_value_stack.pop ();
     },
     rewriteRule_withbefore : function (_rwName, _ws1, _lb, _ws2, _rwParameterDefs, _ws3, _rb, _ws4, _before, _ws7, __eq, _ws5, _rewriteScope, _ws6, ) {
-	//rwName,ws1,lb,ws2,rwParameterDefs,ws3,rb,ws4,before,ws7,_eq,ws5,rewriteScope,ws6
 	let rwName = undefined;
 	let ws1 = undefined;
 	let lb = undefined;
@@ -301,7 +293,6 @@ return return_value_stack.pop ();
 	return return_value_stack.pop ();
     },
     rewriteRule_plain_no_scope : function (_rwName, _ws1, _lb, _ws2, _rwParameterDefs, _ws3, _rb, _ws4, __eq, _ws5, _raw, _ws6, ) {
-	//rwName,ws1,lb,ws2,rwParameterDefs,ws3,rb,ws4,_eq,ws5,raw,ws6
 	let rwName = undefined;
 	let ws1 = undefined;
 	let lb = undefined;
@@ -350,7 +341,6 @@ return return_value_stack.pop ();
 	return return_value_stack.pop ();
     },
     rewriteRule_plain : function (_rwName, _ws1, _lb, _ws2, _rwParameterDefs, _ws3, _rb, _ws4, __eq, _ws5, _rewriteScope, _ws6, ) {
-	//rwName,ws1,lb,ws2,rwParameterDefs,ws3,rb,ws4,_eq,ws5,rewriteScope,ws6
 	let rwName = undefined;
 	let ws1 = undefined;
 	let lb = undefined;
@@ -429,7 +419,6 @@ return return_value_stack.pop ();
 	return return_value_stack.pop ();
     },
     rwIterArgDef : function (_name, _op, ) {
-	//name,op
 	let name = undefined;
 	let op = undefined;
 	return_value_stack.push ("");
@@ -445,7 +434,6 @@ return return_value_stack.pop ();
 	return return_value_stack.pop ();
     },
     rwParenthesizedIterArgDef : function (_lb, _defs, _rb, _op, ) {
-	//lb,defs,rb,op
 	let lb = undefined;
 	let defs = undefined;
 	let rb = undefined;
@@ -465,7 +453,6 @@ return return_value_stack.pop ();
 	return return_value_stack.pop ();
     },
     rwParameterDef : function (_def, ) {
-	//def
 	let def = undefined;
 	return_value_stack.push ("");
 	rule_name_stack.push ("");
@@ -479,7 +466,6 @@ return return_value_stack.pop ();
 	return return_value_stack.pop ();
     },
     rwArgRef : function (_name, ) {
-	//name
 	let name = undefined;
 	return_value_stack.push ("");
 	rule_name_stack.push ("");
@@ -493,7 +479,6 @@ return return_value_stack.pop ();
 	return return_value_stack.pop ();
     },
     rwParenArgDef : function (_name, _ws, ) {
-	//name,ws
 	let name = undefined;
 	let ws = undefined;
 	return_value_stack.push ("");
@@ -509,7 +494,6 @@ return return_value_stack.pop ();
 	return return_value_stack.pop ();
     },
     rewriteScope_within_support_wrapper : function (_lb, _ws1, _lb2, _ws2, _name, _ws3, _s, _ws4, _rb2, _ws5, _scope, _ws6, _rb, _ws7, ) {
-	//lb,ws1,lb2,ws2,name,ws3,s,ws4,rb2,ws5,scope,ws6,rb,ws7
 	let lb = undefined;
 	let ws1 = undefined;
 	let lb2 = undefined;
@@ -552,7 +536,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     rewriteScope_with_parameter : function (_lb, _ws1, _name, _ws2, __eq, _ws3, _rewriteFormatString, _ws4, _rewriteScope, _ws5, _rb, _ws6, ) {
-	//lb,ws1,name,ws2,_eq,ws3,rewriteFormatString,ws4,rewriteScope,ws5,rb,ws6
 	let lb = undefined;
 	let ws1 = undefined;
 	let name = undefined;
@@ -588,7 +571,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     rewriteScope_raw : function (_x, ) {
-	//x
 	let x = undefined;
 	return_value_stack.push ("");
 	rule_name_stack.push ("");
@@ -602,7 +584,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     rewriteScopeRaw : function (_rewriteFormatString, ) {
-	//rewriteFormatString
 	let rewriteFormatString = undefined;
 	return_value_stack.push ("");
 	rule_name_stack.push ("");
@@ -616,7 +597,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     rewriteFormatString : function (_lq, _formatChars, _rq, ) {
-	//lq,formatChars,rq
 	let lq = undefined;
 	let formatChars = undefined;
 	let rq = undefined;
@@ -634,7 +614,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     formatChar_support_interpolation : function (_lb, _ws1, _name, _ws2, _interpolation_args, _ws3, _rb, ) {
-	//lb,ws1,name,ws2,interpolation_args,ws3,rb
 	let lb = undefined;
 	let ws1 = undefined;
 	let name = undefined;
@@ -660,7 +639,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     formatChar_arg_interpolation : function (_lb, _rwRef, _rb, ) {
-	//lb,rwRef,rb
 	let lb = undefined;
 	let rwRef = undefined;
 	let rb = undefined;
@@ -678,7 +656,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     formatChar_parameter_interpolation : function (_lb, _rwRef, _rb, ) {
-	//lb,rwRef,rb
 	let lb = undefined;
 	let rwRef = undefined;
 	let rb = undefined;
@@ -696,7 +673,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     formatChar_escaped : function (__bslash, _c, ) {
-	//_bslash,c
 	let _bslash = undefined;
 	let c = undefined;
 	return_value_stack.push ("");
@@ -712,7 +688,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     formatChar_raw_character : function (_c, ) {
-	//c
 	let c = undefined;
 	return_value_stack.push ("");
 	rule_name_stack.push ("");
@@ -726,7 +701,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     before : function (_lb, _ws1, _name, _ws2, _before_args, _ws3, _rb, ) {
-	//lb,ws1,name,ws2,before_args,ws3,rb
 	let lb = undefined;
 	let ws1 = undefined;
 	let name = undefined;
@@ -752,7 +726,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     supportArgsForInterpolation : function (_s, _more, ) {
-	//s,more
 	let s = undefined;
 	let more = undefined;
 	return_value_stack.push ("");
@@ -768,7 +741,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     wsRewriteFormatString_for_interpolation : function (_ws, _s, ) {
-	//ws,s
 	let ws = undefined;
 	let s = undefined;
 	return_value_stack.push ("");
@@ -784,7 +756,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     supportArgsForBefore : function (_s, _more, ) {
-	//s,more
 	let s = undefined;
 	let more = undefined;
 	return_value_stack.push ("");
@@ -800,7 +771,6 @@ _.post_${name} (\`${s}\`);`);
 	return return_value_stack.pop ();
     },
     wsRewriteFormatString_for_before : function (_ws, _s, ) {
-	//ws,s
 	let ws = undefined;
 	let s = undefined;
 	return_value_stack.push ("");
@@ -825,7 +795,7 @@ function transpile_t2t (grammar_spec, rewrite_spec) {
     let cst = parser.match (rewrite_spec);
     if (cst.succeeded ()) {
 	let cstSemantics = parser.createSemantics ();
-	cstSemantics.addOperation ('rwr', t2t_rewrite_code);
+	cstSemantics.addOperation ('rwr', rewrite_js);
 	var generated_code = cstSemantics (cst).rwr ();
 	return generated_code;
     } else {
@@ -840,7 +810,7 @@ let dslRewriteFilename = argv[1];
 let srcFilename = argv[2];
 let dslGrammar = fs.readFileSync(dslGrammarFilename, 'utf-8');
 let dslRewrite = fs.readFileSync(dslRewriteFilename, 'utf-8');
-var generated = transpile_t2t (t2t_grammar, dslRewrite);
+var generated = transpile_t2t (grammar, dslRewrite);
 if (srcFilename) {
     var boilerplate = `
 
