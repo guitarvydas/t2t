@@ -148,6 +148,9 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
+    "new-t2t.mjs",
+    "old-t2t.mjs",
+    "t2t.mjs",
     "#self_boilerplate.rewrite#",
     "junk-cut.mjs~",
     "junk.mjs~",
@@ -156,9 +159,6 @@
     "junk-tempmjs",
     "t2t.rewrite",
     "t2t.grammar",
-    "self_boilerplate.rewrite",
-    "self_boilerplate.grammar",
-    "regression-t2t.mjs",
     "temp/NOTES.md",
     "doc/t2t workflow.png",
     "IDEwip/t2t IDE-3.png"

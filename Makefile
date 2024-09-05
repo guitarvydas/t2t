@@ -18,7 +18,7 @@ self:
 	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite >junk-cut.mjs
 	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite junk-temp >new-t2t.mjs
 	mv t2t.mjs old-t2t.mjs
-	mv new-t2t.msj t2t.mjs
+	mv new-t2t.mjs t2t.mjs
 
 regression:
 	node t2t.mjs t2t.grammar t2t.rewrite >junk-tempmjs
