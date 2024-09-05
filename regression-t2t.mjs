@@ -782,22 +782,31 @@ return return_value_stack.pop ();
 };
 
 
-// ~~~~~~ stock main ~~~~~~
-        function main (src) {
-            let parser = ohm.grammar (grammar);
-            let cst = parser.match (src);
-            if (cst.succeeded ()) {
-                let cstSemantics = parser.createSemantics ();
-                cstSemantics.addOperation ('rwr', rewrite_js);
-                var generated_code = cstSemantics (cst).rwr ();
-                return generated_code;
-            } else {
-                return cst.message;     
-            }
-        }
 
-        import * as fs from 'fs';
-        let src = fs.readFileSync(0, 'utf-8');
-        var result = main (src);
-        console.log (result);
-    
+
+function transpile_t2t (grammar_spec, rewrite_spec) {
+    let parser = ohm.grammar (grammar_spec);
+    let cst = parser.match (rewrite_spec);
+    if (cst.succeeded ()) {
+        let cstSemantics = parser.createSemantics ();
+        cstSemantics.addOperation ('rwr', rewrite_js);
+        var generated_code = cstSemantics (cst).rwr ();
+        return generated_code;
+    } else {
+        return cst.message;     
+    }
+}
+
+
+import * as fs from 'fs';
+const argv = process.argv.slice(2);
+let dslGrammarFilename = argv[0];
+let dslRewriteFilename = argv[1];
+let srcFilename = argv[2];
+let dslGrammar = fs.readFileSync(dslGrammarFilename, 'utf-8');
+let dslRewrite = fs.readFileSync(dslRewriteFilename, 'utf-8');
+var generated = transpile_t2t (grammar, dslRewrite);
+if (srcFilename) {
+} else {
+}
+
