@@ -8,20 +8,24 @@
 #  produces a .mjs program that can run programs written in the new DSL
 
 
-all: regression
+all: self
 
 testt2t:
 	node t2t.mjs test.grammar test.rewrite test.txt
 
-testt2t-gen:
-	node t2t.mjs test.grammar test.rewrite >gen.mjs
-	node gen.mjs <test.txt
+self:
+	node t2t.mjs t2t.grammar t2t.rewrite >junk-tempmjs
+	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite >junk-cut.mjs
+	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite junk-temp >new-t2t.mjs
+	mv t2t.mjs old-t2t.mjs
+	mv new-t2t.msj t2t.mjs
 
 regression:
-	node t2t.mjs t2t.grammar t2t.rewrite >junk-temp
+	node t2t.mjs t2t.grammar t2t.rewrite >junk-tempmjs
+	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite >junk-cut.mjs
 	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite junk-temp >regression-t2t.mjs
 	diff -w -B regression-t2t.mjs t2t.mjs
-	# node regression-t2t.mjs test.grammar test.rewrite test.txt
+	node regression-t2t.mjs test.grammar test.rewrite test.txt
 
 
 ##

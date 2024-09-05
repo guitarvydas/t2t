@@ -839,9 +839,9 @@ if (srcFilename) {
         let return_value_stack = [];
         let rule_name_stack = [];
 
-        const grammar = String.raw\`
+        const grammar = String.raw${"`"}
     `;
-    var mid_boilerplate = `\`;`;
+    var mid_boilerplate = "`;";
     var post_boilerplate = `
 // ~~~~~~ stock main ~~~~~~
         function main (src) {
@@ -862,7 +862,7 @@ if (srcFilename) {
         var result = main (src);
         console.log (result);
     `;
-    var program = pre_boilerplate + dslGrammar + mid_boilerplate + generated + post_boilerplate;
+    let program = pre_boilerplate + dslGrammar + mid_boilerplate + generated + post_boilerplate;
     console.log (program);
 }
 
