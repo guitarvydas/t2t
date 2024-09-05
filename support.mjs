@@ -25,7 +25,7 @@ let _ = {
     },
 
     foreach_arg : function (str) {
-        let s = [`//${_.argnames}`];
+        let s = [];
         _.argnames.forEach (p => s.push (str.replaceAll ("☐", `${p}`)));
         return s.join ('\n');
     },
@@ -33,6 +33,8 @@ let _ = {
     memo_arg : function (name, s) { _.argnames.push (name); _.evaled_args.push (s.replaceAll ("☐", `${name}`)); return ""; },
     args_as_string : function () { return _.evaled_args.join (''); },
 
+    insert_grammar_here : function () { return dslGrammar; },
+    
     // for examples
     pre_print : function (s) {console.log (`pre: ${s}`);},
     print : function (s) {console.log (`mid: ${s}`); return "";},

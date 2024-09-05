@@ -1,0 +1,7 @@
+self_boilerplate {
+  main = front cut_mark back
+  front = front_char+
+  front_char = ~cut_mark any
+  back = any+
+  cut_mark = "// ~~~~~~" (~"~~~~~" any)* "~~~~~~" "\n"
+}
