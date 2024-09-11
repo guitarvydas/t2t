@@ -13,22 +13,30 @@ DSLs. You only need to create a grammar and a corresponding rewrite
 specification. Both, the grammar and the rewrite specification are
 contained in a single file with a '*.t2t'* extension.
 
-T2T is a program that inhales a .t2t specification and generates a DSL
+T2T is a program that inhales a specification (pattern match rules + rewrite rules) and generates a DSL
 transpiler program.
 
 The generated DSL is written in Javascript and uses OhmJS.
 
-To run the generated DSL, you can use node.js.
+To compile and run the DSL, you can use node.js.
 
 For example:
 
-    node ../t2t.mjs \<\${SPEC} \>dsl.mjs
-    node dsl.mjs \<\${TEST}
+	node t2t.mjs test.grammar test.rewrite test.txt
 
-The first invocation of *node.js* generates the DSL transpiler.
+- where `t2t.mjs` is the t2t processor
+- where `test.grammar` is the specification of pattern matching rules (called a "grammar")
+- where `test.rewrite` is the specification of the rewriting rules
+- where `test.txt` is some code written using the new DSL syntax
 
-The second invocation of *node.js* runs the DSL transpiler against some
-test script written in the new DSL syntax.
+The output of running `text.txt` goes to `stdout`.
+
+
+Power users can write 
+	`node t2t.mjs test.grammar test.rewrite >newdsl.mjs`
+
+which generates a stand-alone DSL. To run the DSL, you invoke the new DSL with node.js:
+	`node newdsl.mjs <test.txt`
 
 SCNs Are Nano-DSLs
 
@@ -62,13 +70,13 @@ part into parts, and so on.
 This approach creates *many* nano-syntaxes within a single problem
 domain. Many programmers think that this creates too much thinking and
 too much learning. I counter that *any* interesting problem requires
-lots of thinking and learning. Using General Purpose Programming
+lots of thinking and learning, anyway. Using General Purpose Programming
 languages tends to hide and obfuscate the fruits of such thinking -
 readers need to reverse-engineer code in order to understand what the
 original designer was thinking and wanted to accomplish. When the
 original code is written using many little high-level SCNs, the design
 intent[^1] can be captured in a rigorous manner and alleviates future
-readers from having to reverse-engineer the code.
+readers from having to reverse-engineer the code as much.
 
 I suspect that the approach of using many little SCNs is tainted by the
 reality that - until recently - creating DSLs was considered to be an
@@ -77,10 +85,11 @@ Reducing the effort to create new nano-DSLs (SCNs) by at least one order
 of magnitude (i.e. 10x), changes the way that problem solving can be
 approached.
 
-# Example .t2t File
+# Example .grammar File
+
 
 ```
-% grammar example
+example {
   Main = "a" (";" "b")+ "c" "d"+
 
 % parameter sA
