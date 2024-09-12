@@ -28,5 +28,5 @@ clean:
 	rm -rf __pycache__
 
 install-js-requires:
-	npm install yargs prompt-sync
+	npm install yargs prompt-sync ohm-js
 
