@@ -827,8 +827,14 @@ if (srcFilename) {
     var phase2 = generated + boilerplate;
     if ('-' == srcFilename) { srcFilename = 0 }
     let src = fs.readFileSync(srcFilename, 'utf-8');
-    var result = eval (phase2);
-    console.log (result);
+    try {
+	var result = eval (phase2);
+	console.log (result);
+    }
+    catch (e) {
+	console.log (phase2);
+	console.log (e);
+    }
 } else {
     var pre_boilerplate = `
         'use strict'
