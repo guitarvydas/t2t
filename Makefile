@@ -25,7 +25,7 @@ test2t2t:
 	# create a DSL javascript program test2.mjs and run it against a simple, but, useless test2.txt
 	# demonstrating that parameters are being passed downwards during the tree walk
 	node t2t.mjs test2.grammar test2.rewrite >test2.mjs
-	node test2.mjs <test2.txt
+	node test2.mjs test2.txt
 
 self:
 	node t2t.mjs t2t.grammar t2t.rewrite >junk-tempmjs
