@@ -148,8 +148,8 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
-    "NOTES.md",
     "#t2t.mjs#",
+    "NOTES.md",
     "#NOTES.md#",
     "new-t2t.mjs",
     "junk-tempmjs",
@@ -183,7 +183,6 @@
     "node_modules/cliui/README.md",
     "node_modules/cliui/CHANGELOG.md",
     "node_modules/ansi-styles/readme.md",
-    "node_modules/ansi-regex/readme.md",
     "doc/t2t workflow.png",
     "IDEwip/t2t IDE-3.png"
   ]

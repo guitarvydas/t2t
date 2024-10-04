@@ -800,7 +800,6 @@ function transpile_t2t (grammar_spec, rewrite_spec) {
 
 import * as fs from 'fs';
 const argv = process.argv.slice(2);
-console.error (argv);
 let dslGrammarFilename = argv[0];
 let dslRewriteFilename = argv[1];
 let srcFilename = argv[2];

@@ -79,7 +79,9 @@ return return_value_stack.pop ();
         }
 
         import * as fs from 'fs';
-        let src = fs.readFileSync(0, 'utf-8');
+        const argv = process.argv.slice(2);
+        let srcFilename = argv[0];
+        let src = fs.readFileSync(srcFilename, 'utf-8');
         var result = main (src);
         console.log (result);
     
