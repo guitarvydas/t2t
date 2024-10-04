@@ -35,6 +35,10 @@ let _ = {
 
     insert_grammar_here : function () { return dslGrammar; },
     
+    enter_rule : function (main) { rule_name_stack.push (""); set_top (rule_name_stack, name);}, 
+    exit_rule : function (main) { rule_name_stack.pop (); },
+
+
     // for examples
     pre_print : function (s) {console.log (`pre: ${s}`);},
     post_print : function (s) {console.log (`post: ${s}`);},
