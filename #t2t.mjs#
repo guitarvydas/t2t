@@ -239,12 +239,14 @@ ${rewriteDef}
 ${rwName} : function (${rwParameterDefs}) {
 ${_.foreach_arg (`let ☐ = undefined;`)}
 let _pre = ${before};
+return_value_stack.push ("");
 _.enter_rule ("${rwName}");
 ${_.foreach_parameter (`☐_stack.push (☐_stack [☐_stack.length-1]);`)}
 ${_.args_as_string (``)}
 ${rewriteScope}
 ${_.foreach_parameter (`☐_stack.pop ();`)}
-return _.exit_rule ("${rwName}");
+_.exit_rule ("${rwName}");
+return return_value_stack.pop ();
 },`);
 
 
@@ -284,9 +286,11 @@ return _.exit_rule ("${rwName}");
 ${rwName} : function (${rwParameterDefs}) {
 ${_.foreach_arg (`let ☐ = undefined;`)}
 _.enter_rule ("${rwName}");
+_.set_top (rule_name_stack, "${rwName}");
 ${_.args_as_string (``)}
 ${raw}
-return _.exit_rule ("${rwName}");
+_.exit_rule ("${rwName}");
+return return_value_stack.pop ();
 },`);
 
 
@@ -325,12 +329,14 @@ return _.exit_rule ("${rwName}");
 	_.set_return (`
 ${rwName} : function (${rwParameterDefs}) {
 ${_.foreach_arg (`let ☐ = undefined;`)}
+return_value_stack.push ("");
 _.enter_rule ("${rwName}");
 ${_.foreach_parameter (`☐_stack.push (☐_stack [☐_stack.length-1]);`)}
 ${_.args_as_string (``)}
 ${rewriteScope}
 ${_.foreach_parameter (`☐_stack.pop ();`)}
-return _.exit_rule ("${rwName}");
+_.exit_rule ("${rwName}");
+return return_value_stack.pop ();
 },`);
 
 
@@ -503,7 +509,7 @@ _.post_${name} (\`${s}\`);`);
 	rewriteFormatString = _rewriteFormatString.rwr ()
 
 
-	_.set_return (`\n_.set_return (\`${rewriteFormatString}\`);\n`);
+	_.set_return (`\n_.set_top (return_value_stack, \`${rewriteFormatString}\`);\n`);
 
 	return _.exit_rule ("rewriteScopeRaw");
     },
@@ -670,6 +676,9 @@ _.post_${name} (\`${s}\`);`);
 
 
 
+
+
+
 function transpile_t2t (grammar_spec, rewrite_spec) {
     let parser = ohm.grammar (grammar_spec);
     let cst = parser.match (rewrite_spec);
@@ -728,6 +737,9 @@ if (srcFilename) {
         import {_} from './support.mjs';
         import * as ohm from 'ohm-js';
 
+        let return_value_stack = [];
+        let rule_name_stack = [];
+
         const grammar = String.raw${"`"}
     `;
     var mid_boilerplate = "`;";
@@ -747,9 +759,7 @@ if (srcFilename) {
     }
 
     import * as fs from 'fs';
-    const argv = process.argv.slice(2);
-    let srcFilename = argv[0];
-    let src = fs.readFileSync(srcFilename, 'utf-8');
+    let src = fs.readFileSync(0, 'utf-8');
     var result = main (src);
     console.log (result);
     `;

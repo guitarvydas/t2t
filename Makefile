@@ -30,8 +30,8 @@ test2t2t:
 self:
 	node t2t.mjs t2t.grammar t2t.rewrite >stock.t2t.mjs
 	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite stock.t2t.mjs >new-t2t.mjs
-# 	mv t2t.mjs old-t2t.mjs
-# 	mv new-t2t.mjs t2t.mjs
+	mv t2t.mjs old-t2t.mjs
+	mv new-t2t.mjs t2t.mjs
 
 # regression:
 # 	node t2t.mjs t2t.grammar t2t.rewrite >junk-tempmjs

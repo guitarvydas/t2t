@@ -239,14 +239,12 @@ _.set_return (`
 ${rwName} : function (${rwParameterDefs}) {
 ${_.foreach_arg (`let ☐ = undefined;`)}
 let _pre = ${before};
-return_value_stack.push ("");
 _.enter_rule ("${rwName}");
 ${_.foreach_parameter (`☐_stack.push (☐_stack [☐_stack.length-1]);`)}
 ${_.args_as_string (``)}
 ${rewriteScope}
 ${_.foreach_parameter (`☐_stack.pop ();`)}
-_.exit_rule ("${rwName}");
-return return_value_stack.pop ();
+return _.exit_rule ("${rwName}");
 },`);
 
 
@@ -286,11 +284,9 @@ _.set_return (`
 ${rwName} : function (${rwParameterDefs}) {
 ${_.foreach_arg (`let ☐ = undefined;`)}
 _.enter_rule ("${rwName}");
-_.set_top (rule_name_stack, "${rwName}");
 ${_.args_as_string (``)}
 ${raw}
-_.exit_rule ("${rwName}");
-return return_value_stack.pop ();
+return _.exit_rule ("${rwName}");
 },`);
 
 
@@ -329,14 +325,12 @@ ws6 = _ws6.rwr ()
 _.set_return (`
 ${rwName} : function (${rwParameterDefs}) {
 ${_.foreach_arg (`let ☐ = undefined;`)}
-return_value_stack.push ("");
 _.enter_rule ("${rwName}");
 ${_.foreach_parameter (`☐_stack.push (☐_stack [☐_stack.length-1]);`)}
 ${_.args_as_string (``)}
 ${rewriteScope}
 ${_.foreach_parameter (`☐_stack.pop ();`)}
-_.exit_rule ("${rwName}");
-return return_value_stack.pop ();
+return _.exit_rule ("${rwName}");
 },`);
 
 
@@ -509,7 +503,7 @@ _.enter_rule ("rewriteScopeRaw");
 rewriteFormatString = _rewriteFormatString.rwr ()
 
 
-_.set_return (`\n_.set_top (return_value_stack, \`${rewriteFormatString}\`);\n`);
+_.set_return (`\n_.set_return (\`${rewriteFormatString}\`);\n`);
 
 return _.exit_rule ("rewriteScopeRaw");
 },
