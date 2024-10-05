@@ -148,6 +148,8 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
+    "r.new-t2t.mjs",
+    "r.stock.t2t.mjs",
     "old-t2t.mjs",
     "new-t2t.mjs",
     "#t2t.mjs#",
@@ -158,8 +160,6 @@
     "manual/t2t.mjs",
     "manual",
     "NOTES.md",
-    "#NOTES.md#",
-    "junk-tempmjs",
     "node_modules/wrap-ansi/node_modules/strip-ansi/readme.md",
     "node_modules/wrap-ansi/node_modules/ansi-regex/readme.md",
     "node_modules/cliui/node_modules/strip-ansi/readme.md",
