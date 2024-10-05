@@ -1,1 +1,0 @@
-- maybe a.js and b.js from successful regression run contain the salient differences I need fo emiting a program

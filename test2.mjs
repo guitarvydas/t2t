@@ -24,9 +24,7 @@ let _semis = undefined;
 let b = undefined;
 let c = undefined;
 let d = undefined;
-return_value_stack.push ("");
-rule_name_stack.push ("");
-_.set_top (rule_name_stack, "Main");
+_.enter_rule ("Main");
 paramA_stack.push (paramA_stack [paramA_stack.length-1]);
 paramB_stack.push (paramB_stack [paramB_stack.length-1]);
 paramC_stack.push (paramC_stack [paramC_stack.length-1]);
@@ -45,7 +43,7 @@ _.set_top (paramC_stack, `${c}`);
 
 _.pre_print (`hello`);
 
-_.set_top (return_value_stack, `... ${_.print2 (`middle`, `2nd arg`)} ${a}${_semis}${_.top (paramB_stack)}${c}${d}...`);
+_.set_return (`... ${_.print2 (`middle`, `2nd arg`)} ${a}${_semis}${_.top (paramB_stack)}${c}${d}...`);
 
 _.post_print (`hello`);
 _.post_print (`pre down a=${a} _semis=${_semis} b=${b} c=${c} d=${d}`);
@@ -53,8 +51,7 @@ paramA_stack.pop ();
 paramB_stack.pop ();
 paramC_stack.pop ();
 
-rule_name_stack.pop ();
-return return_value_stack.pop ();
+return _.exit_rule ("Main");
 },
     _terminal: function () { return this.sourceString; },
     _iter: function (...children) { return children.map(c => c.rwr ()); }
@@ -64,7 +61,7 @@ return return_value_stack.pop ();
 
 
 
-// ~~~~~~ stock main ~~~~~~
+// ~~~~~~ main ~~~~~~
         function main (src) {
             let parser = ohm.grammar (grammar);
             let cst = parser.match (src);
@@ -79,7 +76,9 @@ return return_value_stack.pop ();
         }
 
         import * as fs from 'fs';
-        let src = fs.readFileSync(0, 'utf-8');
+	const argv = process.argv.slice (2);
+	let srcFilename = argv [0];
+        let src = fs.readFileSync(srcFilename, 'utf-8');
         var result = main (src);
         console.log (result);
     
