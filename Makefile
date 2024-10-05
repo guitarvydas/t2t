@@ -56,6 +56,7 @@ doc/README.docx:
 clean:
 	rm -rf *~ junk.*
 	rm -rf __pycache__ node_modules package*
+	rm -rf r.*
 
 install-js-requires:
 	npm install yargs prompt-sync ohm-js
