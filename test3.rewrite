@@ -1,0 +1,9 @@
+% parameter previous
+
+% rewrite test3 {
+Main [w inner] = 
+  ⎡ previous=‛«w»’
+    ‛«inner»’
+  ⎦
+Inner [m] = ‛⟪previous⟫...«m»’
+}

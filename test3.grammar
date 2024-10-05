@@ -1,0 +1,5 @@
+test3 {
+  Main = "waltzing" Inner
+  Inner = "matilda"
+}
+

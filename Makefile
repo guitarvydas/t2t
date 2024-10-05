@@ -15,6 +15,8 @@
 ## make testt2
 ## make test2t2
 
+dev: test3
+
 all: self
 
 testt2t:
@@ -26,6 +28,10 @@ test2t2t:
 	# demonstrating that parameters are being passed downwards during the tree walk
 	node t2t.mjs test2.grammar test2.rewrite >test2.mjs
 	node test2.mjs test2.txt
+
+test3:
+	node t2t.mjs test3.grammar test3.rewrite >test3.mjs
+	node test3.mjs test3.txt
 
 self:
 	node t2t.mjs t2t.grammar t2t.rewrite >stock.t2t.mjs
