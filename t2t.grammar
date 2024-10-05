@@ -1,62 +1,46 @@
 t2t {
-  main = applySyntactic<ParameterDef>* rewriteDef
+  main = parameterDef* rewriteDef
 
-  ParameterDef = "% parameter" name
-  rewriteDef = "% rewrite" spaces name spaces "{" spaces rewriteRule+ spaces "}" spaces
+  parameterDef = "%" ws "parameter" ws name ws
+  rewriteDef = "%" ws "rewrite" ws name ws "{" ws rewriteRule+ ws "}" ws
 
+  rewriteRule = ruleName ws "[" ws (argDef ws)* "]" ws "=" ws rewriteScope ws
 
-  // just pass the grammar through to OhmJS - it parses and checks the grammar
-  rule =
-    | "\"" "% parameter" "\"" -- parameter_as_string
-    | "\"" "% rewrite" "\"" -- rewrite_as_string
-    | ~"% parameter" ~"% rewrite" any -- basic
+  argDef = (parenthesizedIterArgDef | iterArgDef | plainArgDef)
 
-  name  (a name)
-    = nameFirst nameRest*
+  parenthesizedIterArgDef = "(" (plainArgDef ws)+ ")" ("+" | "*" | "?")
+  iterArgDef = name ("+" | "*" | "?")
+  plainArgDef = name
 
-  nameFirst
-    = "_"
-    | letter
+  ruleName = name
 
-  nameRest
-    = "_"
-    | alnum
-
-
-  // rewrite parsing section
-  rewriteRule = 
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScopeRaw spaces -- plain_no_scope
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
-
-  rwRuleName = name
-  rwArgDef = name
-  rwIterArgDef = name ("+" | "*" | "?")
-  rwParenthesizedIterArgDef = "(" rwParenArgDef+ ")" ("+" | "*" | "?")
-  rwParameterDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwArgDef)
-  rwParenArgDef = name spaces
-
-  rwArgRef = name
-  rwParameterRef = name
+  argRef = name
+  parameterRef = name
 
   rewriteScope =
-    | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
-    | "⎡" spaces name spaces "=" spaces rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
-    | rewriteScopeRaw -- raw
-  rewriteScopeRaw = #rewriteFormatString
+    | "⎡" ws (supportCall | parameterAssignment) ws rewriteScope ws "⎦" -- scope
+    | rewriteFormatString                                            -- raw
   
+  supportCall = "⎨" ws name ws rewriteFormatString ws "⎬" 
+  parameterAssignment = name ws "=" ws rewriteFormatString
+
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
-    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
-    | "⟪" rwParameterRef "⟫" -- parameter_interpolation
-    | "«" rwArgRef "»" -- arg_interpolation
-    | "\\" any -- escaped
-    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
+    | "⎨" ws name ws rewriteFormatString ws "⎬"   -- supportCall
+    | "⟪" parameterRef "⟫"                        -- parameter
+    | "«" argRef "»"                              -- arg
+    | "\\" any                                    -- escaped
+    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- rawwscharacter
 
-  before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
+  name (a name)
+    = nameFirst nameRest*
+  nameFirst
+    = "ws"
+    | letter
+  nameRest
+    = "ws"
+    | alnum
 
-  supportArgsForInterpolation = rewriteFormatString wsRewriteFormatString_for_interpolation*
-  wsRewriteFormatString_for_interpolation = spaces rewriteFormatString
-  supportArgsForBefore = rewriteFormatString wsRewriteFormatString_for_before*
-  wsRewriteFormatString_for_before = spaces rewriteFormatString
+  ws = spaces
+
 }
