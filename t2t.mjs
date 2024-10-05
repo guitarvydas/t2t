@@ -47,6 +47,7 @@
   rwParenArgDef = name spaces
 
   rwArgRef = name
+  rwParameterRef = name
 
   rewriteScope =
     | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
@@ -57,7 +58,7 @@
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
     | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
-    | "⟪" rwArgRef "⟫" -- parameter_interpolation
+    | "⟪" rwParameterRef "⟫" -- parameter_interpolation
     | "«" rwArgRef "»" -- arg_interpolation
     | "\\" any -- escaped
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
@@ -406,6 +407,16 @@ name = _name.rwr ()
 _.set_return (`${name}`);
 
 return _.exit_rule ("rwArgRef");
+},
+rwParameterRef : function (_name, ) {
+let name = undefined;
+_.enter_rule ("rwParameterRef");
+name = _name.rwr ()
+
+
+_.set_return (`${name}`);
+
+return _.exit_rule ("rwParameterRef");
 },
 rwParenArgDef : function (_name, _ws, ) {
 let name = undefined;

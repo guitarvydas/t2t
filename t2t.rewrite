@@ -64,6 +64,7 @@ return _.exit_rule ("«rwName»");
   rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
   rwParameterDef [def] = ‛«def»’
   rwArgRef [name] =‛«name»’
+  rwParameterRef [name] =‛«name»’
   rwParenArgDef [name ws] = ‛_«name», ⎨memo_arg ‛«name»’  ‛☐ = _☐.rwr ().join ('')\n’⎬’
 
   rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛

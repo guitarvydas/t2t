@@ -37,6 +37,7 @@ t2t {
   rwParenArgDef = name spaces
 
   rwArgRef = name
+  rwParameterRef = name
 
   rewriteScope =
     | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
@@ -47,7 +48,7 @@ t2t {
   rewriteFormatString = "‛" formatChar* "’"
   formatChar =
     | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
-    | "⟪" rwArgRef "⟫" -- parameter_interpolation
+    | "⟪" rwParameterRef "⟫" -- parameter_interpolation
     | "«" rwArgRef "»" -- arg_interpolation
     | "\\" any -- escaped
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
