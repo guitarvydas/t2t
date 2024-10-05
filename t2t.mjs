@@ -4,6 +4,9 @@
         import {_} from './support.mjs';
         import * as ohm from 'ohm-js';
 
+        let return_value_stack = [];
+        let rule_name_stack = [];
+
         const grammar = String.raw`
     t2t {
   main = applySyntactic<ParameterDef>* rewriteDef
@@ -671,7 +674,7 @@ return _.exit_rule ("wsRewriteFormatString_for_before");
 
 
 
-    
+
 
 function transpile_t2t (grammar_spec, rewrite_spec) {
     let parser = ohm.grammar (grammar_spec);
@@ -738,7 +741,7 @@ if (srcFilename) {
     `;
     var mid_boilerplate = "`;";
     var post_boilerplate = `
-// ~~~~~~ stock main ~~~~~~
+// ~~~~~~ main ~~~~~~
         function main (src) {
             let parser = ohm.grammar (grammar);
             let cst = parser.match (src);
@@ -753,7 +756,9 @@ if (srcFilename) {
         }
 
         import * as fs from 'fs';
-        let src = fs.readFileSync(0, 'utf-8');
+	const argv = process.argv.slice (2);
+	let srcFilename = argv [0];
+        let src = fs.readFileSync(srcFilename, 'utf-8');
         var result = main (src);
         console.log (result);
     `;

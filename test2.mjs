@@ -61,7 +61,7 @@ return _.exit_rule ("Main");
 
 
 
-// ~~~~~~ stock main ~~~~~~
+// ~~~~~~ main ~~~~~~
         function main (src) {
             let parser = ohm.grammar (grammar);
             let cst = parser.match (src);
@@ -76,7 +76,9 @@ return _.exit_rule ("Main");
         }
 
         import * as fs from 'fs';
-        let src = fs.readFileSync(0, 'utf-8');
+	const argv = process.argv.slice (2);
+	let srcFilename = argv [0];
+        let src = fs.readFileSync(srcFilename, 'utf-8');
         var result = main (src);
         console.log (result);
     
