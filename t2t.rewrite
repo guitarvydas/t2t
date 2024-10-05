@@ -30,25 +30,23 @@ ${rewriteDef}
 ⎨foreach_arg ‛let ☐ = undefined;’⎬
 let _pre = «before»;
 return_value_stack.push ("");
-rule_name_stack.push ("");
-_.set_top (rule_name_stack, "«rwName»");
+_.enter_rule ("«rwName»");
 ⎨foreach_parameter ‛☐_stack.push (☐_stack [☐_stack.length-1]);’⎬
 ⎨args_as_string ‛’⎬
 «rewriteScope»
 ⎨foreach_parameter ‛☐_stack.pop ();’⎬
-rule_name_stack.pop ();
+_.exit_rule ("«rwName»");
 return return_value_stack.pop ();
 },’
   
   rewriteRule_plain_no_scope [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 raw ws6] ⎨reset_stacks ‛’ ⎬ = ‛
 «rwName» : function («rwParameterDefs») {
 ⎨foreach_arg ‛let ☐ = undefined;’⎬
-return_value_stack.push ("");
-rule_name_stack.push ("");
+_.enter_rule ("«rwName»");
 _.set_top (rule_name_stack, "«rwName»");
 ⎨args_as_string ‛’⎬
 «raw»
-rule_name_stack.pop ();
+_.exit_rule ("«rwName»");
 return return_value_stack.pop ();
 },’
   
@@ -56,13 +54,12 @@ return return_value_stack.pop ();
 «rwName» : function («rwParameterDefs») {
 ⎨foreach_arg ‛let ☐ = undefined;’⎬
 return_value_stack.push ("");
-rule_name_stack.push ("");
-_.set_top (rule_name_stack, "«rwName»");
+_.enter_rule ("«rwName»");
 ⎨foreach_parameter ‛☐_stack.push (☐_stack [☐_stack.length-1]);’⎬
 ⎨args_as_string ‛’⎬
 «rewriteScope»
 ⎨foreach_parameter ‛☐_stack.pop ();’⎬
-rule_name_stack.pop ();
+_.exit_rule ("«rwName»");
 return return_value_stack.pop ();
 },’
   

@@ -8,6 +8,9 @@ let _ = {
     parameter_names : [],
     argnames : [],
     evaled_args : [],
+    return_value_stack : [],
+    rule_name_stack : [],
+
 
     reset_stacks : function () { 
         _.argnames = [];
@@ -35,8 +38,9 @@ let _ = {
 
     insert_grammar_here : function () { return dslGrammar; },
     
-    enter_rule : function (main) { rule_name_stack.push (""); set_top (rule_name_stack, name);}, 
-    exit_rule : function (main) { rule_name_stack.pop (); },
+    enter_rule : function (name) { console.error (["enter", name]); _.return_value_stack.push (""); _.rule_name_stack.push (""); _.set_top (_.rule_name_stack, name);},
+    set_return : function (v) { _.set_top (_.return_value_stack, v); },
+    exit_rule : function (name) { console.error (["exit", name]); _.rule_name_stack.pop (); return _.return_value_stack.pop ()},
 
 
     // for examples
