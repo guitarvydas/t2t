@@ -28,18 +28,17 @@ test2t2t:
 	node test2.mjs test2.txt
 
 self:
-	node t2t.mjs t2t.grammar t2t.rewrite >junk-tempmjs
-	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite >junk-cut.mjs
-	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite junk-temp >new-t2t.mjs
-	mv t2t.mjs old-t2t.mjs
-	mv new-t2t.mjs t2t.mjs
+	node t2t.mjs t2t.grammar t2t.rewrite >stock.t2t.mjs
+	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite stock.t2t.mjs >new-t2t.mjs
+# 	mv t2t.mjs old-t2t.mjs
+# 	mv new-t2t.mjs t2t.mjs
 
-regression:
-	node t2t.mjs t2t.grammar t2t.rewrite >junk-tempmjs
-	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite >junk-cut.mjs
-	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite junk-temp >regression-t2t.mjs
-	diff -w -B regression-t2t.mjs t2t.mjs
-	node regression-t2t.mjs test.grammar test.rewrite test.txt
+# regression:
+# 	node t2t.mjs t2t.grammar t2t.rewrite >junk-tempmjs
+# 	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite >junk-cut.mjs
+# 	node t2t.mjs self_boilerplate.grammar self_boilerplate.rewrite junk-temp >regression-t2t.mjs
+# 	diff -w -B regression-t2t.mjs t2t.mjs
+# 	node regression-t2t.mjs test.grammar test.rewrite test.txt
 
 
 ##
