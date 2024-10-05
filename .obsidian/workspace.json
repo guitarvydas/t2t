@@ -148,8 +148,9 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
-    "old/t2t.mjs",
     "new-t2t.mjs",
+    "#Makefile#",
+    "old/t2t.mjs",
     "stock.t2t.mjs",
     "test3.rewrite~",
     "#test3.rewrite#",
@@ -158,7 +159,6 @@
     "test3.txt",
     "test3.grammar~",
     "test3.grammar",
-    "IDEwip/t2t IDE-4.excalidraw",
     "IDEwip/t2t IDE-3.png",
     "doc/t2t gen mode.png",
     "temp/t2t gen mode.png",
