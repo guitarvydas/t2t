@@ -30,6 +30,9 @@ test2t2t:
 	node test2.mjs test2.txt
 
 test3:
+	# re-make self with fixes to t2t, re. evaluating parameter before pushing it onto parameter stack
+	make self
+	# make test3 to test for evaluated parameter (should print "waltzing...matilda" instead of "undefined...matilda"
 	node t2t.mjs test3.grammar test3.rewrite >test3.mjs
 	node test3.mjs test3.txt
 
