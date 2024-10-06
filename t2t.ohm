@@ -13,7 +13,7 @@ t2t {
 
   rewriteScope =
     | "⎡" s_ binding s_ rewriteScope s_ "⎦" -- scope
-    | rewriteFormatString                   -- raw
+    | rewriteFormatString                   -- plain
   
   binding =
     | "⎨" s_ name s_ rewriteFormatString s_ "⎬" -- call
@@ -21,11 +21,11 @@ t2t {
 
   rewriteFormatString = "‛" formatItem* "’"
   formatItem =
-    | "⎨" s_ name s_ rewriteFormatString s_ "⎬"   -- supportCall
-    | "⟪" parameterRef "⟫"                        -- parameter
-    | "«" argRef "»"                              -- arg
-    | "\\" any                                    -- escapedCharacter
-    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- rawCharacter
+    | "⎨" s_ name s_ (rewriteFormatString s_)+ "⎬" -- supportCall
+    | "⟪" parameterRef "⟫"                         -- parameter
+    | "«" argRef "»"                               -- arg
+    | "\\" any                                     -- escapedCharacter
+    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any  -- rawCharacter
 
   argRef = name
   parameterRef = name
@@ -33,12 +33,8 @@ t2t {
 
   name (a name)
     = nameFirst nameRest*
-  nameFirst
-    = "s_"
-    | letter
-  nameRest
-    = "s_"
-    | alnum
+  nameFirst = ("_" | letter)
+  nameRest  = ("_" | alnum)
 
   s_ = spaces
 

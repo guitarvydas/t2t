@@ -15,7 +15,8 @@
 ## make testt2
 ## make test2t2
 
-dev: test3
+dev:
+	node t2t.mjs t2t.grammar t2t.rewrite
 
 all: self
 
