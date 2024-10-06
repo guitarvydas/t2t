@@ -3,7 +3,7 @@
 % parameter paramC
 
 % rewrite example {
-Main [a (_semis b)+ c d+]=
+Main [a (_semi b)+ c d+]=
   ⎡ ⎨print ‛pre down a=«a» _semis=«_semis» b=«b» c=«c» d=«d»’⎬
     ⎡ paramA=‛«a»’
       ⎡ paramB=‛«b»’

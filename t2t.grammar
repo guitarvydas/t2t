@@ -7,7 +7,7 @@ t2t {
   rewriteRule = ruleName s_ "[" s_ (argDef s_)* "]" s_ "=" s_ rewriteScope s_
 
   argDef = 
-    | "(" (name s_)+ ")" ("+" | "*" | "?") -- parenthesized
+    | "(" parenarg+ ")" ("+" | "*" | "?") -- parenthesized
     | name ("+" | "*" | "?")               -- iter
     | name                                 -- plain
 
@@ -21,12 +21,14 @@ t2t {
 
   rewriteFormatString = "‛" formatItem* "’"
   formatItem =
-    | "⎨" s_ name s_ (rewriteFormatString s_)+ "⎬" -- supportCall
+    | "⎨" s_ name s_ argstring+ "⎬" -- supportCall
     | "⟪" parameterRef "⟫"                         -- parameter
     | "«" argRef "»"                               -- arg
     | "\\" any                                     -- escapedCharacter
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any  -- rawCharacter
 
+  parenarg = name s_
+  argstring =  rewriteFormatString s_
   argRef = name
   parameterRef = name
   ruleName = name

@@ -1,30 +1,33 @@
 % rewrite t2t {
-  main [parameterDefs* rewriteDef] = ‛«parameterDefs»«rewriteDef»’
+  main [parameterDefs* rewriteDef] = ‛_r = {«parameterDefs»«rewriteDef»\n}’
 
-  parameterDef [_pct _1 _parameter _2 name _3] = ‛«_pct»«_1»«_parameter»«_2»«name»«_3»’
-  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛{«rewriteRules»}’
+  parameterDef [_pct _1 _parameter _2 name _3] = ‛\n«name»_stack : [],’
+  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛\n«rewriteRules»’
 
-  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛\n«ruleName» : function («argDefs») {\n«rewriteScope»},’
+  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛\n«ruleName» : function («argDefs») {«rewriteScope»\n},’
 
-  argDef_parenthesized [lp names+ _1s+ rp op] = ‛«lp»«names»«_1s»«rp»«op».’
-  argDef_iter [name op] = ‛«name»«op»,’
+  argDef_parenthesized [lp names+ rp op] = ‛«names»’
+  argDef_iter [name op] = ‛«name»,’
   argDef_plain [name] = ‛«name»,’
 
-  rewriteScope_scope [lb _1 binding _2 rewriteScope _3 rb] = ‛«rewriteScope»’
-  rewriteScope_plain [s] = ‛«s»’
+  rewriteScope_scope [lb _1 binding _2 rewriteScope _3 rb] = ‛«binding»«rewriteScope»’
+  rewriteScope_plain [s] = ‛\nreturn «s»;’
 
-  binding_call [lb _1 name _2 rewriteFormatString _3 rb] = ‛«lb»«_1»«name»«_2»«rewriteFormatString»«_3»«rb»’
-  binding_parameterAssignment [name _1 _eq _2 rewriteFormatString] = ‛«name»«_1»«_eq»«_2»«rewriteFormatString»’
+  binding_call [lb _1 name _2 rewriteFormatString _3 rb] = ‛\n«name» («rewriteFormatString»);’
+  binding_parameterAssignment [name _1 _eq _2 rewriteFormatString] = ‛\n_.set_top («name»_stack, «rewriteFormatString»);’
 
-  rewriteFormatString [lq formatItems* rq] = ‛«lq»«formatItems»«rq»’
-  formatItem_supportCall [lb _1 name _2 rewriteFormatStrings+ _3s+ rb] = ‛«lb»«_1»«name»«_2»«rewriteFormatStrings»«_3s»«rb»’
-  formatItem_parameter [lb parameterRef rb] = ‛«lb»«parameterRef»«rb»’
-  formatItem_arg [lb argRef rb] = ‛«lb»«argRef»«rb»’
+  rewriteFormatString [lq formatItems* rq] = ‛\`«formatItems»\`’
+  formatItem_supportCall [lb _1 name _2 argStrings+ rb] = ‛«name» («argStrings»)’
+  formatItem_parameter [lb parameterRef rb] = ‛«parameterRef»’
+  formatItem_arg [lb argRef rb] = ‛«argRef»’
   formatItem_escapedCharacter [bslash any] = ‛«bslash»«any»’
   formatItem_rawCharacter [c] = ‛«c»’
 
-  argRef [name] = ‛«name».rwr ()’
-  parameterRef [name] = ‛_.top («name»_stack)’
+  parenarg [name ws] = ‛«name»,’
+  argstring [str ws] = ‛«str», ’
+  
+  argRef [name] = ‛\$\{«name».rwr ()\}’
+  parameterRef [name] = ‛\$\{_.top (_r.«name»_stack)\}’
   
   ruleName [name] = ‛«name»’
 

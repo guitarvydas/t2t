@@ -17,7 +17,7 @@
   rewriteRule = ruleName s_ "[" s_ (argDef s_)* "]" s_ "=" s_ rewriteScope s_
 
   argDef = 
-    | "(" (name s_)+ ")" ("+" | "*" | "?") -- parenthesized
+    | "(" parenarg+ ")" ("+" | "*" | "?") -- parenthesized
     | name ("+" | "*" | "?")               -- iter
     | name                                 -- plain
 
@@ -31,12 +31,14 @@
 
   rewriteFormatString = "‛" formatItem* "’"
   formatItem =
-    | "⎨" s_ name s_ (rewriteFormatString s_)+ "⎬" -- supportCall
+    | "⎨" s_ name s_ argstring+ "⎬" -- supportCall
     | "⟪" parameterRef "⟫"                         -- parameter
     | "«" argRef "»"                               -- arg
     | "\\" any                                     -- escapedCharacter
     | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any  -- rawCharacter
 
+  parenarg = name s_
+  argstring =  rewriteFormatString s_
   argRef = name
   parameterRef = name
   ruleName = name
@@ -60,7 +62,7 @@ parameterDefs = _parameterDefs.rwr ().join ('')
 rewriteDef = _rewriteDef.rwr ()
 
 
-_.set_return (`${parameterDefs}${rewriteDef}`);
+_.set_return (`_r = {${parameterDefs}${rewriteDef}\n}`);
 
 return _.exit_rule ("main");
 },
@@ -80,7 +82,7 @@ name = _name.rwr ()
 _3 = __3.rwr ()
 
 
-_.set_return (`${_pct}${_1}${_parameter}${_2}${name}${_3}`);
+_.set_return (`\n${name}_stack : [],`);
 
 return _.exit_rule ("parameterDef");
 },
@@ -112,7 +114,7 @@ rb = _rb.rwr ()
 _6 = __6.rwr ()
 
 
-_.set_return (`{${rewriteRules}}`);
+_.set_return (`\n${rewriteRules}`);
 
 return _.exit_rule ("rewriteDef");
 },
@@ -144,25 +146,23 @@ rewriteScope = _rewriteScope.rwr ()
 _6 = __6.rwr ()
 
 
-_.set_return (`\n${ruleName} : function (${argDefs}) {\n${rewriteScope}},`);
+_.set_return (`\n${ruleName} : function (${argDefs}) {${rewriteScope}\n},`);
 
 return _.exit_rule ("rewriteRule");
 },
-argDef_parenthesized : function (_lp, _names, __1s, _rp, _op, ) {
+argDef_parenthesized : function (_lp, _names, _rp, _op, ) {
 let lp = undefined;
 let names = undefined;
-let _1s = undefined;
 let rp = undefined;
 let op = undefined;
 _.enter_rule ("argDef_parenthesized");
 lp = _lp.rwr ()
 names = _names.rwr ().join ('')
-_1s = __1s.rwr ().join ('')
 rp = _rp.rwr ()
 op = _op.rwr ()
 
 
-_.set_return (`${lp}${names}${_1s}${rp}${op}.`);
+_.set_return (`${names}`);
 
 return _.exit_rule ("argDef_parenthesized");
 },
@@ -174,7 +174,7 @@ name = _name.rwr ()
 op = _op.rwr ()
 
 
-_.set_return (`${name}${op},`);
+_.set_return (`${name},`);
 
 return _.exit_rule ("argDef_iter");
 },
@@ -206,7 +206,7 @@ _3 = __3.rwr ()
 rb = _rb.rwr ()
 
 
-_.set_return (`${rewriteScope}`);
+_.set_return (`${binding}${rewriteScope}`);
 
 return _.exit_rule ("rewriteScope_scope");
 },
@@ -216,7 +216,7 @@ _.enter_rule ("rewriteScope_plain");
 s = _s.rwr ()
 
 
-_.set_return (`${s}`);
+_.set_return (`\nreturn ${s};`);
 
 return _.exit_rule ("rewriteScope_plain");
 },
@@ -238,7 +238,7 @@ _3 = __3.rwr ()
 rb = _rb.rwr ()
 
 
-_.set_return (`${lb}${_1}${name}${_2}${rewriteFormatString}${_3}${rb}`);
+_.set_return (`\n${name} (${rewriteFormatString});`);
 
 return _.exit_rule ("binding_call");
 },
@@ -256,7 +256,7 @@ _2 = __2.rwr ()
 rewriteFormatString = _rewriteFormatString.rwr ()
 
 
-_.set_return (`${name}${_1}${_eq}${_2}${rewriteFormatString}`);
+_.set_return (`\n_.set_top (${name}_stack, ${rewriteFormatString});`);
 
 return _.exit_rule ("binding_parameterAssignment");
 },
@@ -270,29 +270,27 @@ formatItems = _formatItems.rwr ().join ('')
 rq = _rq.rwr ()
 
 
-_.set_return (`${lq}${formatItems}${rq}`);
+_.set_return (`\`${formatItems}\``);
 
 return _.exit_rule ("rewriteFormatString");
 },
-formatItem_supportCall : function (_lb, __1, _name, __2, _rewriteFormatStrings, __3s, _rb, ) {
+formatItem_supportCall : function (_lb, __1, _name, __2, _argStrings, _rb, ) {
 let lb = undefined;
 let _1 = undefined;
 let name = undefined;
 let _2 = undefined;
-let rewriteFormatStrings = undefined;
-let _3s = undefined;
+let argStrings = undefined;
 let rb = undefined;
 _.enter_rule ("formatItem_supportCall");
 lb = _lb.rwr ()
 _1 = __1.rwr ()
 name = _name.rwr ()
 _2 = __2.rwr ()
-rewriteFormatStrings = _rewriteFormatStrings.rwr ().join ('')
-_3s = __3s.rwr ().join ('')
+argStrings = _argStrings.rwr ().join ('')
 rb = _rb.rwr ()
 
 
-_.set_return (`${lb}${_1}${name}${_2}${rewriteFormatStrings}${_3s}${rb}`);
+_.set_return (`${name} (${argStrings})`);
 
 return _.exit_rule ("formatItem_supportCall");
 },
@@ -306,7 +304,7 @@ parameterRef = _parameterRef.rwr ()
 rb = _rb.rwr ()
 
 
-_.set_return (`${lb}${parameterRef}${rb}`);
+_.set_return (`${parameterRef}`);
 
 return _.exit_rule ("formatItem_parameter");
 },
@@ -320,7 +318,7 @@ argRef = _argRef.rwr ()
 rb = _rb.rwr ()
 
 
-_.set_return (`${lb}${argRef}${rb}`);
+_.set_return (`${argRef}`);
 
 return _.exit_rule ("formatItem_arg");
 },
@@ -346,13 +344,37 @@ _.set_return (`${c}`);
 
 return _.exit_rule ("formatItem_rawCharacter");
 },
+parenarg : function (_name, _ws, ) {
+let name = undefined;
+let ws = undefined;
+_.enter_rule ("parenarg");
+name = _name.rwr ()
+ws = _ws.rwr ()
+
+
+_.set_return (`${name},`);
+
+return _.exit_rule ("parenarg");
+},
+argstring : function (_str, _ws, ) {
+let str = undefined;
+let ws = undefined;
+_.enter_rule ("argstring");
+str = _str.rwr ()
+ws = _ws.rwr ()
+
+
+_.set_return (`${str}, `);
+
+return _.exit_rule ("argstring");
+},
 argRef : function (_name, ) {
 let name = undefined;
 _.enter_rule ("argRef");
 name = _name.rwr ()
 
 
-_.set_return (`${name}.rwr ()`);
+_.set_return (`\$\{${name}.rwr ()\}`);
 
 return _.exit_rule ("argRef");
 },
@@ -362,7 +384,7 @@ _.enter_rule ("parameterRef");
 name = _name.rwr ()
 
 
-_.set_return (`_.top (${name}_stack)`);
+_.set_return (`\$\{_.top (_r.${name}_stack)\}`);
 
 return _.exit_rule ("parameterRef");
 },
