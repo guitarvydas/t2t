@@ -1,23 +1,23 @@
 % rewrite t2t {
   main [parameterDefs* rewriteDef] = ‛«parameterDefs»«rewriteDef»’
 
-  parameterDef [_pct s_1 _parameter s_2 name s_3] = ‛«_pct»«s_1»«_parameter»«s_2»«name»«s_3»’
-  rewriteDef [ _pct s_1 _rewrite s_2 name s_3 _lb s_4 rewriteRules+ s_5 rb s_6] = ‛«_pct»«s_1»«_rewrite»«s_2»«name»«s_3»«_lb»«s_4»«rewriteRules»«s_5»«rb»«s_6»’
+  parameterDef [_pct _1 _parameter _2 name _3] = ‛«_pct»«_1»«_parameter»«_2»«name»«_3»’
+  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛«_pct»«_1»«_rewrite»«_2»«name»«_3»«_lb»«_4»«rewriteRules»«_5»«rb»«_6»’
 
-  rewriteRule [ruleName s_1 lb s_2 argDefs* s_3s* rb s_4 _eq s_5 rewriteScope s_6] = ‛«ruleName»«s_1»«lb»«s_2»«argDefs»«s_3s»«rb»«s_4»«_eq»«s_5»«rewriteScope»«s_6»’
+  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛«ruleName»«_1»«lb»«_2»«argDefs»«_3s»«rb»«_4»«_eq»«_5»«rewriteScope»«_6»’
 
-  argDef_parenthesize [lp names+ s_1s+ rp op] = ‛«lp»«names»«s_1s»«rp»«op»’
-  argDef_iter [name op] = ‛«name»«op»’
-  argDef_plain [name] = ‛«name»’
+  argDef_parenthesized [lp names+ _1s+ rp op] = ‛«lp»«names»«_1s»«rp»«op» ’
+  argDef_iter [name op] = ‛«name»«op» ’
+  argDef_plain [name] = ‛«name» ’
 
-  rewriteScope_scope [lb s_1 binding s_2 rewriteScope s_3 rb] = ‛«lb»«s_1»«binding»«s_2»«rewriteScope»«s_3»«rb»’
+  rewriteScope_scope [lb _1 binding _2 rewriteScope _3 rb] = ‛«lb»«_1»«binding»«_2»«rewriteScope»«_3»«rb»’
   rewriteScope_plain [s] = ‛«s»’
 
-  binding_call [lb s_1 name s_2 rewriteFormatString s_3 rb] = ‛«lb»«s_1»«name»«s_2»«rewriteFormatString»«s_3»«rb»’
-  binding_parameterAssignment [name s_1 _eq s_2 rewriteFormatString] = ‛«name»«s_1»«_eq»«s_2»«rewriteFormatString»’
+  binding_call [lb _1 name _2 rewriteFormatString _3 rb] = ‛«lb»«_1»«name»«_2»«rewriteFormatString»«_3»«rb»’
+  binding_parameterAssignment [name _1 _eq _2 rewriteFormatString] = ‛«name»«_1»«_eq»«_2»«rewriteFormatString»’
 
   rewriteFormatString [lq formatItems* rq] = ‛«lq»«formatItems»«rq»’
-  formatItem_supportCall [lb s_1 name s_2 rewriteFormatStrings+ s_3s+ rb] = ‛«lb»«s_1»«name»«s_2»«rewriteFormatStrings»«s_3s»«rb»’
+  formatItem_supportCall [lb _1 name _2 rewriteFormatStrings+ _3s+ rb] = ‛«lb»«_1»«name»«_2»«rewriteFormatStrings»«_3s»«rb»’
   formatItem_parameter [lb parameterRef rb] = ‛«lb»«parameterRef»«rb»’
   formatItem_arg [lb argRef rb] = ‛«lb»«argRef»«rb»’
   formatItem_escapedCharacter [bslash any] = ‛«bslash»«any»’
@@ -31,5 +31,5 @@
   nameFirst [c] = ‛«c»’
   nameRest [c] = ‛«c»’
 
-  s_ [spaces] = ‛«spaces»’
+  s_ [space*] = ‛«space»’
 }

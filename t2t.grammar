@@ -36,6 +36,6 @@ t2t {
   nameFirst = ("_" | letter)
   nameRest  = ("_" | alnum)
 
-  s_ = spaces
+  s_ = space*
 
 }

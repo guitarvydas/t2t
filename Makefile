@@ -16,7 +16,16 @@
 ## make test2t2
 
 dev:
-	node t2t.mjs t2t.grammar t2t.rewrite
+	@node t2t.mjs t2t.grammar t2t.rewrite >dev.t2t.mjs
+	@node dev.t2t.mjs test3.rewrite
+devbig:
+	node t2t.mjs t2t.grammar t2t.rewrite >dev.t2t.mjs
+	@echo '*** 1 ***'
+	@node dev.t2t.mjs test.rewrite
+	@echo '*** 2 ***'
+	@node dev.t2t.mjs test2.rewrite
+	@echo '*** 3 ***'
+	@node dev.t2t.mjs test3.rewrite
 
 all: self
 
