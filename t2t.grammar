@@ -1,46 +1,45 @@
 t2t {
   main = parameterDef* rewriteDef
 
-  parameterDef = "%" ws "parameter" ws name ws
-  rewriteDef = "%" ws "rewrite" ws name ws "{" ws rewriteRule+ ws "}" ws
+  parameterDef = "%" s_ "parameter" s_ name s_
+  rewriteDef = "%" s_ "rewrite" s_ name s_ "{" s_ rewriteRule+ s_ "}" s_
 
-  rewriteRule = ruleName ws "[" ws (argDef ws)* "]" ws "=" ws rewriteScope ws
+  rewriteRule = ruleName s_ "[" s_ (argDef s_)* "]" s_ "=" s_ rewriteScope s_
 
-  argDef = (parenthesizedIterArgDef | iterArgDef | plainArgDef)
+  argDef = 
+    | "(" (name s_)+ ")" ("+" | "*" | "?") -- parenthesized
+    | name ("+" | "*" | "?")               -- iter
+    | name                                 -- plain
 
-  parenthesizedIterArgDef = "(" (plainArgDef ws)+ ")" ("+" | "*" | "?")
-  iterArgDef = name ("+" | "*" | "?")
-  plainArgDef = name
+  rewriteScope =
+    | "⎡" s_ binding s_ rewriteScope s_ "⎦" -- scope
+    | rewriteFormatString                   -- raw
+  
+  binding =
+    | "⎨" s_ name s_ rewriteFormatString s_ "⎬" -- call
+    | name s_ "=" s_ rewriteFormatString        -- parameterAssignment
 
-  ruleName = name
+  rewriteFormatString = "‛" formatItem* "’"
+  formatItem =
+    | "⎨" s_ name s_ rewriteFormatString s_ "⎬"   -- supportCall
+    | "⟪" parameterRef "⟫"                        -- parameter
+    | "«" argRef "»"                              -- arg
+    | "\\" any                                    -- escapedCharacter
+    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- rawCharacter
 
   argRef = name
   parameterRef = name
-
-  rewriteScope =
-    | "⎡" ws (supportCall | parameterAssignment) ws rewriteScope ws "⎦" -- scope
-    | rewriteFormatString                                            -- raw
-  
-  supportCall = "⎨" ws name ws rewriteFormatString ws "⎬" 
-  parameterAssignment = name ws "=" ws rewriteFormatString
-
-  rewriteFormatString = "‛" formatChar* "’"
-  formatChar =
-    | "⎨" ws name ws rewriteFormatString ws "⎬"   -- supportCall
-    | "⟪" parameterRef "⟫"                        -- parameter
-    | "«" argRef "»"                              -- arg
-    | "\\" any                                    -- escaped
-    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- rawwscharacter
+  ruleName = name
 
   name (a name)
     = nameFirst nameRest*
   nameFirst
-    = "ws"
+    = "s_"
     | letter
   nameRest
-    = "ws"
+    = "s_"
     | alnum
 
-  ws = spaces
+  s_ = spaces
 
 }
