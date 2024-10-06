@@ -23,8 +23,9 @@
   formatItem_escapedCharacter [bslash any] = ‛«bslash»«any»’
   formatItem_rawCharacter [c] = ‛«c»’
 
-  argRef [name] = ‛«name»’
-  parameterRef [name] = ‛«name»’
+  argRef [name] = ‛«name».rwr ()’
+  parameterRef [name] = ‛_.top («name»_stack)’
+  
   ruleName [name] = ‛«name»’
 
   name [nameFirst nameRests*] = ‛«nameFirst»«nameRests»’

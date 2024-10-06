@@ -352,7 +352,7 @@ _.enter_rule ("argRef");
 name = _name.rwr ()
 
 
-_.set_return (`${name}`);
+_.set_return (`${name}.rwr ()`);
 
 return _.exit_rule ("argRef");
 },
@@ -362,7 +362,7 @@ _.enter_rule ("parameterRef");
 name = _name.rwr ()
 
 
-_.set_return (`${name}`);
+_.set_return (`_.top (${name}_stack)`);
 
 return _.exit_rule ("parameterRef");
 },
