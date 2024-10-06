@@ -2,15 +2,15 @@
   main [parameterDefs* rewriteDef] = ‛«parameterDefs»«rewriteDef»’
 
   parameterDef [_pct _1 _parameter _2 name _3] = ‛«_pct»«_1»«_parameter»«_2»«name»«_3»’
-  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛«_pct»«_1»«_rewrite»«_2»«name»«_3»«_lb»«_4»«rewriteRules»«_5»«rb»«_6»’
+  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛{«rewriteRules»}’
 
-  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛«ruleName»«_1»«lb»«_2»«argDefs»«_3s»«rb»«_4»«_eq»«_5»«rewriteScope»«_6»’
+  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛\n«ruleName» : function («argDefs») {\n«rewriteScope»},’
 
-  argDef_parenthesized [lp names+ _1s+ rp op] = ‛«lp»«names»«_1s»«rp»«op» ’
-  argDef_iter [name op] = ‛«name»«op» ’
-  argDef_plain [name] = ‛«name» ’
+  argDef_parenthesized [lp names+ _1s+ rp op] = ‛«lp»«names»«_1s»«rp»«op».’
+  argDef_iter [name op] = ‛«name»«op»,’
+  argDef_plain [name] = ‛«name»,’
 
-  rewriteScope_scope [lb _1 binding _2 rewriteScope _3 rb] = ‛«lb»«_1»«binding»«_2»«rewriteScope»«_3»«rb»’
+  rewriteScope_scope [lb _1 binding _2 rewriteScope _3 rb] = ‛«rewriteScope»’
   rewriteScope_plain [s] = ‛«s»’
 
   binding_call [lb _1 name _2 rewriteFormatString _3 rb] = ‛«lb»«_1»«name»«_2»«rewriteFormatString»«_3»«rb»’

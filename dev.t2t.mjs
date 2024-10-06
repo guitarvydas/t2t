@@ -112,7 +112,7 @@ rb = _rb.rwr ()
 _6 = __6.rwr ()
 
 
-_.set_return (`${_pct}${_1}${_rewrite}${_2}${name}${_3}${_lb}${_4}${rewriteRules}${_5}${rb}${_6}`);
+_.set_return (`{${rewriteRules}}`);
 
 return _.exit_rule ("rewriteDef");
 },
@@ -144,7 +144,7 @@ rewriteScope = _rewriteScope.rwr ()
 _6 = __6.rwr ()
 
 
-_.set_return (`${ruleName}${_1}${lb}${_2}${argDefs}${_3s}${rb}${_4}${_eq}${_5}${rewriteScope}${_6}`);
+_.set_return (`\n${ruleName} : function (${argDefs}) {\n${rewriteScope}},`);
 
 return _.exit_rule ("rewriteRule");
 },
@@ -162,7 +162,7 @@ rp = _rp.rwr ()
 op = _op.rwr ()
 
 
-_.set_return (`${lp}${names}${_1s}${rp}${op} `);
+_.set_return (`${lp}${names}${_1s}${rp}${op}.`);
 
 return _.exit_rule ("argDef_parenthesized");
 },
@@ -174,7 +174,7 @@ name = _name.rwr ()
 op = _op.rwr ()
 
 
-_.set_return (`${name}${op} `);
+_.set_return (`${name}${op},`);
 
 return _.exit_rule ("argDef_iter");
 },
@@ -184,7 +184,7 @@ _.enter_rule ("argDef_plain");
 name = _name.rwr ()
 
 
-_.set_return (`${name} `);
+_.set_return (`${name},`);
 
 return _.exit_rule ("argDef_plain");
 },
@@ -206,7 +206,7 @@ _3 = __3.rwr ()
 rb = _rb.rwr ()
 
 
-_.set_return (`${lb}${_1}${binding}${_2}${rewriteScope}${_3}${rb}`);
+_.set_return (`${rewriteScope}`);
 
 return _.exit_rule ("rewriteScope_scope");
 },
