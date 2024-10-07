@@ -1,90 +1,44 @@
 % rewrite t2t {
-  main [ParameterDefs* rewriteDef] = ‛
-${ParameterDefs}
-${rewriteDef}
-
-’
-
-  ParameterDef [_p name] = ‛\nlet «name»_stack = [];⎨memo_parameter ‛«name»’⎬’
-
-  rewriteDef [_r ws name ws2 lb ws3 rewriteRules+ ws4 rb ws5] = ‛const rewrite_js = {«rewriteRules»
-    _terminal: function () { return this.sourceString; },
-    _iter: function (...children) { return children.map(c => c.rwr ()); }
+  main [parameterDefs* rewriteDef] = ‛let _rewrite = {«parameterDefs»«rewriteDef»
+_terminal: function () { return this.sourceString; },
+_iter: function (...children) { return children.map(c => c.rwr ()); }
 };
-
-
 ’
 
-  rule_parameter_as_string [lq cs rq] = ‛"% parameter"’
-  rule_rewrite_as_string [lq cs rq] = ‛"% rewrite"’
-  rule_basic [cs] = ‛«cs»’
+  parameterDef [_pct _1 _parameter _2 name _3] = ‛’
+  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛«rewriteRules»’
 
-  name [nameFirst nameRest*] = ‛«nameFirst»«nameRest»’
+  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛\n«ruleName» : function («argDefs») {
+_rewrite_support.enter_rule ("«ruleName»");«rewriteScope»
+return _rewrite_support.exit_rule ("«ruleName»");
+},’
 
+  argDef_parenthesized [lp names+ rp op] = ‛«names»’
+  argDef_iter [name op] = ‛«name»,’
+  argDef_plain [name] = ‛«name»,’
+
+  rewriteScope_call [lb _1 lb2 _a fname _b arg+ _c rb2 _2 rewriteScope _3 rb] = ‛\n_.«fname» ("pre", «arg»);\n«rewriteScope»\n_.«fname» ("post", «arg»);’
+  rewriteScope_parameterbinding [lb _1 pname _2 _eq _3 s _4 scope _5 rb] = ‛\n_rewrite_support.pushParameter ("«pname»", «s»);«scope»\n_rewrite_support.popParameter ("«pname»");’
+  rewriteScope_plain [s] = ‛\n_rewrite_support.set_return («s»);’
+
+  rewriteFormatString [lq formatItems* rq] = ‛\`«formatItems»\`’
+  formatItem_supportCall [lb _1 name _2 argStrings+ rb] = ‛\$\{_.«name» ("", «argStrings»)\}’
+  formatItem_parameter [lb parameterRef rb] = ‛«parameterRef»’
+  formatItem_arg [lb argRef rb] = ‛«argRef»’
+  formatItem_escapedCharacter [bslash any] = ‛«bslash»«any»’
+  formatItem_rawCharacter [c] = ‛«c»’
+
+  parenarg [name ws] = ‛«name»,’
+  argstring [str ws] = ‛«str», ’
+  
+  argRef [name] = ‛\$\{«name».rwr ()\}’
+  parameterRef [name] = ‛\$\{_rewrite_support.getParameter ("«name»")\}’
+  
+  ruleName [name] = ‛«name»’
+
+  name [nameFirst nameRests*] = ‛«nameFirst»«nameRests»’
   nameFirst [c] = ‛«c»’
   nameRest [c] = ‛«c»’
 
-
-  rewriteRule_withbefore [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 before ws7 _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’ ⎬ = ‛
-«rwName» : function («rwParameterDefs») {
-⎨foreach_arg ‛let ☐ = undefined;’⎬
-let _pre = «before»;
-_.enter_rule ("«rwName»");
-⎨foreach_parameter ‛☐_stack.push (☐_stack [☐_stack.length-1]);’⎬
-⎨args_as_string ‛’⎬
-«rewriteScope»
-⎨foreach_parameter ‛☐_stack.pop ();’⎬
-return _.exit_rule ("«rwName»");
-},’
-  
-  rewriteRule_plain_no_scope [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 raw ws6] ⎨reset_stacks ‛’ ⎬ = ‛
-«rwName» : function («rwParameterDefs») {
-⎨foreach_arg ‛let ☐ = undefined;’⎬
-_.enter_rule ("«rwName»");
-⎨args_as_string ‛’⎬
-«raw»
-return _.exit_rule ("«rwName»");
-},’
-  
-  rewriteRule_plain [rwName ws1 lb ws2 rwParameterDefs+ ws3+ rb ws4 _eq ws5 rewriteScope ws6] ⎨reset_stacks ‛’ ⎬ = ‛
-«rwName» : function («rwParameterDefs») {
-⎨foreach_arg ‛let ☐ = undefined;’⎬
-_.enter_rule ("«rwName»");
-⎨foreach_parameter ‛☐_stack.push (☐_stack [☐_stack.length-1]);’⎬
-⎨args_as_string ‛’⎬
-«rewriteScope»
-⎨foreach_parameter ‛☐_stack.pop ();’⎬
-return _.exit_rule ("«rwName»");
-},’
-  
-
-  rwRuleName [name] =‛«name»’
-  rwArgDef [name] =‛_«name», ⎨memo_arg ‛«name»’ ‛☐ = _☐.rwr ()\n’⎬’
-  rwIterArgDef [name op] = ‛_«name», ⎨memo_arg ‛«name»’  ‛☐ = _☐.rwr ().join ('')\n’⎬’
-  rwParenthesizedIterArgDef [lb defs+ rb op] = ‛«defs»’
-  rwParameterDef [def] = ‛«def»’
-  rwArgRef [name] =‛«name»’
-  rwParenArgDef [name ws] = ‛_«name», ⎨memo_arg ‛«name»’  ‛☐ = _☐.rwr ().join ('')\n’⎬’
-
-  rewriteScope_within_support_wrapper [lb ws1 lb2 ws2 name ws3 s ws4 rb2 ws5 scope ws6 rb ws7] = ‛
-_.pre_«name» (\`«s»\`);
-«scope»
-_.post_«name» (\`«s»\`);’
-
-  rewriteScope_with_parameter [lb ws1 name ws2 _eq ws3 rewriteFormatString ws4 rewriteScope ws5 rb ws6] = ‛_.set_top («name»_stack, \`«rewriteFormatString»\`);\n«rewriteScope»’
-  rewriteScope_raw [x] = ‛«x»’
-  rewriteScopeRaw [rewriteFormatString] = ‛\n_.set_return (\`«rewriteFormatString»\`);\n’
-  
-  rewriteFormatString [lq formatChars* rq] = ‛«formatChars»’
-  formatChar_support_interpolation [lb ws1 name ws2 interpolation_args ws3 rb] = ‛\$\{_.«name» («interpolation_args»)\}’
-  formatChar_arg_interpolation [lb rwRef rb] = ‛\$\{«rwRef»\}’
-  formatChar_parameter_interpolation [lb rwRef rb] = ‛\$\{_.top («rwRef»_stack)\}’
-  formatChar_escaped [_bslash c] = ‛«_bslash»«c»’
-  formatChar_raw_character [c] = ‛«c»’
-
-  before [lb ws1 name ws2 before_args ws3 rb] = ‛_.«name» («before_args»)’
-  supportArgsForInterpolation [s more*] = ‛\`«s»\`«more»’
-  wsRewriteFormatString_for_interpolation [ws s] = ‛, \`«s»\`’
-  supportArgsForBefore [s more*] = ‛\`«s»\`«more»’
-  wsRewriteFormatString_for_before [ws s] = ‛, \`«s»\`’
+  s_ [space*] = ‛«space»’
 }

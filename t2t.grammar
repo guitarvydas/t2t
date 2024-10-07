@@ -1,61 +1,40 @@
 t2t {
-  main = applySyntactic<ParameterDef>* rewriteDef
+  main = parameterDef* rewriteDef
 
-  ParameterDef = "% parameter" name
-  rewriteDef = "% rewrite" spaces name spaces "{" spaces rewriteRule+ spaces "}" spaces
+  parameterDef = "%" s_ "parameter" s_ name s_
+  rewriteDef = "%" s_ "rewrite" s_ name s_ "{" s_ rewriteRule+ s_ "}" s_
 
+  rewriteRule = ruleName s_ "[" s_ (argDef s_)* "]" s_ "=" s_ rewriteScope s_
 
-  // just pass the grammar through to OhmJS - it parses and checks the grammar
-  rule =
-    | "\"" "% parameter" "\"" -- parameter_as_string
-    | "\"" "% rewrite" "\"" -- rewrite_as_string
-    | ~"% parameter" ~"% rewrite" any -- basic
-
-  name  (a name)
-    = nameFirst nameRest*
-
-  nameFirst
-    = "_"
-    | letter
-
-  nameRest
-    = "_"
-    | alnum
-
-
-  // rewrite parsing section
-  rewriteRule = 
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces before spaces "=" spaces rewriteScope spaces -- withbefore
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScopeRaw spaces -- plain_no_scope
-    | rwRuleName spaces "[" spaces (rwParameterDef spaces)+ "]" spaces "=" spaces rewriteScope spaces -- plain
-
-  rwRuleName = name
-  rwArgDef = name
-  rwIterArgDef = name ("+" | "*" | "?")
-  rwParenthesizedIterArgDef = "(" rwParenArgDef+ ")" ("+" | "*" | "?")
-  rwParameterDef = (rwParenthesizedIterArgDef | rwIterArgDef | rwArgDef)
-  rwParenArgDef = name spaces
-
-  rwArgRef = name
+  argDef = 
+    | "(" parenarg+ ")" ("+" | "*" | "?") -- parenthesized
+    | name ("+" | "*" | "?")               -- iter
+    | name                                 -- plain
 
   rewriteScope =
-    | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
-    | "⎡" spaces name spaces "=" spaces rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
-    | rewriteScopeRaw -- raw
-  rewriteScopeRaw = #rewriteFormatString
+    | "⎡" s_ "⎨" s_ name s_ argstring+ s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
+    | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
+    | rewriteFormatString                                                 -- plain
   
-  rewriteFormatString = "‛" formatChar* "’"
-  formatChar =
-    | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
-    | "⟪" rwArgRef "⟫" -- parameter_interpolation
-    | "«" rwArgRef "»" -- arg_interpolation
-    | "\\" any -- escaped
-    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any -- raw_character
+  rewriteFormatString = "‛" formatItem* "’"
+  formatItem =
+    | "⎨" s_ name s_ argstring+ "⎬" -- supportCall
+    | "⟪" parameterRef "⟫"                         -- parameter
+    | "«" argRef "»"                               -- arg
+    | "\\" any                                     -- escapedCharacter
+    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any  -- rawCharacter
 
-  before = "⎨" spaces name spaces supportArgsForBefore spaces "⎬"
+  parenarg = name s_
+  argstring =  rewriteFormatString s_
+  argRef = name
+  parameterRef = name
+  ruleName = name
 
-  supportArgsForInterpolation = rewriteFormatString wsRewriteFormatString_for_interpolation*
-  wsRewriteFormatString_for_interpolation = spaces rewriteFormatString
-  supportArgsForBefore = rewriteFormatString wsRewriteFormatString_for_before*
-  wsRewriteFormatString_for_before = spaces rewriteFormatString
+  name (a name)
+    = nameFirst nameRest*
+  nameFirst = ("_" | letter)
+  nameRest  = ("_" | alnum)
+
+  s_ = space*
+
 }
