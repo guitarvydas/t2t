@@ -296,7 +296,7 @@ argStrings = _argStrings.rwr ().join ('')
 rb = _rb.rwr ()
 
 
-_.set_return (`${name} (${argStrings})`);
+_.set_return (`\$\{${name} (${argStrings})\}`);
 
 return _.exit_rule ("formatItem_supportCall");
 },

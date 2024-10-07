@@ -16,6 +16,7 @@
 ## make test2t2
 
 dev:
+	make dev.t2t.mjs
 	@echo '// *** 2 ***'
 	node dev.t2t.mjs test2.rewrite >test2.rwr.mjs
 	cat front.part test2.grammar middle.part test2.rwr.mjs tail.part >dev.test2.mjs
@@ -36,6 +37,9 @@ devbig:
 	node dev.t2t.mjs test3.rewrite >test3.rwr.mjs
 	cat front.part test3.grammar middle.part test3.rwr.mjs tail.part >dev.test3.mjs
 	node dev.test3.mjs test3.txt
+
+dev.t2t.mjs: 
+	node t2t.mjs t2t.grammar t2t.rewrite >dev.t2t.mjs
 
 all: self
 

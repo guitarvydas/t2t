@@ -1,7 +1,7 @@
 
         'use strict'
 
-        import {_} from './support.mjs';
+        import {_} from './bootstrap_support.mjs';
         import * as ohm from 'ohm-js';
 
         let return_value_stack = [];
