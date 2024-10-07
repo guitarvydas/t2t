@@ -1,5 +1,9 @@
 % rewrite t2t {
-  main [parameterDefs* rewriteDef] = ‛let _rewrite = {«parameterDefs»«rewriteDef»’
+  main [parameterDefs* rewriteDef] = ‛let _rewrite = {«parameterDefs»«rewriteDef»
+_terminal: function () { return this.sourceString; },
+_iter: function (...children) { return children.map(c => c.rwr ()); }
+};
+’
 
   parameterDef [_pct _1 _parameter _2 name _3] = ‛’
   rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛«rewriteRules»’
@@ -28,7 +32,7 @@ _rewrite_support.exit_rule ("«ruleName»");
   argstring [str ws] = ‛«str», ’
   
   argRef [name] = ‛\$\{«name».rwr ()\}’
-  parameterRef [name] = ‛\$\{_.top (_rewrite.«name»_stack)\}’
+  parameterRef [name] = ‛\$\{_rewrite_support.getParameter ("«name»")\}’
   
   ruleName [name] = ‛«name»’
 

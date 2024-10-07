@@ -59,7 +59,11 @@ parameterDefs = _parameterDefs.rwr ().join ('')
 rewriteDef = _rewriteDef.rwr ()
 
 
-_.set_return (`let _rewrite = {${parameterDefs}${rewriteDef}`);
+_.set_return (`let _rewrite = {${parameterDefs}${rewriteDef}
+_terminal: function () { return this.sourceString; },
+_iter: function (...children) { return children.map(c => c.rwr ()); }
+};
+`);
 
 return _.exit_rule ("main");
 },
@@ -386,7 +390,7 @@ _.enter_rule ("parameterRef");
 name = _name.rwr ()
 
 
-_.set_return (`\$\{_.top (_rewrite.${name}_stack)\}`);
+_.set_return (`\$\{_rewrite_support.getParameter ("${name}")\}`);
 
 return _.exit_rule ("parameterRef");
 },
