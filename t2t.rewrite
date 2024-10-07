@@ -10,7 +10,7 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
 
   rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛\n«ruleName» : function («argDefs») {
 _rewrite_support.enter_rule ("«ruleName»");«rewriteScope»
-_rewrite_support.exit_rule ("«ruleName»");
+return _rewrite_support.exit_rule ("«ruleName»");
 },’
 
   argDef_parenthesized [lp names+ rp op] = ‛«names»’

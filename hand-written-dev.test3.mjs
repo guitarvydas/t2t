@@ -61,7 +61,6 @@ test3 {
   Main = "waltzing" Inner
   Inner = "matilda"
 }
-
 `;
 
 let _rewrite = {
@@ -80,6 +79,7 @@ return _rewrite_support.exit_rule ("Inner");
 _terminal: function () { return this.sourceString; },
 _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
+
 
 // node t2t.mjs test3.txt
 import * as fs from 'fs';

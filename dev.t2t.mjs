@@ -149,7 +149,7 @@ _6 = __6.rwr ()
 
 _.set_return (`\n${ruleName} : function (${argDefs}) {
 _rewrite_support.enter_rule ("${ruleName}");${rewriteScope}
-_rewrite_support.exit_rule ("${ruleName}");
+return _rewrite_support.exit_rule ("${ruleName}");
 },`);
 
 return _.exit_rule ("rewriteRule");

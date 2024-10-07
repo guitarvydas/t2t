@@ -18,7 +18,8 @@
 dev:
 	node t2t.mjs t2t.grammar t2t.rewrite >dev.t2t.mjs
 	node dev.t2t.mjs test3.rewrite >test3.rwr.mjs
-	node test3.rwr.mjs test3.txt
+	cat front.part test3.grammar middle.part test3.rwr.mjs tail.part >dev.test3.mjs
+	node dev.test3.mjs test3.txt
 
 
 devbig:
