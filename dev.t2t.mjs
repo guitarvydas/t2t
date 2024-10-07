@@ -1,7 +1,7 @@
 
         'use strict'
 
-        import {_} from './support.mjs';
+        import {_} from './bootstrap_support.mjs';
         import * as ohm from 'ohm-js';
 
         let return_value_stack = [];
@@ -222,7 +222,7 @@ _3 = __3.rwr ()
 rb = _rb.rwr ()
 
 
-_.set_return (`\n_.${fname} (${arg});\n${rewriteScope}`);
+_.set_return (`\n_.${fname} ("pre", ${arg});\n${rewriteScope}\n_.${fname} ("post", ${arg});`);
 
 return _.exit_rule ("rewriteScope_call");
 },
@@ -296,7 +296,7 @@ argStrings = _argStrings.rwr ().join ('')
 rb = _rb.rwr ()
 
 
-_.set_return (`\$\{${name} (${argStrings})\}`);
+_.set_return (`\$\{_.${name} ("", ${argStrings})\}`);
 
 return _.exit_rule ("formatItem_supportCall");
 },

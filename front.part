@@ -4,7 +4,7 @@ import {_} from './support.mjs';
 import * as ohm from 'ohm-js';
 
 let _rewrite_support = {
-    verbose : true,
+    verbose : false,
     top : function (stack) { let v = stack.pop (); stack.push (v); return v; },
     set_top : function (stack, v) { stack.pop (); stack.push (v); return v; },
     return_value_stack : [],

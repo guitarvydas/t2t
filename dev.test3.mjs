@@ -4,7 +4,7 @@ import {_} from './support.mjs';
 import * as ohm from 'ohm-js';
 
 let _rewrite_support = {
-    verbose : true,
+    verbose : false,
     top : function (stack) { let v = stack.pop (); stack.push (v); return v; },
     set_top : function (stack, v) { stack.pop (); stack.push (v); return v; },
     return_value_stack : [],
@@ -84,12 +84,9 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
 // node t2t.mjs test3.txt
 import * as fs from 'fs';
 const argv = process.argv.slice(2);
-console.error (argv);
 let srcFilename = argv[0];
 if ('-' == srcFilename) { srcFilename = 0 }
 let src = fs.readFileSync(srcFilename, 'utf-8');
-console.error (srcFilename);
-console.error (src);
 try {
     let parser = ohm.grammar (grammar);
     let cst = parser.match (src);

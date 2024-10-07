@@ -4,7 +4,7 @@ import {_} from './support.mjs';
 import * as ohm from 'ohm-js';
 
 let _rewrite_support = {
-    verbose : true,
+    verbose : false,
     top : function (stack) { let v = stack.pop (); stack.push (v); return v; },
     set_top : function (stack, v) { stack.pop (); stack.push (v); return v; },
     return_value_stack : [],
@@ -66,17 +66,19 @@ example {
 let _rewrite = {
 Main : function (a,_semi,b,c,d,) {
 _rewrite_support.enter_rule ("Main");
-_.print (`pre down a=${a.rwr ()} _semi=${_semi.rwr ()} b=${b.rwr ()} c=${c.rwr ()} d=${d.rwr ()}`, );
+_.print ("pre", `pre down a=${a.rwr ()} _semi=${_semi.rwr ()} b=${b.rwr ()} c=${c.rwr ()} d=${d.rwr ()}`, );
 
 _rewrite_support.pushParameter ("paramA", `${a.rwr ()}`);
 _rewrite_support.pushParameter ("paramB", `${b.rwr ()}`);
 _rewrite_support.pushParameter ("paramC", `${c.rwr ()}`);
-_.print (`hello`, );
+_.print ("pre", `hello`, );
 
-_rewrite_support.set_return (`... ${print2 (`middle`, `2nd arg`, )} ${a.rwr ()}${_semi.rwr ()}${_rewrite_support.getParameter ("paramB")}${c.rwr ()}${d.rwr ()}...`);
+_rewrite_support.set_return (`... ${_.print2 ("", `middle`, `2nd arg`, )} ${a.rwr ()}${_semi.rwr ()}${_rewrite_support.getParameter ("paramB")}${c.rwr ()}${d.rwr ()}...`);
+_.print ("post", `hello`, );
 _rewrite_support.popParameter ("paramC");
 _rewrite_support.popParameter ("paramB");
 _rewrite_support.popParameter ("paramA");
+_.print ("post", `pre down a=${a.rwr ()} _semi=${_semi.rwr ()} b=${b.rwr ()} c=${c.rwr ()} d=${d.rwr ()}`, );
 return _rewrite_support.exit_rule ("Main");
 },
 _terminal: function () { return this.sourceString; },
@@ -86,12 +88,9 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
 // node t2t.mjs test3.txt
 import * as fs from 'fs';
 const argv = process.argv.slice(2);
-console.error (argv);
 let srcFilename = argv[0];
 if ('-' == srcFilename) { srcFilename = 0 }
 let src = fs.readFileSync(srcFilename, 'utf-8');
-console.error (srcFilename);
-console.error (src);
 try {
     let parser = ohm.grammar (grammar);
     let cst = parser.match (src);

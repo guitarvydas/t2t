@@ -16,7 +16,6 @@
 ## make test2t2
 
 dev:
-	make dev.t2t.mjs
 	@echo '// *** 2 ***'
 	node dev.t2t.mjs test2.rewrite >test2.rwr.mjs
 	cat front.part test2.grammar middle.part test2.rwr.mjs tail.part >dev.test2.mjs
@@ -24,7 +23,6 @@ dev:
 
 
 devbig:
-	node t2t.mjs t2t.grammar t2t.rewrite >dev.t2t.mjs
 	@echo '// *** 1 ***'
 	node dev.t2t.mjs test.rewrite >test.rwr.mjs
 	cat front.part test.grammar middle.part test.rwr.mjs tail.part >dev.test.mjs
@@ -40,6 +38,7 @@ devbig:
 
 dev.t2t.mjs: 
 	node t2t.mjs t2t.grammar t2t.rewrite >dev.t2t.mjs
+	# now 'hand edit dev.t2t.mjs first line to:' 'import {_} from' './bootstrap_support.mjs';
 
 all: self
 
