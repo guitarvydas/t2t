@@ -62,16 +62,69 @@ t2t  {
 }
 `;
 
-let _rewrite = {
-Main : function (c,) {
-_rewrite_support.enter_rule ("Main");
-_rewrite_support.set_return (`hello world ${c.rwr ()}`);
-return _rewrite_support.exit_rule ("Main");
-},
-_terminal: function () { return this.sourceString; },
-_iter: function (...children) { return children.map(c => c.rwr ()); }
-};
-
+Error: Found errors in the action dictionary of the 'rwr' operation:
+- 'main' is not a valid semantic action for 't2t'
+- 'parameterDef' is not a valid semantic action for 't2t'
+- 'rewriteDef' is not a valid semantic action for 't2t'
+- 'rewriteRule' is not a valid semantic action for 't2t'
+- 'argDef_parenthesized' is not a valid semantic action for 't2t'
+- 'argDef_iter' is not a valid semantic action for 't2t'
+- 'argDef_plain' is not a valid semantic action for 't2t'
+- 'rewriteScope_call' is not a valid semantic action for 't2t'
+- 'rewriteScope_parameterbinding' is not a valid semantic action for 't2t'
+- 'rewriteScope_plain' is not a valid semantic action for 't2t'
+- 'rewriteFormatString' is not a valid semantic action for 't2t'
+- 'formatItem_supportCall' is not a valid semantic action for 't2t'
+- 'formatItem_parameter' is not a valid semantic action for 't2t'
+- 'formatItem_arg' is not a valid semantic action for 't2t'
+- 'formatItem_escapedCharacter' is not a valid semantic action for 't2t'
+- 'formatItem_rawCharacter' is not a valid semantic action for 't2t'
+- 'parenarg' is not a valid semantic action for 't2t'
+- 'argstring' is not a valid semantic action for 't2t'
+- 'argRef' is not a valid semantic action for 't2t'
+- 'parameterRef' is not a valid semantic action for 't2t'
+- 'ruleName' is not a valid semantic action for 't2t'
+- 'name' is not a valid semantic action for 't2t'
+- 'nameFirst' is not a valid semantic action for 't2t'
+- 'nameRest' is not a valid semantic action for 't2t'
+- 's_' is not a valid semantic action for 't2t'
+    at Grammar._checkTopDownActionDict (file:///Users/paultarvydas/projects/node_modules/ohm-js/src/Grammar.js:141:21)
+    at Operation.checkActionDict (file:///Users/paultarvydas/projects/node_modules/ohm-js/src/Semantics.js:620:13)
+    at Semantics.addOperationOrAttribute (file:///Users/paultarvydas/projects/node_modules/ohm-js/src/Semantics.js:334:11)
+    at proxy.addOperation (file:///Users/paultarvydas/projects/node_modules/ohm-js/src/Semantics.js:538:7)
+    at file:///Users/paultarvydas/projects/t2t/new.dev.t2t.mjs:212:9
+    at ModuleJob.run (node:internal/modules/esm/module_job:222:25)
+    at async ModuleLoader.import (node:internal/modules/esm/loader:323:24)
+    at async loadESM (node:internal/process/esm_loader:28:7)
+    at async handleMainPromise (node:internal/modules/run_main:120:12) {
+  problems: [
+    "'main' is not a valid semantic action for 't2t'",
+    "'parameterDef' is not a valid semantic action for 't2t'",
+    "'rewriteDef' is not a valid semantic action for 't2t'",
+    "'rewriteRule' is not a valid semantic action for 't2t'",
+    "'argDef_parenthesized' is not a valid semantic action for 't2t'",
+    "'argDef_iter' is not a valid semantic action for 't2t'",
+    "'argDef_plain' is not a valid semantic action for 't2t'",
+    "'rewriteScope_call' is not a valid semantic action for 't2t'",
+    "'rewriteScope_parameterbinding' is not a valid semantic action for 't2t'",
+    "'rewriteScope_plain' is not a valid semantic action for 't2t'",
+    "'rewriteFormatString' is not a valid semantic action for 't2t'",
+    "'formatItem_supportCall' is not a valid semantic action for 't2t'",
+    "'formatItem_parameter' is not a valid semantic action for 't2t'",
+    "'formatItem_arg' is not a valid semantic action for 't2t'",
+    "'formatItem_escapedCharacter' is not a valid semantic action for 't2t'",
+    "'formatItem_rawCharacter' is not a valid semantic action for 't2t'",
+    "'parenarg' is not a valid semantic action for 't2t'",
+    "'argstring' is not a valid semantic action for 't2t'",
+    "'argRef' is not a valid semantic action for 't2t'",
+    "'parameterRef' is not a valid semantic action for 't2t'",
+    "'ruleName' is not a valid semantic action for 't2t'",
+    "'name' is not a valid semantic action for 't2t'",
+    "'nameFirst' is not a valid semantic action for 't2t'",
+    "'nameRest' is not a valid semantic action for 't2t'",
+    "'s_' is not a valid semantic action for 't2t'"
+  ]
+}
 // node t2t.mjs test3.txt
 import * as fs from 'fs';
 const argv = process.argv.slice(2);
