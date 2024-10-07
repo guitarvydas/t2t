@@ -3,6 +3,8 @@
 # node dev.t2t.mjs t2t.rewrite >t2t.rwr.mjs
 # cat front.part t2t.grammar middle.part t2t.rwr.mjs tail.part >new.dev.t2t.mjs
 # hand edit
+# regression: node dev.t2t.mjs t2t.rewrite >self.t2t.rwr.mjs
+
 echo
 echo '*** 1 ***'
 node new.dev.t2t.mjs test.rewrite >test.rwr.mjs
