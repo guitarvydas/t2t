@@ -22,13 +22,10 @@
     | name                                 -- plain
 
   rewriteScope =
-    | "⎡" s_ binding s_ rewriteScope s_ "⎦" -- scope
-    | rewriteFormatString                   -- plain
+    | "⎡" s_ "⎨" s_ name s_ argstring+ s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
+    | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
+    | rewriteFormatString                                                 -- plain
   
-  binding =
-    | "⎨" s_ name s_ rewriteFormatString s_ "⎬" -- call
-    | name s_ "=" s_ rewriteFormatString        -- parameterAssignment
-
   rewriteFormatString = "‛" formatItem* "’"
   formatItem =
     | "⎨" s_ name s_ argstring+ "⎬" -- supportCall
@@ -62,7 +59,7 @@ parameterDefs = _parameterDefs.rwr ().join ('')
 rewriteDef = _rewriteDef.rwr ()
 
 
-_.set_return (`_r = {${parameterDefs}${rewriteDef}\n}`);
+_.set_return (`let _rewrite = {${parameterDefs}${rewriteDef}`);
 
 return _.exit_rule ("main");
 },
@@ -82,7 +79,7 @@ name = _name.rwr ()
 _3 = __3.rwr ()
 
 
-_.set_return (`\n${name}_stack : [],`);
+_.set_return (``);
 
 return _.exit_rule ("parameterDef");
 },
@@ -114,7 +111,7 @@ rb = _rb.rwr ()
 _6 = __6.rwr ()
 
 
-_.set_return (`\n${rewriteRules}`);
+_.set_return (`${rewriteRules}`);
 
 return _.exit_rule ("rewriteDef");
 },
@@ -146,7 +143,10 @@ rewriteScope = _rewriteScope.rwr ()
 _6 = __6.rwr ()
 
 
-_.set_return (`\n${ruleName} : function (${argDefs}) {${rewriteScope}\n},`);
+_.set_return (`\n${ruleName} : function (${argDefs}) {
+_rewrite_support.enter_rule ("${ruleName}");${rewriteScope}
+_rewrite_support.exit_rule ("${ruleName}");
+},`);
 
 return _.exit_rule ("rewriteRule");
 },
@@ -188,27 +188,69 @@ _.set_return (`${name},`);
 
 return _.exit_rule ("argDef_plain");
 },
-rewriteScope_scope : function (_lb, __1, _binding, __2, _rewriteScope, __3, _rb, ) {
+rewriteScope_call : function (_lb, __1, _lb2, __a, _fname, __b, _arg, __c, _rb2, __2, _rewriteScope, __3, _rb, ) {
 let lb = undefined;
 let _1 = undefined;
-let binding = undefined;
+let lb2 = undefined;
+let _a = undefined;
+let fname = undefined;
+let _b = undefined;
+let arg = undefined;
+let _c = undefined;
+let rb2 = undefined;
 let _2 = undefined;
 let rewriteScope = undefined;
 let _3 = undefined;
 let rb = undefined;
-_.enter_rule ("rewriteScope_scope");
+_.enter_rule ("rewriteScope_call");
 lb = _lb.rwr ()
 _1 = __1.rwr ()
-binding = _binding.rwr ()
+lb2 = _lb2.rwr ()
+_a = __a.rwr ()
+fname = _fname.rwr ()
+_b = __b.rwr ()
+arg = _arg.rwr ().join ('')
+_c = __c.rwr ()
+rb2 = _rb2.rwr ()
 _2 = __2.rwr ()
 rewriteScope = _rewriteScope.rwr ()
 _3 = __3.rwr ()
 rb = _rb.rwr ()
 
 
-_.set_return (`${binding}${rewriteScope}`);
+_.set_return (`\n_.${fname} (${arg});\n${rewriteScope}`);
 
-return _.exit_rule ("rewriteScope_scope");
+return _.exit_rule ("rewriteScope_call");
+},
+rewriteScope_parameterbinding : function (_lb, __1, _pname, __2, __eq, __3, _s, __4, _scope, __5, _rb, ) {
+let lb = undefined;
+let _1 = undefined;
+let pname = undefined;
+let _2 = undefined;
+let _eq = undefined;
+let _3 = undefined;
+let s = undefined;
+let _4 = undefined;
+let scope = undefined;
+let _5 = undefined;
+let rb = undefined;
+_.enter_rule ("rewriteScope_parameterbinding");
+lb = _lb.rwr ()
+_1 = __1.rwr ()
+pname = _pname.rwr ()
+_2 = __2.rwr ()
+_eq = __eq.rwr ()
+_3 = __3.rwr ()
+s = _s.rwr ()
+_4 = __4.rwr ()
+scope = _scope.rwr ()
+_5 = __5.rwr ()
+rb = _rb.rwr ()
+
+
+_.set_return (`\n_rewrite_support.pushParameter ("${pname}", ${s});${scope}\n_rewrite_support.popParameter ("${pname}");`);
+
+return _.exit_rule ("rewriteScope_parameterbinding");
 },
 rewriteScope_plain : function (_s, ) {
 let s = undefined;
@@ -216,49 +258,9 @@ _.enter_rule ("rewriteScope_plain");
 s = _s.rwr ()
 
 
-_.set_return (`\nreturn ${s};`);
+_.set_return (`\n_rewrite_support.set_return (${s});`);
 
 return _.exit_rule ("rewriteScope_plain");
-},
-binding_call : function (_lb, __1, _name, __2, _rewriteFormatString, __3, _rb, ) {
-let lb = undefined;
-let _1 = undefined;
-let name = undefined;
-let _2 = undefined;
-let rewriteFormatString = undefined;
-let _3 = undefined;
-let rb = undefined;
-_.enter_rule ("binding_call");
-lb = _lb.rwr ()
-_1 = __1.rwr ()
-name = _name.rwr ()
-_2 = __2.rwr ()
-rewriteFormatString = _rewriteFormatString.rwr ()
-_3 = __3.rwr ()
-rb = _rb.rwr ()
-
-
-_.set_return (`\n${name} (${rewriteFormatString});`);
-
-return _.exit_rule ("binding_call");
-},
-binding_parameterAssignment : function (_name, __1, __eq, __2, _rewriteFormatString, ) {
-let name = undefined;
-let _1 = undefined;
-let _eq = undefined;
-let _2 = undefined;
-let rewriteFormatString = undefined;
-_.enter_rule ("binding_parameterAssignment");
-name = _name.rwr ()
-_1 = __1.rwr ()
-_eq = __eq.rwr ()
-_2 = __2.rwr ()
-rewriteFormatString = _rewriteFormatString.rwr ()
-
-
-_.set_return (`\n_.set_top (${name}_stack, ${rewriteFormatString});`);
-
-return _.exit_rule ("binding_parameterAssignment");
 },
 rewriteFormatString : function (_lq, _formatItems, _rq, ) {
 let lq = undefined;
@@ -384,7 +386,7 @@ _.enter_rule ("parameterRef");
 name = _name.rwr ()
 
 
-_.set_return (`\$\{_.top (_r.${name}_stack)\}`);
+_.set_return (`\$\{_.top (_rewrite.${name}_stack)\}`);
 
 return _.exit_rule ("parameterRef");
 },

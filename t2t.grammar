@@ -12,13 +12,10 @@ t2t {
     | name                                 -- plain
 
   rewriteScope =
-    | "⎡" s_ binding s_ rewriteScope s_ "⎦" -- scope
-    | rewriteFormatString                   -- plain
+    | "⎡" s_ "⎨" s_ name s_ argstring+ s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
+    | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
+    | rewriteFormatString                                                 -- plain
   
-  binding =
-    | "⎨" s_ name s_ rewriteFormatString s_ "⎬" -- call
-    | name s_ "=" s_ rewriteFormatString        -- parameterAssignment
-
   rewriteFormatString = "‛" formatItem* "’"
   formatItem =
     | "⎨" s_ name s_ argstring+ "⎬" -- supportCall

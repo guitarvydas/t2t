@@ -1,20 +1,21 @@
 % rewrite t2t {
-  main [parameterDefs* rewriteDef] = ‛_r = {«parameterDefs»«rewriteDef»\n}’
+  main [parameterDefs* rewriteDef] = ‛let _rewrite = {«parameterDefs»«rewriteDef»’
 
-  parameterDef [_pct _1 _parameter _2 name _3] = ‛\n«name»_stack : [],’
-  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛\n«rewriteRules»’
+  parameterDef [_pct _1 _parameter _2 name _3] = ‛’
+  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛«rewriteRules»’
 
-  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛\n«ruleName» : function («argDefs») {«rewriteScope»\n},’
+  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛\n«ruleName» : function («argDefs») {
+_rewrite_support.enter_rule ("«ruleName»");«rewriteScope»
+_rewrite_support.exit_rule ("«ruleName»");
+},’
 
   argDef_parenthesized [lp names+ rp op] = ‛«names»’
   argDef_iter [name op] = ‛«name»,’
   argDef_plain [name] = ‛«name»,’
 
-  rewriteScope_scope [lb _1 binding _2 rewriteScope _3 rb] = ‛«binding»«rewriteScope»’
-  rewriteScope_plain [s] = ‛\nreturn «s»;’
-
-  binding_call [lb _1 name _2 rewriteFormatString _3 rb] = ‛\n«name» («rewriteFormatString»);’
-  binding_parameterAssignment [name _1 _eq _2 rewriteFormatString] = ‛\n_.set_top («name»_stack, «rewriteFormatString»);’
+  rewriteScope_call [lb _1 lb2 _a fname _b arg+ _c rb2 _2 rewriteScope _3 rb] = ‛\n_.«fname» («arg»);\n«rewriteScope»’
+  rewriteScope_parameterbinding [lb _1 pname _2 _eq _3 s _4 scope _5 rb] = ‛\n_rewrite_support.pushParameter ("«pname»", «s»);«scope»\n_rewrite_support.popParameter ("«pname»");’
+  rewriteScope_plain [s] = ‛\n_rewrite_support.set_return («s»);’
 
   rewriteFormatString [lq formatItems* rq] = ‛\`«formatItems»\`’
   formatItem_supportCall [lb _1 name _2 argStrings+ rb] = ‛«name» («argStrings»)’
@@ -27,7 +28,7 @@
   argstring [str ws] = ‛«str», ’
   
   argRef [name] = ‛\$\{«name».rwr ()\}’
-  parameterRef [name] = ‛\$\{_.top (_r.«name»_stack)\}’
+  parameterRef [name] = ‛\$\{_.top (_rewrite.«name»_stack)\}’
   
   ruleName [name] = ‛«name»’
 

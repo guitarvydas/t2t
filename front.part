@@ -1,0 +1,23 @@
+'use strict'
+
+import {_} from './support.mjs';
+import * as ohm from 'ohm-js';
+
+let _rewrite_support = {
+    top : function (stack) { let v = stack.pop (); stack.push (v); return v; },
+    set_top : function (stack, v) { stack.pop (); stack.push (v); return v; },
+    return_value_stack : [],
+    rule_name_stack : [],
+    depth_prefix : ' ',
+    enter_rule : function (name) { _.return_value_stack.push (""); _rewrite_support.rule_name_stack.push (""); _.set_top (_rewrite_support.rule_name_stack, name);},
+    set_return : function (v) { _.set_top (_rewrite_support.return_value_stack, v); },
+    exit_rule : function (name) { _rewrite_support.rule_name_stack.pop (); return _rewrite_support.return_value_stack.pop ()},
+
+    // verbose versions
+    // enter_rule : function (name) { console.error (_.depth_prefix, ["enter", name]); _.depth_prefix += ' '; _.return_value_stack.push (""); _.rule_name_stack.push (""); _.set_top (_.rule_name_stack, name);},
+    // set_return : function (v) { _.set_top (_.return_value_stack, v); },
+    // exit_rule : function (name) { _.depth_prefix = _.depth_prefix.substr (1); console.error (_.depth_prefix, ["exit", name]); _.rule_name_stack.pop (); return _.return_value_stack.pop ()},
+
+};
+
+const grammar = String.raw`
