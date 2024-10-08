@@ -7,7 +7,7 @@ t2t {
   rewriteRule = ruleName s_ "[" s_ (argDef s_)* "]" s_ "=" s_ rewriteScope s_
 
   argDef = 
-    | "(" parenarg+ ")" ("+" | "*" | "?") -- parenthesized
+    | "(" parenarg+ ")" ("+" | "*" | "?")  -- parenthesized
     | name ("+" | "*" | "?")               -- iter
     | name                                 -- plain
 

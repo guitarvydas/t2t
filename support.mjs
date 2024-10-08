@@ -1,5 +1,16 @@
 let _ = {
 
+    args : {},
+    
+    memoArg : function (when, name, str) {
+	if (when == "pre") {
+            _.args [name] = str;
+	}
+    },
+    fetchArg : function (when, name) {
+	return _.args [name];
+    },
+
     print : function (when, s) {
 	if (when == "pre") {
 	    console.log (`pre: ${s}`);

@@ -14,8 +14,14 @@ return _rewrite_support.exit_rule ("«ruleName»");
 },’
 
   argDef_parenthesized [lp names+ rp op] = ‛«names»’
-  argDef_iter [name op] = ‛«name»,’
-  argDef_plain [name] = ‛«name»,’
+  argDef_iter [name op] =
+    ⎡ ⎨memoArg ‛’ ‛«name»’ ‛\$\{«name».rwr ().join ('')\}’⎬
+      ‛«name»,’
+    ⎦
+  argDef_plain [name] =
+    ⎡ ⎨memoArg ‛’ ‛«name»’ ‛\$\{«name».rwr ()\}’⎬
+      ‛«name»,’
+    ⎦
 
   rewriteScope_call [lb _1 lb2 _a fname _b arg+ _c rb2 _2 rewriteScope _3 rb] = ‛\n_.«fname» ("pre", «arg»);\n«rewriteScope»\n_.«fname» ("post", «arg»);’
   rewriteScope_parameterbinding [lb _1 pname _2 _eq _3 s _4 scope _5 rb] = ‛\n_rewrite_support.pushParameter ("«pname»", «s»);«scope»\n_rewrite_support.popParameter ("«pname»");’
@@ -28,10 +34,13 @@ return _rewrite_support.exit_rule ("«ruleName»");
   formatItem_escapedCharacter [bslash any] = ‛«bslash»«any»’
   formatItem_rawCharacter [c] = ‛«c»’
 
-  parenarg [name ws] = ‛«name»,’
+  parenarg [name ws] =
+    ⎡ ⎨memoArg ‛’ ‛«name»’ ‛\$\{«name».rwr ().join ('')\}’⎬
+      ‛«name»,’
+    ⎦
   argstring [str ws] = ‛«str», ’
   
-  argRef [name] = ‛\$\{«name».rwr ()\}’
+  argRef [name] = ‛⎨fetchArg ‛«name»’⎬’
   parameterRef [name] = ‛\$\{_rewrite_support.getParameter ("«name»")\}’
   
   ruleName [name] = ‛«name»’

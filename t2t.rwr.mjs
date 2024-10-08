@@ -33,12 +33,18 @@ return _rewrite_support.exit_rule ("argDef_parenthesized");
 },
 argDef_iter : function (name,op,) {
 _rewrite_support.enter_rule ("argDef_iter");
+_.memoArg ("pre", ``, `${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`, );
+
 _rewrite_support.set_return (`${name.rwr ()},`);
+_.memoArg ("post", ``, `${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`, );
 return _rewrite_support.exit_rule ("argDef_iter");
 },
 argDef_plain : function (name,) {
 _rewrite_support.enter_rule ("argDef_plain");
+_.memoArg ("pre", ``, `${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ()\}`, );
+
 _rewrite_support.set_return (`${name.rwr ()},`);
+_.memoArg ("post", ``, `${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ()\}`, );
 return _rewrite_support.exit_rule ("argDef_plain");
 },
 rewriteScope_call : function (lb,_1,lb2,_a,fname,_b,arg,_c,rb2,_2,rewriteScope,_3,rb,) {
@@ -88,7 +94,10 @@ return _rewrite_support.exit_rule ("formatItem_rawCharacter");
 },
 parenarg : function (name,ws,) {
 _rewrite_support.enter_rule ("parenarg");
+_.memoArg ("pre", ``, `${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`, );
+
 _rewrite_support.set_return (`${name.rwr ()},`);
+_.memoArg ("post", ``, `${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`, );
 return _rewrite_support.exit_rule ("parenarg");
 },
 argstring : function (str,ws,) {
@@ -98,7 +107,7 @@ return _rewrite_support.exit_rule ("argstring");
 },
 argRef : function (name,) {
 _rewrite_support.enter_rule ("argRef");
-_rewrite_support.set_return (`\$\{${name.rwr ()}.rwr ()\}`);
+_rewrite_support.set_return (`${_.fetchArg ("", `${name.rwr ()}`, )}`);
 return _rewrite_support.exit_rule ("argRef");
 },
 parameterRef : function (name,) {
