@@ -22,8 +22,8 @@ echo
 echo '*** 1 ***'
 node t2t.mjs test.rewrite >test.rwr.mjs
 node test.rwr.mjs
-# cat front.part test.grammar middle.part test.rwr.mjs tail.part >new.dev.test.mjs
-# node new.dev.test.mjs test.txt
+cat front.part test.grammar middle.part test.rwr.mjs tail.part >new.dev.test.mjs
+node new.dev.test.mjs test.txt
 
 # # echo
 # # echo '*** 2 ***'

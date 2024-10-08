@@ -62,7 +62,21 @@ let _ = {
 
     print2 : function (s1, s2) {console.log (`print2: ${s1} ${s2}`); return "";},
 
+
+    // for bootstrap
+    args : {},
     
+    pre_memoArg : function (when, name, str) {
+	if (when == "pre") {
+            _.args [name] = str;
+	}
+    },
+    post_memoArg : function (when, name, str) {},
+    fetchArg : function (when, name) {
+	return _.args [name];
+    },
+
+
 
 };
 
