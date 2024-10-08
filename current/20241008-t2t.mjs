@@ -1,7 +1,7 @@
 
 'use strict'
 
-import {_} from './bootstrap_support.mjs';
+import {_} from './support.mjs';
 import * as ohm from 'ohm-js';
 
 let return_value_stack = [];
@@ -392,9 +392,10 @@ return _rewrite_support.exit_rule ("${ruleName}");
     argRef : function (_name, ) {
 	let name = undefined;
 	_.enter_rule ("argRef");
-	name = _name.rwr ();
+	name = _name.rwr ()
 
-	_.set_return (`${_.fetchArg ('', `${name}`)}`);
+
+	_.set_return (`${_.fetchArg (`${name}`)}`);
 
 	return _.exit_rule ("argRef");
     },

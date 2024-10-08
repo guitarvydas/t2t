@@ -1,7 +1,7 @@
 
         'use strict'
 
-        import {_} from './20241005-support.mjs';
+        import {_} from './20241007-support.mjs';
         import * as ohm from 'ohm-js';
 
         let return_value_stack = [];
@@ -49,13 +49,12 @@
   rwArgRef = name
 
   rewriteScope =
-    | "⎡" spaces "⎨" spaces name spaces spRewriteFormatString* spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
+    | "⎡" spaces "⎨" spaces name spaces rewriteFormatString spaces "⎬" spaces rewriteScope spaces "⎦" spaces -- within_support_wrapper
     | "⎡" spaces name spaces "=" spaces rewriteFormatString spaces rewriteScope spaces "⎦" spaces -- with_parameter
     | rewriteScopeRaw -- raw
   rewriteScopeRaw = #rewriteFormatString
   
   rewriteFormatString = "‛" formatChar* "’"
-  spRewriteFormatString = spaces rewriteFormatString
   formatChar =
     | "⎨" spaces name spaces supportArgsForInterpolation spaces "⎬" -- support_interpolation
     | "⟪" rwArgRef "⟫" -- parameter_interpolation
@@ -420,14 +419,14 @@ _.set_return (`_${name}, ${_.memo_arg (`${name}`, `☐ = _☐.rwr ().join ('')\n
 
 return _.exit_rule ("rwParenArgDef");
 },
-rewriteScope_within_support_wrapper : function (_lb, _ws1, _lb2, _ws2, _name, _ws3, _spRFS, _ws4, _rb2, _ws5, _scope, _ws6, _rb, _ws7, ) {
+rewriteScope_within_support_wrapper : function (_lb, _ws1, _lb2, _ws2, _name, _ws3, _s, _ws4, _rb2, _ws5, _scope, _ws6, _rb, _ws7, ) {
 let lb = undefined;
 let ws1 = undefined;
 let lb2 = undefined;
 let ws2 = undefined;
 let name = undefined;
 let ws3 = undefined;
-let spRFS = undefined;
+let s = undefined;
 let ws4 = undefined;
 let rb2 = undefined;
 let ws5 = undefined;
@@ -441,9 +440,9 @@ ws1 = _ws1.rwr ()
 lb2 = _lb2.rwr ()
 ws2 = _ws2.rwr ()
 name = _name.rwr ()
-    ws3 = _ws3.rwr ();
-    spRFS = _spRFS.rwr ().join ('');
-    ws4 = _ws4.rwr ();
+ws3 = _ws3.rwr ()
+s = _s.rwr ()
+ws4 = _ws4.rwr ()
 rb2 = _rb2.rwr ()
 ws5 = _ws5.rwr ()
 scope = _scope.rwr ()
@@ -453,9 +452,9 @@ ws7 = _ws7.rwr ()
 
 
 _.set_return (`
-_.pre_${name} (\`${spRFS}\`);
+_.pre_${name} (\`${s}\`);
 ${scope}
-_.post_${name} (\`${spRFS}\`);`);
+_.post_${name} (\`${s}\`);`);
 
 return _.exit_rule ("rewriteScope_within_support_wrapper");
 },
@@ -525,17 +524,6 @@ _.set_return (`${formatChars}`);
 
 return _.exit_rule ("rewriteFormatString");
 },
-    
-    spRewriteFormatString : function (_spaces, _rfs, ) {
-	let spaces = undefined;
-	let rfs = undefined;
-	_.enter_rule ("spRewriteFormatString");
-	spaces = _spaces.rwr ()
-	rfs = _rfs.rwr ()
-	_.set_return (`〔${rfs}〕`);
-	return _.exit_rule ("spRewriteFormatString");
-    },
-
 formatChar_support_interpolation : function (_lb, _ws1, _name, _ws2, _interpolation_args, _ws3, _rb, ) {
 let lb = undefined;
 let ws1 = undefined;

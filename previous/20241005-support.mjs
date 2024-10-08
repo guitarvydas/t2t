@@ -8,12 +8,11 @@ let _ = {
     parameter_names : [],
     argnames : [],
     evaled_args : [],
-    evaled_arg_by_name : {},
+
     return_value_stack : [],
     rule_name_stack : [],
     depth_prefix : ' ',
-
-
+    
     reset_stacks : function () { 
         _.argnames = [];
         _.evaled_args = [];
@@ -35,14 +34,8 @@ let _ = {
         return s.join ('\n');
     },
 
-    memo_arg : function (name, s) {
-	_.argnames.push (name);
-	_.evaled_args.push (s.replaceAll ("☐", `${name}`));
-	_.evaled_arg_by_name [`${name}`] = s.replaceAll ("☐", `${name}`);
-	return "";
-    },
+    memo_arg : function (name, s) { _.argnames.push (name); _.evaled_args.push (s.replaceAll ("☐", `${name}`)); return ""; },
     args_as_string : function () { return _.evaled_args.join (''); },
-    evaled_arg_as_string : function (name) { return _.evaled_arg_by_name [name]; },
 
     insert_grammar_here : function () { return dslGrammar; },
     
@@ -55,27 +48,13 @@ let _ = {
     // set_return : function (v) { _.set_top (_.return_value_stack, v); },
     // exit_rule : function (name) { _.depth_prefix = _.depth_prefix.substr (1); console.error (_.depth_prefix, ["exit", name]); _.rule_name_stack.pop (); return _.return_value_stack.pop ()},
 
-
-    // for examples
-    pre_print : function (s) {console.log (`pre: ${s}`);},
-    post_print : function (s) {console.log (`post: ${s}`);},
-
-    print2 : function (s1, s2) {console.log (`print2: ${s1} ${s2}`); return "";},
-
-
-    // for bootstrap
-    args : {},
-    
-    pre_memoArg : function (when, name, str) {
-        _.args [name] = str;
-    },
-    post_memoArg : function (when, name, str) {},
-    fetchArg : function (when, name) {
-	return _.args [name];
-    },
-
-
-
+    encodews : function (s) { return _.encodequotes (encodeURIComponent (s)); },
+    encodequotes : function (s) { 
+        let rs = s.replace (/"/g, '%22').replace (/'/g, '%27');
+        return rs;
+    }
 };
 
-export {_};
+export {_}
+
+
