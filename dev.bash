@@ -36,3 +36,13 @@ echo '*** 3 ***'
 node t2t.mjs test3.rewrite >test3.rwr.mjs
 cat front.part test3.grammar middle.part test3.rwr.mjs tail.part >new.dev.test3.mjs
 node new.dev.test3.mjs test3.txt
+
+echo
+echo '*** self ***'
+node t2t.mjs t2t.rewrite >t2t.rwr.mjs
+cat front.part t2t.grammar middle.part t2t.rwr.mjs tail.part >new.dev.t2t.mjs
+echo '*** self 1 ***'
+node new.dev.t2t.mjs test.rewrite >test.rwr.mjs
+node test.rwr.mjs
+cat front.part test.grammar middle.part test.rwr.mjs tail.part >new.dev.test.mjs
+node new.dev.test.mjs test.txt

@@ -1,7 +1,7 @@
 let _rewrite = {
 main : function (parameterDefs,rewriteDef,) {
 _rewrite_support.enter_rule ("main");
-_rewrite_support.set_return (`let _rewrite = {${parameterDefs.rwr ()}${rewriteDef.rwr ()}
+_rewrite_support.set_return (`let _rewrite = {${parameterDefs.rwr ().join ('')}${rewriteDef.rwr ()}
 _terminal: function () { return this.sourceString; },
 _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
@@ -15,12 +15,12 @@ return _rewrite_support.exit_rule ("parameterDef");
 },
 rewriteDef : function (_pct,_1,_rewrite,_2,name,_3,_lb,_4,rewriteRules,_5,rb,_6,) {
 _rewrite_support.enter_rule ("rewriteDef");
-_rewrite_support.set_return (`${rewriteRules.rwr ()}`);
+_rewrite_support.set_return (`${rewriteRules.rwr ().join ('')}`);
 return _rewrite_support.exit_rule ("rewriteDef");
 },
 rewriteRule : function (ruleName,_1,lb,_2,argDefs,_3s,rb,_4,_eq,_5,rewriteScope,_6,) {
 _rewrite_support.enter_rule ("rewriteRule");
-_rewrite_support.set_return (`\n${ruleName.rwr ()} : function (${argDefs.rwr ()}) {
+_rewrite_support.set_return (`\n${ruleName.rwr ()} : function (${argDefs.rwr ().join ('')}) {
 _rewrite_support.enter_rule ("${ruleName.rwr ()}");${rewriteScope.rwr ()}
 return _rewrite_support.exit_rule ("${ruleName.rwr ()}");
 },`);
@@ -28,7 +28,7 @@ return _rewrite_support.exit_rule ("rewriteRule");
 },
 argDef_parenthesized : function (lp,names,rp,op,) {
 _rewrite_support.enter_rule ("argDef_parenthesized");
-_rewrite_support.set_return (`${names.rwr ()}`);
+_rewrite_support.set_return (`${names.rwr ().join ('')}`);
 return _rewrite_support.exit_rule ("argDef_parenthesized");
 },
 argDef_iter : function (name,op,) {
@@ -49,7 +49,7 @@ return _rewrite_support.exit_rule ("argDef_plain");
 },
 rewriteScope_call : function (lb,_1,lb2,_a,fname,_b,arg,_c,rb2,_2,rewriteScope,_3,rb,) {
 _rewrite_support.enter_rule ("rewriteScope_call");
-_rewrite_support.set_return (`\n_.${fname.rwr ()} ("pre", ${arg.rwr ()});\n${rewriteScope.rwr ()}\n_.${fname.rwr ()} ("post", ${arg.rwr ()});`);
+_rewrite_support.set_return (`\n_.${fname.rwr ()} ("pre", ${arg.rwr ().join ('')});\n${rewriteScope.rwr ()}\n_.${fname.rwr ()} ("post", ${arg.rwr ().join ('')});`);
 return _rewrite_support.exit_rule ("rewriteScope_call");
 },
 rewriteScope_parameterbinding : function (lb,_1,pname,_2,_eq,_3,s,_4,scope,_5,rb,) {
@@ -64,12 +64,12 @@ return _rewrite_support.exit_rule ("rewriteScope_plain");
 },
 rewriteFormatString : function (lq,formatItems,rq,) {
 _rewrite_support.enter_rule ("rewriteFormatString");
-_rewrite_support.set_return (`\`${formatItems.rwr ()}\``);
+_rewrite_support.set_return (`\`${formatItems.rwr ().join ('')}\``);
 return _rewrite_support.exit_rule ("rewriteFormatString");
 },
 formatItem_supportCall : function (lb,_1,name,_2,argStrings,rb,) {
 _rewrite_support.enter_rule ("formatItem_supportCall");
-_rewrite_support.set_return (`\$\{_.${name.rwr ()} ("", ${argStrings.rwr ()})\}`);
+_rewrite_support.set_return (`\$\{_.${name.rwr ()} ("", ${argStrings.rwr ().join ('')})\}`);
 return _rewrite_support.exit_rule ("formatItem_supportCall");
 },
 formatItem_parameter : function (lb,parameterRef,rb,) {
@@ -107,7 +107,7 @@ return _rewrite_support.exit_rule ("argstring");
 },
 argRef : function (name,) {
 _rewrite_support.enter_rule ("argRef");
-_rewrite_support.set_return (`${_.fetchArg ("", `${name.rwr ()}`, )}`);
+_rewrite_support.set_return (`${_.fetchArg ("", ``, `${name.rwr ()}`, )}`);
 return _rewrite_support.exit_rule ("argRef");
 },
 parameterRef : function (name,) {
@@ -122,7 +122,7 @@ return _rewrite_support.exit_rule ("ruleName");
 },
 name : function (nameFirst,nameRests,) {
 _rewrite_support.enter_rule ("name");
-_rewrite_support.set_return (`${nameFirst.rwr ()}${nameRests.rwr ()}`);
+_rewrite_support.set_return (`${nameFirst.rwr ()}${nameRests.rwr ().join ('')}`);
 return _rewrite_support.exit_rule ("name");
 },
 nameFirst : function (c,) {
@@ -137,7 +137,7 @@ return _rewrite_support.exit_rule ("nameRest");
 },
 s_ : function (space,) {
 _rewrite_support.enter_rule ("s_");
-_rewrite_support.set_return (`${space.rwr ()}`);
+_rewrite_support.set_return (`${space.rwr ().join ('')}`);
 return _rewrite_support.exit_rule ("s_");
 },
 _terminal: function () { return this.sourceString; },

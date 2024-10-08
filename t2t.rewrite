@@ -40,7 +40,7 @@ return _rewrite_support.exit_rule ("«ruleName»");
     ⎦
   argstring [str ws] = ‛«str», ’
   
-  argRef [name] = ‛⎨fetchArg ‛«name»’⎬’
+  argRef [name] = ‛⎨fetchArg ‛’ ‛«name»’⎬’
   parameterRef [name] = ‛\$\{_rewrite_support.getParameter ("«name»")\}’
   
   ruleName [name] = ‛«name»’

@@ -65,7 +65,7 @@ t2t  {
 let _rewrite = {
 Main : function (c,) {
 _rewrite_support.enter_rule ("Main");
-_rewrite_support.set_return (`hello world ${c.rwr ()}`);
+_rewrite_support.set_return (`hello world c`);
 return _rewrite_support.exit_rule ("Main");
 },
 _terminal: function () { return this.sourceString; },
