@@ -392,10 +392,9 @@ return _rewrite_support.exit_rule ("${ruleName}");
     argRef : function (_name, ) {
 	let name = undefined;
 	_.enter_rule ("argRef");
-	name = _name.rwr ()
+	name = _name.rwr ();
 
-
-	_.set_return (`${_.fetchArg (`${name}`)}`);
+	_.set_return (`${_.fetchArg ('', `${name}`)}`);
 
 	return _.exit_rule ("argRef");
     },

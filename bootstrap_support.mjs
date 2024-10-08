@@ -67,9 +67,7 @@ let _ = {
     args : {},
     
     pre_memoArg : function (when, name, str) {
-	if (when == "pre") {
-            _.args [name] = str;
-	}
+        _.args [name] = str;
     },
     post_memoArg : function (when, name, str) {},
     fetchArg : function (when, name) {
