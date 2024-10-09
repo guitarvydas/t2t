@@ -22,13 +22,13 @@ const grammar = String.raw`
     | name                                 -- plain
 
   rewriteScope =
-    | "⎡" s_ "⎨" s_ name s_ argstring+ s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
+    | "⎡" s_ "⎨" s_ name s_ argstring* s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
     | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
     | rewriteFormatString                                                 -- plain
   
   rewriteFormatString = "‛" formatItem* "’"
   formatItem =
-    | "⎨" s_ name s_ argstring+ "⎬" -- supportCall
+    | "⎨" s_ name s_ argstring* "⎬" -- supportCall
     | "⟪" parameterRef "⟫"                         -- parameter
     | "«" argRef "»"                               -- arg
     | "\\" any                                     -- escapedCharacter
