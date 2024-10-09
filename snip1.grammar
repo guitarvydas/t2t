@@ -1,0 +1,6 @@
+% rewrite snip1 {
+  rewriteDef = "%" s_ "rewrite" s_ name s_ "{" s_ firstRewriteRule s_ subsequentRewriteRule* s_ "}" s_
+
+  firstRewriteRule      = rewriteRule
+  subsequentRewriteRule = rewriteRule
+}
