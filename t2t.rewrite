@@ -1,30 +1,49 @@
+% parameter initialization
+
 % rewrite t2t {
-  main [parameterDefs* rewriteDef] = ‛let _rewrite = {«parameterDefs»«rewriteDef»
+  main [parameterDefs* rewriteDef] =
+‛let _rewrite = {
+initializeParameters : function () {
+«parameterDefs»
+},
+«rewriteDef»
 _terminal: function () { return this.sourceString; },
 _iter: function (...children) { return children.map(c => c.rwr ()); }
 };
 ’
 
-  parameterDef [_pct _1 _parameter _2 name _3] = ‛’
-  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 rewriteRules+ _5 rb _6] = ‛«rewriteRules»’
+  parameterDef [_pct _1 _parameter _2 name _3] =  ‛\n_.freshParameter ("«name»");’
+  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb _4 firstRewriteRule _7 subsequentRewriteRules* _5 rb _6] = ‛«firstRewriteRule»«subsequentRewriteRules»’
 
-  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] = ‛\n«ruleName» : function («argDefs») {
+  firstRewriteRule [rule]=
+    ⎡ initialization=‛\n_.initializeParameters ();’
+      ‛«rule»’
+    ⎦
+  subsequentRewriteRule [rule]=
+    ⎡ initialization=‛’
+      ‛«rule»’
+    ⎦
+  rewriteRule [ruleName _1 lb _2 argDefs* _3s* rb _4 _eq _5 rewriteScope _6] =
+    ⎡ ⎨resetArgs⎬
+‛\n«ruleName» : function («argDefs») {
+⟪initialization⟫
 _rewrite_support.enter_rule ("«ruleName»");«rewriteScope»
 return _rewrite_support.exit_rule ("«ruleName»");
 },’
+    ⎦
 
   argDef_parenthesized [lp names+ rp op] = ‛«names»’
   argDef_iter [name op] =
-    ⎡ ⎨memoArg ‛’ ‛«name»’ ‛\$\{«name».rwr ().join ('')\}’⎬
+    ⎡ ⎨memoArg ‛«name»’ ‛\$\{«name».rwr ().join ('')\}’⎬
       ‛«name»,’
     ⎦
   argDef_plain [name] =
-    ⎡ ⎨memoArg ‛’ ‛«name»’ ‛\$\{«name».rwr ()\}’⎬
+    ⎡ ⎨memoArg ‛«name»’ ‛\$\{«name».rwr ()\}’⎬
       ‛«name»,’
     ⎦
 
   rewriteScope_call [lb _1 lb2 _a fname _b arg+ _c rb2 _2 rewriteScope _3 rb] = ‛\n_.«fname» ("pre", «arg»);\n«rewriteScope»\n_.«fname» ("post", «arg»);’
-  rewriteScope_parameterbinding [lb _1 pname _2 _eq _3 s _4 scope _5 rb] = ‛\n_rewrite_support.pushParameter ("«pname»", «s»);«scope»\n_rewrite_support.popParameter ("«pname»");’
+  rewriteScope_parameterbinding [lb _1 pname _2 _eq _3 s _4 scope _5 rb] = ‛\n_.pushParameter ("«pname»", «s»);«scope»\n_.popParameter ("«pname»");’
   rewriteScope_plain [s] = ‛\n_rewrite_support.set_return («s»);’
 
   rewriteFormatString [lq formatItems* rq] = ‛\`«formatItems»\`’
@@ -35,13 +54,13 @@ return _rewrite_support.exit_rule ("«ruleName»");
   formatItem_rawCharacter [c] = ‛«c»’
 
   parenarg [name ws] =
-    ⎡ ⎨memoArg ‛’ ‛«name»’ ‛\$\{«name».rwr ().join ('')\}’⎬
+    ⎡ ⎨memoArg ‛«name»’ ‛\$\{«name».rwr ().join ('')\}’⎬
       ‛«name»,’
     ⎦
   argstring [str ws] = ‛«str», ’
   
-  argRef [name] = ‛⎨fetchArg ‛«name»’⎬’
-  parameterRef [name] = ‛\$\{_rewrite_support.getParameter ("«name»")\}’
+  argRef [name] = ‛⎨fetchArg ‛«name»’ ⎬’
+  parameterRef [name] = ‛\$\{_.getParameter ("«name»")\}’
   
   ruleName [name] = ‛«name»’
 
