@@ -1,12 +1,28 @@
-let initilialization = '';
+let args = {};
+function resetArgs () {
+    args = {};
+}
+function memoArg (name, acessorString) {
+    args [name] = accessorString;
+};
+function fetchArg (name) {
+    return args [name];
+}
 
 let _rewrite = {
     main : function (parameterDefs_i, rewriteDef) {
 	return
-`let _rewrite = {
-initializeParameters : function () {
-${parameterDefs_i.rwr ().join ('')}
-},
+`
+parameters = {};
+function pushParameter (name, v) {
+    parameters [name] = v;
+}
+function getParameter (name) {
+    return parameters [name];
+}
+${parameterDefs_i}.rwr. join ('')}
+
+let _rewrite = {
 ${rewriteDef.rwr ()}
 _terminal: function () { return this.sourceString; },
 _iter: function (...children) { return children.map(c => c.rwr ()); }
@@ -15,7 +31,7 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     },
 
     parameterDef : function (pct, ws1, _parameter, ws2, name, ws3) {
-	return `\n_.freshParameter ("${name.rwr ()}");`
+	return `\nparameters ["${name}"] = [];`;
     },
 
     rewriteDef : function (pct, ws1, _rewrite, ws2, name, ws3, lb, ws4, firstRewriteRule, ws5, subsequentRewriteRule_i, ws6, rb, ws7) {
@@ -23,22 +39,21 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     },
 
     firstRewriteRule : function (rewriteRule) {
-	initialization = `\n.initializeParameters ();`;
 	return `${rewriteRule.rwr ()}`;
     },
 
     subsequentRewriteRule : function (rewriteRule) {
-	initialization = ``;
 	return `${rewriteRule.rwr ()}`;
     },
 
     // rewriteRule =        ruleName s_    "[" s_   (argDef   s_)*  "]"  s_   "="  s_   rewriteScope  s_
     rewriteRule : function (ruleName, ws1, lb, ws2, argDef_i, ws3_i, rb, ws4, _eq, ws5, rewriteScope, ws6) {
-	return `\n«ruleName» : function (${argDef_i.rwr ().join ('')}) {
-	    ${initialization}
+	r = `\n«ruleName» : function (${argDef_i.rwr ().join ('')}) {
 	    _rewrite_support.enter_rule ("${ruleName.rwr ()}");${rewriteScope.rwr ()}
 	    return _rewrite_support.exit_rule ("${ruleName.rwr ()}");
 	},`;
+	resetArgs ();
+	return r;
     },
     
     //argDef = 
