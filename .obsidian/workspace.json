@@ -148,6 +148,7 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
+<<<<<<< HEAD
     "#dev.bash#",
     "#t2t.mjs#",
     "current/20241008-t2t.mjs",
@@ -159,6 +160,19 @@
     "dev-simple2.mjs",
     "dev-simple2.rewrite",
     "dev-simple2.grammar",
+=======
+    "snip1.rewrite~",
+    "snip1.rwr.mjs",
+    "snip1.bash~",
+    "snip1.grammar",
+    "snip1.bash",
+    "snip1.rewrite",
+    "#snip1.bash#",
+    "snip1.rwr",
+    "junk.template.new.dev.test3.mjs",
+    "#front.part#",
+    "#t2t.rewrite#",
+>>>>>>> snip1
     "NOTE.md",
     "IDEwip/t2t IDE-3.png",
     "doc/t2t gen mode.png",

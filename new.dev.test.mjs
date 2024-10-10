@@ -33,9 +33,9 @@ let _rewrite_support = {
     },
 
     pushParameter : function (name, v) {
-	if (! _rewrite_support.parameters [name]) {
-	    _rewrite_support.parameters [name] = [];
-	}
+//	if (! _rewrite_support.parameters [name]) {
+//	    _rewrite_support.parameters [name] = [];
+//	}
 	_rewrite_support.parameters [name].push (v);
     },
 
@@ -44,9 +44,9 @@ let _rewrite_support = {
     },
 
     popParameter : function (name) {
-	if (_rewrite_support.parameters [name]) {
+//	if (_rewrite_support.parameters [name]) {
 	    _rewrite_support.parameters [name].pop ();
-	}
+//	}
     }
 
 };
