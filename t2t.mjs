@@ -1,3 +1,55 @@
+'use strict'
+
+import * as ohm from 'ohm-js';
+
+let t2t_grammar = String.raw`
+t2t {
+  main = parameterDef* rewriteDef
+
+  parameterDef = "%" s_ "parameter" s_ name s_
+  rewriteDef = "%" s_ "rewrite" s_ name s_ "{" s_ firstRewriteRule s_ subsequentRewriteRule* s_ "}" s_
+
+  firstRewriteRule      = rewriteRule
+  subsequentRewriteRule = rewriteRule
+  rewriteRule = ruleName s_ "[" s_ (argDef s_)* "]" s_ "=" s_ rewriteScope s_
+
+  argDef = 
+    | "(" parenarg+ ")" ("+" | "*" | "?")  -- parenthesized
+    | name ("+" | "*" | "?")               -- iter
+    | name                                 -- plain
+
+  rewriteScope =
+    | "⎡" s_ "⎨" s_ name s_ argstring* s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
+    | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
+    | rewriteFormatString                                                 -- plain
+  
+  rewriteFormatString = "‛" formatItem* "’"
+  formatItem =
+    | "⎨" s_ name s_ argstring* "⎬" -- supportCall
+    | "⟪" parameterRef "⟫"                         -- parameter
+    | "«" argRef "»"                               -- arg
+    | "\\" any                                     -- escapedCharacter
+    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any  -- rawCharacter
+
+  parenarg = name s_
+  argstring =  rewriteFormatString s_
+  argRef = name
+  parameterRef = name
+  ruleName = name
+
+  name (a name)
+    = nameFirst nameRest*
+  nameFirst = ("_" | letter)
+  nameRest  = ("_" | alnum)
+
+  s_ = space*
+
+}
+`;
+
+
+
+
 let args = {};
 function resetArgs () {
     args = {};
@@ -9,7 +61,7 @@ function fetchArg (name) {
     return args [name];
 }
 
-let _rewrite = {
+let t2t_rewrite = {
     main : function (parameterDefs_i, rewriteDef) {
 	return
 `
@@ -170,3 +222,20 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     },
 };
 
+
+
+function main (t2t_program) {
+}
+
+import * as fs from 'fs';
+const argv = process.argv.slice (2);
+let t2t_program_filename = argv [0];
+if (t2t_program_filename == "-") {
+    t2t_program_filename = 0; // "-" means stdin
+}
+let t2t_program = fs.readFileSync(t2t_program_filename, 'utf-8');
+let parser = ohm.grammar (t2t_grammar);
+let cst = parser.match (t2t_program);
+let semantics = parser.createSemantics ();
+semantics.addOperation ('rwr', t2t_rewrite);
+console.log (semantics (cst).rwr ()); // generate code and return it as a string
