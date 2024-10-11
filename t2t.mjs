@@ -154,7 +154,7 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     // formatItem =
     //   | "⎨" s_ name s_ argstring* "⎬" -- supportCall
     formatItem_supportCall : function (lb, ws1, name, ws2, argstring_i, rb) {
-	return `\$\{_.${name.rwr ()} (${argstring_i.rwr ().join ('')})\}`;
+	return `\$\{_.${name.rwr ()} ("", ${argstring_i.rwr ().join ('')})\}`;
     },
 
     //   | "⟪" parameterRef "⟫"                         -- parameter

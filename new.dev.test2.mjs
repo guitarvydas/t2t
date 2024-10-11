@@ -68,7 +68,7 @@ Main : function (a,_semi,b,c,d,) {
     pushParameter ("paramC",`${c.rwr ()}`);
      _.print ("pre", `hello`,);
 
-    set_return (`... ${_.print2 (`middle`,`2nd arg`,)} ${a.rwr ()}${_semi.rwr ().join ('')}${getParameter ("paramB")}${c.rwr ()}${d.rwr ().join ('')}...`);
+    set_return (`... ${_.print2 ("", `middle`,`2nd arg`,)} ${a.rwr ()}${_semi.rwr ().join ('')}${getParameter ("paramB")}${c.rwr ()}${d.rwr ().join ('')}...`);
      _.print ("post", `hello`,);
     popParameter ("paramC");
     popParameter ("paramB");
