@@ -67,6 +67,9 @@ let t2t_rewrite = {
 function pushParameter (name, v) {
     parameters [name] = v;
 }
+function popParameter (name) {
+    parameters [name].pop ();
+}
 function getParameter (name) {
     return parameters [name];
 }
@@ -100,7 +103,7 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     rewriteRule : function (ruleName, ws1, lb, ws2, argDef_i, ws3_i, rb, ws4, _eq, ws5, rewriteScope, ws6) {
         resetArgs ();
 	let r = `
-${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('⦂')}) {
+${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     enter_rule ("${ruleName.rwr ()}");${rewriteScope.rwr ()}
     return exit_rule ("${ruleName.rwr ()}");
 },`;
@@ -116,13 +119,13 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('⦂')}) {
     // | name ("+" | "*" | "?")               -- iter
     argDef_iter : function (name, op_i) {
 	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`);
-	return `${name.rwr ()}⦙`;
+	return `${name.rwr ()},`;
     },
 
     // | name                                 -- plain
     argDef_plain : function (name) {
 	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ()\}`);
-	return `${name.rwr ()}⦙`;
+	return `${name.rwr ()},`;
     },
 
     // rewriteScope =
@@ -134,7 +137,7 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('⦂')}) {
     //   | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
     rewriteScope_parameterbinding : function (lsb, ws1, pname, ws2, _eq, ws3, rewriteFormatString, ws4, rewriteScope, ws5, rsb) {
 	return `
-    pushParameter ("${pname.rwr ()}",@\`${rewriteFormatString.rwr ()}\`);${rewriteScope.rwr ()}
+    pushParameter ("${pname.rwr ()}",\`${rewriteFormatString.rwr ()}\`);${rewriteScope.rwr ()}
     popParameter ("${pname.rwr ()}");`;
     },
     
@@ -177,12 +180,12 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('⦂')}) {
     // parenarg = name s_
     parenarg : function (name, ws) {
 	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`);
-	return `${name.rwr ()}⦙`;
+	return `${name.rwr ()},`;
     },
 
     // argstring =  rewriteFormatString s_
     argstring : function (rewriteFormatString, ws) {
-	return `\`${rewriteFormatString.rwr ()}\`⦙`;
+	return `\`${rewriteFormatString.rwr ()}\`,`;
     },
     
     // argRef = name
