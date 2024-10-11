@@ -1,6 +1,9 @@
 let parameters = {};
 function pushParameter (name, v) {
-    parameters [name] = v;
+    parameters [name].push (v);
+}
+function popParameter (name) {
+    parameters [name].pop ();
 }
 function getParameter (name) {
     return parameters [name];
