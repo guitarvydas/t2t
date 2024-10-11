@@ -55,6 +55,7 @@ function resetArgs () {
     args = {};
 }
 function memoArg (name, accessorString) {
+    console.error ("memoArg", name, accessorString);
     args [name] = accessorString;
 };
 function fetchArg (name) {
@@ -115,8 +116,8 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
 
     // | name ("+" | "*" | "?")               -- iter
     argDef_iter : function (name, i_op) {
-	memoArg (`${name}`, `\$\{${name}.rwr ().join ('')\}`);
-	return `${name},`;
+	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`);
+	return `${name.rwr ()},`;
     },
 
     // | name                                 -- plain
@@ -128,18 +129,19 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     // rewriteScope =
     //   | "⎡" s_ "⎨" s_ name s_ argstring* s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
     rewriteScope_call : function (lsb, ws1, lb, ws2, fname, ws3, argString_i, ws4, rb, ws5, rewriteScope, ws6, rsb) {
-	return `\n_.${fname.rwr ()} ("pre", ${argString_i.rwr.join ('')}\n${rewriteScope.rwr ()}\n_.${fname.rwr ()} ("post", ${argString_i.rwr.join ('')}`;
+	return `\n_.${fname.rwr ()} ("pre", \`${argString_i.rwr ().join ('')}\`);\n${rewriteScope.rwr ()}\n_.${fname.rwr ()} ("post", \`${argString_i.rwr ().join ('')}\`);`;
     },
     
     //   | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
     rewriteScope_parameterbinding : function (lsb, ws1, pname, ws2, _eq, ws3, rewriteFormatString, ws4, rewriteScope, ws5, rsb) {
 	return `
     pushParameter ("${pname.rwr ()}", \`${rewriteFormatString.rwr ()}\`);${rewriteScope.rwr ()}
-    popParameter ("${pname.rwr ()}") );`;
+    popParameter ("${pname.rwr ()}");`;
     },
     
     //   | rewriteFormatString                                                 -- plain
     rewriteScope_plain : function (rewriteFormatString) {
+	console.error (args);
 	return `\n    set_return (\`${rewriteFormatString.rwr ()}\`);`;
     },
     
@@ -176,7 +178,7 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
 
     // parenarg = name s_
     parenarg : function (name, ws) {
-	memoArg (name.rwr (), `\$\{${name.rwr ()}.join ('')\}`);
+	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.join ('')\}`);
 	return `${name.rwr ()}`;
     },
 

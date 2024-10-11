@@ -1,0 +1,10 @@
+% parameter paramA
+% parameter paramB
+% parameter paramC
+
+% rewrite example {
+Main [d+]=
+  ⎡ ⎨test5_print ‛d=«d»’⎬
+            ‛... «d»...’ 
+  ⎦
+}
