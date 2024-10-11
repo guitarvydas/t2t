@@ -6,12 +6,15 @@ function getParameter (name) {
     return parameters [name];
 }
 
+parameters ["paramA"] = [];
+parameters ["paramB"] = [];
+parameters ["paramC"] = [];
 
 let _rewrite = {
 
-Main : function (c,) {
+Main : function (x⦙y⦙) {
     enter_rule ("Main");
-    set_return (`hello world ${c.rwr ()}`);
+    set_return (`... ${x.rwr ().join ('')}...${y.rwr ().join ('')}...`);
     return exit_rule ("Main");
 },
 _terminal: function () { return this.sourceString; },

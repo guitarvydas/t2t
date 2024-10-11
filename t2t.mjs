@@ -55,7 +55,6 @@ function resetArgs () {
     args = {};
 }
 function memoArg (name, accessorString) {
-    console.error ("memoArg", name, accessorString);
     args [name] = accessorString;
 };
 function fetchArg (name) {
@@ -64,7 +63,7 @@ function fetchArg (name) {
 
 let t2t_rewrite = {
     main : function (parameterDefs_i, rewriteDef) {
-	return `parameters = {};
+	return `let parameters = {};
 function pushParameter (name, v) {
     parameters [name] = v;
 }
@@ -101,7 +100,7 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     rewriteRule : function (ruleName, ws1, lb, ws2, argDef_i, ws3_i, rb, ws4, _eq, ws5, rewriteScope, ws6) {
         resetArgs ();
 	let r = `
-${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
+${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('⦂')}) {
     enter_rule ("${ruleName.rwr ()}");${rewriteScope.rwr ()}
     return exit_rule ("${ruleName.rwr ()}");
 },`;
@@ -111,37 +110,36 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     //argDef = 
     // | "(" parenarg+ ")" ("+" | "*" | "?")  -- parenthesized
     argDef_parenthesized : function (lb, parenarg_i, rb, i_op) {
-	return `${parenarg_i.rwr ()}`;
+	return `${parenarg_i.rwr ().join ('')}`;
     },
 
     // | name ("+" | "*" | "?")               -- iter
-    argDef_iter : function (name, i_op) {
+    argDef_iter : function (name, op_i) {
 	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`);
-	return `${name.rwr ()},`;
+	return `${name.rwr ()}⦙`;
     },
 
     // | name                                 -- plain
     argDef_plain : function (name) {
 	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ()\}`);
-	return `${name.rwr ()},`;
+	return `${name.rwr ()}⦙`;
     },
 
     // rewriteScope =
     //   | "⎡" s_ "⎨" s_ name s_ argstring* s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
     rewriteScope_call : function (lsb, ws1, lb, ws2, fname, ws3, argString_i, ws4, rb, ws5, rewriteScope, ws6, rsb) {
-	return `\n_.${fname.rwr ()} ("pre", \`${argString_i.rwr ().join ('')}\`);\n${rewriteScope.rwr ()}\n_.${fname.rwr ()} ("post", \`${argString_i.rwr ().join ('')}\`);`;
+	return `\n     _.${fname.rwr ()} ("pre", ${argString_i.rwr ().join ('')});\n${rewriteScope.rwr ()}\n     _.${fname.rwr ()} ("post", ${argString_i.rwr ().join ('')});`;
     },
     
     //   | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
     rewriteScope_parameterbinding : function (lsb, ws1, pname, ws2, _eq, ws3, rewriteFormatString, ws4, rewriteScope, ws5, rsb) {
 	return `
-    pushParameter ("${pname.rwr ()}", \`${rewriteFormatString.rwr ()}\`);${rewriteScope.rwr ()}
+    pushParameter ("${pname.rwr ()}",@\`${rewriteFormatString.rwr ()}\`);${rewriteScope.rwr ()}
     popParameter ("${pname.rwr ()}");`;
     },
     
     //   | rewriteFormatString                                                 -- plain
     rewriteScope_plain : function (rewriteFormatString) {
-	console.error (args);
 	return `\n    set_return (\`${rewriteFormatString.rwr ()}\`);`;
     },
     
@@ -153,7 +151,7 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     // formatItem =
     //   | "⎨" s_ name s_ argstring* "⎬" -- supportCall
     formatItem_supportCall : function (lb, ws1, name, ws2, argstring_i, rb) {
-	return `_.\$\{${name.rwr ()} (${argstring_i.rwr ().join ('')})\}`;
+	return `\$\{_.${name.rwr ()} (${argstring_i.rwr ().join ('')})\}`;
     },
 
     //   | "⟪" parameterRef "⟫"                         -- parameter
@@ -178,13 +176,13 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
 
     // parenarg = name s_
     parenarg : function (name, ws) {
-	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.join ('')\}`);
-	return `${name.rwr ()}`;
+	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ().join ('')\}`);
+	return `${name.rwr ()}⦙`;
     },
 
     // argstring =  rewriteFormatString s_
     argstring : function (rewriteFormatString, ws) {
-	return `${rewriteFormatString.rwr ()},`;
+	return `\`${rewriteFormatString.rwr ()}\`⦙`;
     },
     
     // argRef = name

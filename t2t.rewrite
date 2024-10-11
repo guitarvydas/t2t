@@ -44,7 +44,7 @@ return _rewrite_support.exit_rule ("«ruleName»");
 
   rewriteScope_call [lb _1 lb2 _a fname _b arg+ _c rb2 _2 rewriteScope _3 rb] = ‛\n_.«fname» ("pre", «arg»);\n«rewriteScope»\n_.«fname» ("post", «arg»);’
   rewriteScope_parameterbinding [lb _1 pname _2 _eq _3 s _4 scope _5 rb] = ‛\n_.pushParameter ("«pname»", «s»);«scope»\n_.popParameter ("«pname»");’
-  rewriteScope_plain [s] = ‛\n_rewrite_support.set_return («s»);’
+  rewriteScope_plain [s] = ‛\nset_return («s»);’
 
   rewriteFormatString [lq formatItems* rq] = ‛\`«formatItems»\`’
   formatItem_supportCall [lb _1 name _2 argStrings+ rb] = ‛\$\{_.«name» ("", «argStrings»)\}’

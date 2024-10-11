@@ -3,57 +3,36 @@
 import {_} from './support.mjs';
 import * as ohm from 'ohm-js';
 
-let _rewrite_support = {
-    verbose : false,
-    top : function (stack) { let v = stack.pop (); stack.push (v); return v; },
-    set_top : function (stack, v) { stack.pop (); stack.push (v); return v; },
-    return_value_stack : [],
-    rule_name_stack : [],
-    depth_prefix : ' ',
-    parameters : {},
+let verbose = false;
 
-    enter_rule : function (name) {
-	if (_rewrite_support.verbose) {
-	    console.error (_rewrite_support.depth_prefix, ["enter", name]);
-	    _rewrite_support.depth_prefix += ' ';
-	}
-	_rewrite_support.return_value_stack.push ("");
-	_rewrite_support.rule_name_stack.push (name);
-    },
-    set_return : function (v) {
-	_rewrite_support.set_top (_rewrite_support.return_value_stack, v);
-    },
-    exit_rule : function (name) {
-	if (_rewrite_support.verbose) {
-	    _rewrite_support.depth_prefix = _rewrite_support.depth_prefix.substr (1);
-	    console.error (_rewrite_support.depth_prefix, ["exit", name]);
-	}
-	_rewrite_support.rule_name_stack.pop ();
-	return _rewrite_support.return_value_stack.pop ()
-    },
+function top (stack) { let v = stack.pop (); stack.push (v); return v; }
 
-    pushParameter : function (name, v) {
-//	if (! _rewrite_support.parameters [name]) {
-//	    _rewrite_support.parameters [name] = [];
-//	}
-	_rewrite_support.parameters [name].push (v);
-    },
+function set_top (stack, v) { stack.pop (); stack.push (v); return v; }
 
-    getParameter : function (name) {
-	return _rewrite_support.top (_rewrite_support.parameters [name]);
-    },
+let return_value_stack = [];
+let rule_name_stack = [];
+let depth_prefix = ' ';
 
-    popParameter : function (name) {
-//	if (_rewrite_support.parameters [name]) {
-	    _rewrite_support.parameters [name].pop ();
-//	}
+function enter_rule (name) {
+    if (verbose) {
+	console.error (depth_prefix, ["enter", name]);
+	depth_prefix += ' ';
     }
+    return_value_stack.push ("");
+    rule_name_stack.push (name);
+}
 
-};
+function set_return (v) {
+    set_top (return_value_stack, v);
+}
 
-// for debugging - use when needed
-function dump_stacks () {
-    console.error (_rewrite_support.rule_name_stack, _rewrite_support.return_value_stack, _rewrite_support.parameters);
+function exit_rule (name) {
+    if (verbose) {
+	depth_prefix = depth_prefix.substr (1);
+	console.error (depth_prefix, ["exit", name]);
+    }
+    rule_name_stack.pop ();
+    return return_value_stack.pop ()
 }
 
 const grammar = String.raw`

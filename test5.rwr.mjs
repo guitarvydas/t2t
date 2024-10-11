@@ -14,10 +14,10 @@ let _rewrite = {
 
 Main : function (d,) {
     enter_rule ("Main");
-_.test5_print ("pre", `d=${d.rwr ().join ('')},`);
+     _.test5_print ("pre", `d=${d.rwr ().join ('')},`);
 
     set_return (`... ${d.rwr ().join ('')}...`);
-_.test5_print ("post", `d=${d.rwr ().join ('')},`);
+     _.test5_print ("post", `d=${d.rwr ().join ('')},`);
     return exit_rule ("Main");
 },
 _terminal: function () { return this.sourceString; },
