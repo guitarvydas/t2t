@@ -20,10 +20,11 @@
 # now, fix parameter initialization
 
 
-# echo
-# echo '*** 1 ***'
-# node t2t.mjs test.rewrite >test.rwr.mjs
-# node test.rwr.mjs
+echo
+echo '*** 1 ***'
+node t2t.mjs test.rewrite >test.rwr.mjs
+node test.rwr.mjs
+cat test.rwr.mjs
 # cat front.part test.grammar middle.part test.rwr.mjs tail.part >new.dev.test.mjs
 # node new.dev.test.mjs test.txt
 
@@ -33,9 +34,9 @@
 # cat front.part test2.grammar middle.part test2.rwr.mjs tail.part >new.dev.test2.mjs
 # node new.dev.test2.mjs test2.txt
 
-echo
-echo '*** 3 ***'
-node t2t.mjs test3.rewrite
+# echo
+# echo '*** 3 ***'
+# node t2t.mjs test3.rewrite
 # node t2t.mjs test3.rewrite >test3.rwr.mjs
 # cat front.part test3.grammar middle.part test3.rwr.mjs tail.part >new.dev.test3.mjs
 # node new.dev.test3.mjs test3.txt

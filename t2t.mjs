@@ -54,7 +54,7 @@ let args = {};
 function resetArgs () {
     args = {};
 }
-function memoArg (name, acessorString) {
+function memoArg (name, accessorString) {
     args [name] = accessorString;
 };
 function fetchArg (name) {
@@ -63,16 +63,14 @@ function fetchArg (name) {
 
 let t2t_rewrite = {
     main : function (parameterDefs_i, rewriteDef) {
-	return
-`
-parameters = {};
+	return `parameters = {};
 function pushParameter (name, v) {
     parameters [name] = v;
 }
 function getParameter (name) {
     return parameters [name];
 }
-${parameterDefs_i}.rwr. join ('')}
+${parameterDefs_i.rwr ().join ('')}
 
 let _rewrite = {
 ${rewriteDef.rwr ()}
@@ -100,11 +98,12 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
 
     // rewriteRule =        ruleName s_    "[" s_   (argDef   s_)*  "]"  s_   "="  s_   rewriteScope  s_
     rewriteRule : function (ruleName, ws1, lb, ws2, argDef_i, ws3_i, rb, ws4, _eq, ws5, rewriteScope, ws6) {
-	r = `\n«ruleName» : function (${argDef_i.rwr ().join ('')}) {
-	    _rewrite_support.enter_rule ("${ruleName.rwr ()}");${rewriteScope.rwr ()}
-	    return _rewrite_support.exit_rule ("${ruleName.rwr ()}");
-	},`;
-	resetArgs ();
+        resetArgs ();
+	let r = `
+${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
+    enter_rule ("${ruleName.rwr ()}");${rewriteScope.rwr ()}
+    return exit_rule ("${ruleName.rwr ()}");
+},`;
 	return r;
     },
     
@@ -122,8 +121,8 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
 
     // | name                                 -- plain
     argDef_plain : function (name) {
-	memoArg (`${name}`, `\$\{${name}.rwr ()\}`);
-	return `${name},`;
+	memoArg (`${name.rwr ()}`, `\$\{${name.rwr ()}.rwr ()\}`);
+	return `${name.rwr ()},`;
     },
 
     // rewriteScope =
@@ -139,7 +138,7 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     
     //   | rewriteFormatString                                                 -- plain
     rewriteScope_plain : function (rewriteFormatString) {
-	return `\nset_return (${rewriteFormatString.rwr ()});`;
+	return `\n    set_return (\`${rewriteFormatString.rwr ()}\`);`;
     },
     
     // rewriteFormatString = "‛" formatItem* "’"
@@ -186,8 +185,8 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     
     // argRef = name
     argRef : function (name) {
-	return `${fetchArg (name)}`;
-    },
+	return `${fetchArg (name.rwr ())}`
+        },
     
     // parameterRef = name
     parameterRef : function (name) {
@@ -203,7 +202,7 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     // name (a name)
     //   = nameFirst nameRest*
     name : function (nameFirst, nameRest_i) {
-	return `${nameFist.rwr ()}${nameRest_i.rwr ().join ('')}`;
+	return `${nameFirst.rwr ()}${nameRest_i.rwr ().join ('')}`;
     },
     
     // nameFirst = ("_" | letter)
@@ -220,7 +219,10 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     s_ : function (ws_i) {
 	return `${ws_i.rwr ().join ('')}`;
     },
-};
+    
+    _terminal: function () { return this.sourceString; },
+    _iter: function (...children) { return children.map(c => c.rwr ()); }
+    };
 
 
 
@@ -238,4 +240,5 @@ let parser = ohm.grammar (t2t_grammar);
 let cst = parser.match (t2t_program);
 let semantics = parser.createSemantics ();
 semantics.addOperation ('rwr', t2t_rewrite);
-console.log (semantics (cst).rwr ()); // generate code and return it as a string
+let result = semantics (cst).rwr (); // generate code and return it as a string
+console.log(result);
