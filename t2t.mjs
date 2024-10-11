@@ -81,7 +81,7 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
     },
 
     parameterDef : function (pct, ws1, _parameter, ws2, name, ws3) {
-	return `\nparameters ["${name}"] = [];`;
+	return `\nparameters ["${name.rwr ()}"] = [];`;
     },
 
     rewriteDef : function (pct, ws1, _rewrite, ws2, name, ws3, lb, ws4, firstRewriteRule, ws5, subsequentRewriteRule_i, ws6, rb, ws7) {
@@ -133,7 +133,9 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     
     //   | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
     rewriteScope_parameterbinding : function (lsb, ws1, pname, ws2, _eq, ws3, rewriteFormatString, ws4, rewriteScope, ws5, rsb) {
-	return `\npushParameter ("${pname.rwr ()}", ${rewriteFormatString.rwr ()});${rewriteScope.rwr ()}\npopParameter ("${pname}") );`;
+	return `
+    pushParameter ("${pname.rwr ()}", \`${rewriteFormatString.rwr ()}\`);${rewriteScope.rwr ()}
+    popParameter ("${pname.rwr ()}") );`;
     },
     
     //   | rewriteFormatString                                                 -- plain
