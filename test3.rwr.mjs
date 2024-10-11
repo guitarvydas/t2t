@@ -1,6 +1,9 @@
-parameters = {};
+let parameters = {};
 function pushParameter (name, v) {
-    parameters [name] = v;
+    parameters [name].push (v);
+}
+function popParameter (name) {
+    parameters [name].pop ();
 }
 function getParameter (name) {
     return parameters [name];
@@ -12,9 +15,9 @@ let _rewrite = {
 
 Main : function (w,inner,) {
     enter_rule ("Main");
-    pushParameter ("previous", `${w.rwr ()}`);
+    pushParameter ("previous",`${w.rwr ()}`);
     set_return (`${inner.rwr ()}`);
-    popParameter ("previous") );
+    popParameter ("previous");
     return exit_rule ("Main");
 },
 Inner : function (m,) {
