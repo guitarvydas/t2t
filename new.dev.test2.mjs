@@ -1,6 +1,5 @@
 'use strict'
 
-import {_} from './support.mjs';
 import * as ohm from 'ohm-js';
 
 let verbose = false;
@@ -42,6 +41,15 @@ example {
 
 `;
 
+function print (s) {
+    console.log (`print: ${s}`);
+    return "";
+}
+
+function print2 (s1, s2) {
+    console.log (`print2: ${s1} ${s2}`);
+    return "";
+}
 let parameters = {};
 function pushParameter (name, v) {
     parameters [name].push (v);
@@ -61,19 +69,17 @@ let _rewrite = {
 
 Main : function (a,_semi,b,c,d,) {
     enter_rule ("Main");
-     _.print ("pre", `pre down a=${a.rwr ()} _semi=${_semi.rwr ().join ('')} b=${b.rwr ().join ('')} c=${c.rwr ()} d=${d.rwr ().join ('')}`,);
+     print (`pre down a=${a.rwr ()} _semi=${_semi.rwr ().join ('')} b=${b.rwr ().join ('')} c=${c.rwr ()} d=${d.rwr ().join ('')}`,);
 
     pushParameter ("paramA",`${a.rwr ()}`);
     pushParameter ("paramB",`${b.rwr ().join ('')}`);
     pushParameter ("paramC",`${c.rwr ()}`);
-     _.print ("pre", `hello`,);
+     print (`hello`,);
 
-    set_return (`... ${_.print2 ("", `middle`,`2nd arg`,)} ${a.rwr ()}${_semi.rwr ().join ('')}${getParameter ("paramB")}${c.rwr ()}${d.rwr ().join ('')}...`);
-     _.print ("post", `hello`,);
+    set_return (`... ${print2 ("", `middle`,`2nd arg`,)} ${a.rwr ()}${_semi.rwr ().join ('')}${getParameter ("paramB")}${c.rwr ()}${d.rwr ().join ('')}...`);
     popParameter ("paramC");
     popParameter ("paramB");
     popParameter ("paramA");
-     _.print ("post", `pre down a=${a.rwr ()} _semi=${_semi.rwr ().join ('')} b=${b.rwr ().join ('')} c=${c.rwr ()} d=${d.rwr ().join ('')}`,);
     return exit_rule ("Main");
 },
 _terminal: function () { return this.sourceString; },

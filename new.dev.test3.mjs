@@ -1,6 +1,5 @@
 'use strict'
 
-import {_} from './support.mjs';
 import * as ohm from 'ohm-js';
 
 let verbose = false;
@@ -43,6 +42,15 @@ test3 {
 
 `;
 
+function print (s) {
+    console.log (`print: ${s}`);
+    return "";
+}
+
+function print2 (s1, s2) {
+    console.log (`print2: ${s1} ${s2}`);
+    return "";
+}
 let parameters = {};
 function pushParameter (name, v) {
     parameters [name].push (v);

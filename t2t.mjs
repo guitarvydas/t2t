@@ -131,7 +131,7 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     // rewriteScope =
     //   | "⎡" s_ "⎨" s_ name s_ argstring* s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
     rewriteScope_call : function (lsb, ws1, lb, ws2, fname, ws3, argString_i, ws4, rb, ws5, rewriteScope, ws6, rsb) {
-	return `\n     _.${fname.rwr ()} ("pre", ${argString_i.rwr ().join ('')});\n${rewriteScope.rwr ()}\n     _.${fname.rwr ()} ("post", ${argString_i.rwr ().join ('')});`;
+	return `\n     ${fname.rwr ()} (${argString_i.rwr ().join ('')});\n${rewriteScope.rwr ()}`;
     },
     
     //   | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
@@ -154,7 +154,7 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     // formatItem =
     //   | "⎨" s_ name s_ argstring* "⎬" -- supportCall
     formatItem_supportCall : function (lb, ws1, name, ws2, argstring_i, rb) {
-	return `\$\{_.${name.rwr ()} ("", ${argstring_i.rwr ().join ('')})\}`;
+	return `\$\{${name.rwr ()} ("", ${argstring_i.rwr ().join ('')})\}`;
     },
 
     //   | "⟪" parameterRef "⟫"                         -- parameter

@@ -1,6 +1,5 @@
 'use strict'
 
-import {_} from './support.mjs';
 import * as ohm from 'ohm-js';
 
 let verbose = false;
