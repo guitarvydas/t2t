@@ -145,20 +145,7 @@ ${ruleName.rwr ()} : function (${argDef_i.rwr ().join ('')}) {
     pushParameter ("${pname.rwr ()}",\`${rewriteFormatString.rwr ()}\`);${rewriteScope.rwr ()}
     popParameter ("${pname.rwr ()}");`;
     },
-    
-    //   | rewriteFormatString                                                 -- plain
-    rewriteScope_plain : function (rewriteFormatString) {
-	return `\n    set_return (\`${rewriteFormatString.rwr ()}\`);`;
-    },
-    
-    // rewriteFormatString = "‛" formatItem* "’"
-    rewriteFormatString : function (lq, formatItem_i, rq) {
-	return `${formatItem_i.rwr ().join ('')}`;
-    },
-    
-    // formatItem =
-    //   | "⎨" s_ name s_ argstring* "⎬" -- supportCall
-    formatItem_supportCall : function (lb, ws1, name, ws2, argstring_i, rb) {
+rgstring_i, rb) {
 	return `\$\{${name.rwr ()} (${argstring_i.rwr ().join ('')})\}`;
     },
 

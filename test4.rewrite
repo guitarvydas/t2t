@@ -1,0 +1,8 @@
+% parameter param
+% rewrite
+t2t  {
+    Main [c] =
+      ⎡ param=‛«c»’
+	‛hello world ⎨print ‛the letter is: ⟪param⟫ «c»’⎬’
+      ⎦
+}

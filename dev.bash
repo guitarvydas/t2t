@@ -38,6 +38,12 @@ node t2t.mjs test3.rewrite >test3.rwr.mjs
 cat front.part test3.grammar middle.part support.js test3.rwr.mjs tail.part >new.dev.test3.mjs
 node new.dev.test3.mjs test3.txt
 
+echo
+echo '*** 4 ***'
+node t2t.mjs test4.rewrite >test4.rwr.mjs
+cat front.part test4.grammar middle.part support.js test4.rwr.mjs tail.part >new.dev.test4.mjs
+node new.dev.test4.mjs test4.txt
+
 
 # intermediate tests, included in 1,2,3...
 

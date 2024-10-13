@@ -35,7 +35,7 @@ function exit_rule (name) {
 }
 
 const grammar = String.raw`
-t2t  {
+test4  {
   Main = "a"
 }
 `;
@@ -61,12 +61,15 @@ function getParameter (name) {
     return parameters [name];
 }
 
+parameters ["param"] = [];
 
 let _rewrite = {
 
 Main : function (c,) {
     enter_rule ("Main");
-    set_return (`hello world ${c.rwr ()}`);
+    pushParameter ("param",`${c.rwr ()}`);
+    set_return (`hello world ${print (`the letter is: ${getParameter ("param")} ${c.rwr ()}`,)}`);
+    popParameter ("param");
     return exit_rule ("Main");
 },
 _terminal: function () { return this.sourceString; },

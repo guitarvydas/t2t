@@ -50,6 +50,7 @@ function print2 (s1, s2) {
     console.log (`print2: ${s1} ${s2}`);
     return "";
 }
+
 let parameters = {};
 function pushParameter (name, v) {
     parameters [name].push (v);
@@ -76,7 +77,7 @@ Main : function (a,_semi,b,c,d,) {
     pushParameter ("paramC",`${c.rwr ()}`);
      print (`hello`,);
 
-    set_return (`... ${print2 ("", `middle`,`2nd arg`,)} ${a.rwr ()}${_semi.rwr ().join ('')}${getParameter ("paramB")}${c.rwr ()}${d.rwr ().join ('')}...`);
+    set_return (`... ${print2 (`middle`,`2nd arg`,)} ${a.rwr ()}${_semi.rwr ().join ('')}${getParameter ("paramB")}${c.rwr ()}${d.rwr ().join ('')}...`);
     popParameter ("paramC");
     popParameter ("paramB");
     popParameter ("paramA");

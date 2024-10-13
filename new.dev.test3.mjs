@@ -51,6 +51,7 @@ function print2 (s1, s2) {
     console.log (`print2: ${s1} ${s2}`);
     return "";
 }
+
 let parameters = {};
 function pushParameter (name, v) {
     parameters [name].push (v);
