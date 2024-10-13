@@ -7,8 +7,9 @@ t2t {
   main = parameterDef* rewriteDef
 
   parameterDef = "%" s_ "parameter" s_ name s_
-  rewriteDef = "%" s_ "rewrite" s_ name s_ "{" s_ firstRewriteRule s_ subsequentRewriteRule* s_ "}" s_
+  rewriteDef = "%" s_ "rewrite" s_ name s_ "{"  rule+ "}" s_
 
+  rule = s_ firstRewriteRule s_ subsequentRewriteRule* s_
   firstRewriteRule      = rewriteRule
   subsequentRewriteRule = rewriteRule
   rewriteRule = ruleName s_ "[" s_ (argDef s_)* "]" s_ "=" s_ rewriteScope s_
@@ -87,7 +88,11 @@ _iter: function (...children) { return children.map(c => c.rwr ()); }
 	return `\nparameters ["${name.rwr ()}"] = [];`;
     },
 
-    rewriteDef : function (pct, ws1, _rewrite, ws2, name, ws3, lb, ws4, firstRewriteRule, ws5, subsequentRewriteRule_i, ws6, rb, ws7) {
+    rewriteDef : function (pct, ws1, _rewrite, ws2, name, ws3, lb, rule_i, rb, ws7) {
+	return `${rule_i.rwr ().join ('')}`;
+    },
+
+    rule : function (ws4, firstRewriteRule, ws5, subsequentRewriteRule_i, ws6) {
 	return `${firstRewriteRule.rwr ()}${subsequentRewriteRule_i.rwr ().join ('')}`;
     },
 
