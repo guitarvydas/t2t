@@ -5,4 +5,4 @@ LIB=$1
 GRAMMAR=$2
 REWRITE=$3
 node ${LIB}/t2t.mjs ${REWRITE} >temp.rewrite.mjs
-cat ${LIB}/front.part.js ${GRAMMAR} ${LIB}/middle.part ${LIB}/args.part temp.rewrite.mjs ${LIB}/tail.part
+cat ${LIB}/front.part.js ${GRAMMAR} ${LIB}/middle.part.js ${LIB}/args.part.js temp.rewrite.mjs ${LIB}/tail.part.js
