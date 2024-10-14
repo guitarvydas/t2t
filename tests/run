@@ -1,2 +1,0 @@
-#!/bin/bash
-../run ../lib test1.grammar test1.rewrite <test1.txt
