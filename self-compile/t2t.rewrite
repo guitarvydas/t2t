@@ -46,7 +46,7 @@ return exit_rule ("«ruleName»");
 ’
     
   rewriteScope_parameterbinding [lb _1 pname _2 _eq _3 s _4 scope _5 rb] = ‛
-    pushParameter ("«pname»", \`«s»\`);«scope»’
+    pushParameter ("«pname»", \`«s»\`);«scope»\npopParameter ("«pname»");’
     
   rewriteScope_plain [s] = ‛
     set_return (\`«s»\`);’
