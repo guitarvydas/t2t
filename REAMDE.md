@@ -1,4 +1,3 @@
-# nano-DSL 
 Generate and run a tiny DSL on a given source file.
 
 Transpile any text file into another text file.
