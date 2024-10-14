@@ -1,8 +1,0 @@
-% parameter paramA
-% parameter paramB
-% parameter paramC
-
-% rewrite example {
-Main [(x y)+]=
-    ‛... «x»...«y»...’ 
-}

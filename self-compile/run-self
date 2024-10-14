@@ -1,0 +1,9 @@
+#!/bin/bash
+LIB=$1
+GRAMMAR=$2
+REWRITE=$3
+SUPPORT=$4
+SRC=$5
+node ./t2t.mjs ${REWRITE} >temp.rewrite.mjs
+cat ${LIB}/front.part.js ${GRAMMAR} ${LIB}/middle.part.js ${LIB}/args.part.js ${SUPPORT} temp.rewrite.mjs ${LIB}/tail.part.js >temp.ndsl.mjs
+node temp.ndsl.mjs ${SRC}

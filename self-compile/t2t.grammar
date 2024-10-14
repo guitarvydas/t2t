@@ -1,0 +1,40 @@
+t2t {
+  main = parameterDef* rewriteDef
+
+  parameterDef = "%" s_ "parameter" s_ name s_
+  rewriteDef = "%" s_ "rewrite" s_ name s_ "{" rewriteRule+ "}" s_
+
+  rewriteRule = s_ ruleName s_ "[" s_ (argDef s_)* "]" s_ "=" s_ rewriteScope s_
+
+  argDef = 
+    | "(" parenarg+ ")" ("+" | "*" | "?")  -- parenthesized
+    | name ("+" | "*" | "?")               -- iter
+    | name                                 -- plain
+
+  rewriteScope =
+    | "⎡" s_ "⎨" s_ name s_ argstring* s_ "⎬" s_ rewriteScope s_ "⎦"      -- call
+    | "⎡" s_  name s_ "=" s_ rewriteFormatString  s_ rewriteScope s_ "⎦"  -- parameterbinding
+    | rewriteFormatString                                                 -- plain
+  
+  rewriteFormatString = "‛" formatItem* "’"
+  formatItem =
+    | "⎨" s_ name s_ argstring* "⎬" -- supportCall
+    | "⟪" parameterRef "⟫"                         -- parameter
+    | "«" argRef "»"                               -- arg
+    | "\\" any                                     -- escapedCharacter
+    | ~"‛" ~"’" ~"⎡" ~"⎦" ~"⟪" ~"⟫" ~"«" ~"»" any  -- rawCharacter
+
+  parenarg = name s_
+  argstring =  rewriteFormatString s_
+  argRef = name
+  parameterRef = name
+  ruleName = name
+
+  name (a name)
+    = nameFirst nameRest*
+  nameFirst = ("_" | letter)
+  nameRest  = ("_" | alnum)
+
+  s_ = space*
+
+}

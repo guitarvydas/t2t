@@ -1,3 +1,0 @@
-t2t {
-  main = parameterDef* rewriteDef
-}

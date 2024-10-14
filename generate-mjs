@@ -1,0 +1,8 @@
+#!/bin/bash
+# usage: ./generate 'libdir' 'grammar' 'rewrite' > 'dsl.mjs'
+# (supply a library directory, a grammar file and a rewrite file, exhale a generated DSL written in Javascript)
+LIB=$1
+GRAMMAR=$2
+REWRITE=$3
+node ${LIB}/t2t.mjs ${REWRITE} >temp.rewrite.mjs
+cat ${LIB}/front.part.js ${GRAMMAR} ${LIB}/middle.part ${LIB}/args.part temp.rewrite.mjs ${LIB}/tail.part

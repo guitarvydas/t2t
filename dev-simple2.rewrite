@@ -1,6 +1,0 @@
-% rewrite t2t {
-  argDef_iter [name op] =
-    ⎡ ⎨fnxyz ‛a’ ‛b’⎬
-      ‛«name»,’
-    ⎦
-}

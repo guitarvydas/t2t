@@ -11,12 +11,8 @@
             "id": "e9584b687c57dba3",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "README.md",
-                "mode": "source",
-                "source": false
-              }
+              "type": "empty",
+              "state": {}
             }
           }
         ]
@@ -85,7 +81,6 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "README.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +97,6 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "README.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -124,9 +118,7 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {
-                "file": "README.md"
-              }
+              "state": {}
             }
           }
         ]
@@ -148,24 +140,31 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
-    "#t2t.mjs#",
-    "#test4.rewrite#",
-    "test4.rewrite~",
-    "test4.txt",
-    "new.dev.test4.mjs",
-    "test4.rwr.mjs",
-    "test4.rewrite",
-    "test4.grammar",
-    "support.js~",
-    "#support.js#",
-    "support.js",
-    "NOTE.md",
-    "IDEwip/t2t IDE-3.png",
-    "doc/t2t gen mode.png",
-    "temp/t2t gen mode.png",
-    "temp/t2t gen.png",
+    "tests/test4.txt",
+    "tests/test4.rewrite",
+    "tests/test4.grammar",
+    "tests/test3.txt",
+    "tests/test3.rewrite",
+    "tests/test3.grammar",
+    "tests/test2.txt",
+    "tests/test2.rewrite",
+    "tests/test2.grammar",
+    "tests/test1.txt",
+    "tests/test1.rewrite",
+    "doc/t2t-2.png",
+    "doc/t2t workflow.png",
     "doc/t2t stand-alone.png",
     "doc/t2t stand-alone-2.png",
+    "doc/t2t gen-2.png",
+    "doc/t2t gen mode.png",
+    "REAMDE.md",
+    "new-t2t/REAMDE.md",
+    "new-t2t/doc/t2t-2.png",
+    "new-t2t/doc/t2t workflow.png",
+    "new-t2t/doc/t2t stand-alone.png",
+    "new-t2t/doc/t2t stand-alone-2.png",
+    "README.md",
+    "NOTE.md",
     "NOTES.md",
     "node_modules/wrap-ansi/node_modules/strip-ansi/readme.md",
     "node_modules/wrap-ansi/node_modules/ansi-regex/readme.md",
@@ -186,10 +185,6 @@
     "node_modules/escalade/readme.md",
     "node_modules/emoji-regex/README.md",
     "node_modules/color-name/README.md",
-    "node_modules/color-convert/README.md",
-    "node_modules/color-convert/CHANGELOG.md",
-    "node_modules/cliui/README.md",
-    "node_modules/cliui/CHANGELOG.md",
-    "doc/t2t workflow.png"
+    "node_modules/color-convert/README.md"
   ]
 }
