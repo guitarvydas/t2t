@@ -1,0 +1,78 @@
+% rewrite t2t {
+  main [parameterDef_i* rewriteDef] =
+‛let parameters = {};
+function pushParameter (name, v) {
+    parameters [name].push (v);
+}
+function popParameter (name) {
+    parameters [name].pop ();
+}
+function getParameter (name) {
+    return parameters [name];
+}
+${parameterDef_i.rwr ().join ('')}
+
+let _rewrite = {
+${rewriteDef.rwr ()}
+_terminal: function () { return this.sourceString; },
+_iter: function (...children) { return children.map(c => c.rwr ()); }
+}’
+
+  parameterDef [_pct _1 _parameter _2 name _3] =  ‛\nparameters ["«name»"] = [];’
+
+  rewriteDef [ _pct _1 _rewrite _2 name _3 _lb rule_i+ rb _6] = ‛«rule_i»’
+
+  rewriteRule [_0 ruleName _1 lb _2 argDef_i* _3_i* rb _4 _eq _5 rewriteScope _6] =
+    ⎡ ⎨resetArgs⎬
+‛\n«ruleName» : function («argDef_i») {
+enter_rule ("«ruleName»");«rewriteScope»
+return exit_rule ("«ruleName»");
+},’
+    ⎦
+
+  argDef_parenthesized [lp names_i+ rp op] = ‛«names_i»’
+  argDef_iter [name op] = 
+    ⎡ ⎨memoArg ‛«name»’ ‛\$\{«name».rwr ().join ('')\}’⎬
+      ‛«name»,’
+    ⎦
+  argDef_plain [name] =
+    ⎡ ⎨memoArg ‛«name»’ ‛\$\{«name».rwr ()\}’⎬
+      ‛«name»,’
+    ⎦
+
+  rewriteScope_call [lb _1 lb2 _a fname _b arg_i+ _c rb2 _2 rewriteScope _3 rb] = ‛
+    «fname» («arg_i»);
+    «rewriteScope»
+’
+    
+  rewriteScope_parameterbinding [lb _1 pname _2 _eq _3 s _4 scope _5 rb] = ‛
+    pushParameter ("«pname»", \`«s»\`);«scope»’
+    
+  rewriteScope_plain [s] = ‛
+    set_return (\`«s»\`);’
+
+  rewriteFormatString [lq formatItems_i* rq] = ‛«formatItems_i»’
+  formatItem_supportCall [lb _1 name _2 argString_i+ rb] = ‛\$\{«name» («argString_i»)\}’
+  formatItem_parameter [lb parameterRef rb] = ‛«parameterRef»’
+  formatItem_arg [lb argRef rb] = ‛«argRef»’
+  formatItem_escapedCharacter [bslash any] = ‛«bslash»«any»’
+  formatItem_rawCharacter [c] = ‛«c»’
+
+  parenarg [name ws] =
+    ⎡ ⎨memoArg ‛«name»’ ‛\$\{«name».rwr ().join ('')\}’⎬
+      ‛«name»,’
+    ⎦
+
+  argstring [str ws] = ‛\`«str»\`,’
+  
+  argRef [name] = ‛⎨fetchArg ‛«name»’⎬’
+  parameterRef [name] = ‛\$\{getParameter ("«name»")\}’
+  
+  ruleName [name] = ‛«name»’
+
+  name [nameFirst nameRest_i*] = ‛«nameFirst»«nameRest_i»’
+  nameFirst [c] = ‛«c»’
+  nameRest [c] = ‛«c»’
+
+  s_ [space_i*] = ‛«space_i»’
+}
