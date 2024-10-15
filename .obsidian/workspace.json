@@ -140,6 +140,7 @@
   },
   "active": "e9584b687c57dba3",
   "lastOpenFiles": [
+    "lib/#tail.part.js#",
     "tests/dsl4.mjs",
     "tests/dsl3.mjs",
     "tests/dsl2.mjs",
@@ -150,7 +151,6 @@
     "self-compile/t2t.mjs",
     "self-compile/temp.ndsl.mjs",
     "self-compile/temp.rewrite.mjs",
-    "tests/test4.txt",
     "doc/t2t-2.png",
     "doc/t2t workflow.png",
     "doc/t2t stand-alone.png",
