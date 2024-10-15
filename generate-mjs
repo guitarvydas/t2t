@@ -1,6 +1,7 @@
 #!/bin/bash
 # usage: ./generate 'libdir' 'grammar' 'rewrite' > 'dsl.mjs'
 # (supply a library directory, a grammar file and a rewrite file, exhale a generated DSL written in Javascript)
+set -e
 LIB=$1
 GRAMMAR=$2
 REWRITE=$3
