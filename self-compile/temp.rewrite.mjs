@@ -1,5 +1,8 @@
 let parameters = {};
 function pushParameter (name, v) {
+    if (!parameters [name]) {
+	parameters [name] = [];
+    }
     parameters [name].push (v);
 }
 function popParameter (name) {
