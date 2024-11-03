@@ -28,6 +28,10 @@ dsls:
 	@../generate-mjs ../lib test4.grammar test4.rewrite support.js >dsl4.mjs
 	@node dsl4.mjs test4.txt
 
+install-js-requires:
+	npm install yargs prompt-sync ohm-js
+
 clean:
 	rm -rf temp.* *~ dsl*.mjs
+
 
