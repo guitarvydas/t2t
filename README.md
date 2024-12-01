@@ -45,3 +45,16 @@ You need to supply
 	- most of the edits apply to usage and re-generation details
 	- the documentation regarding the format of the _rewrite_ specification remains relevant
 	- the ultimate specification of .grammar files is documented in OhmJs.org, whereas the ultimate specifcation of .rewrite files is defined in the sourc files _t2t.grammar_ and _t2t.rewrite_
+# lib/
+contains the actual t2t.mjs program plus various files required for self-compilation
+# nanodsl
+- a script that runs the T2T transpiler
+- clone this repo
+- create a new project directory
+- make a copy of the nanodsl script in the new project directory
+- create a grammar and a rewrite file, create an empty support file 'support.js'
+- invoke the script by supplying a path to the cloned repo lib subdirectory
+- usage: ./nanodsl <libdir> <xxx.grammar> <xxx.rewrite> support.js <src>
+# Further Reading
+doc/T2T.pdf
+https://programmingsimplicity.substack.com/p/experiments-with-text-to-text-transpilation
