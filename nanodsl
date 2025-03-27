@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: ./run 'grammar' 'rewrite' 'support' 'src'
+# usage: ./nanodsl 'grammar' 'rewrite' 'support' 'src'
 # (supply a library directory, a grammar file, a rewrite file, and a support (JS) file, inhale a source file (written in new nDSL syntax), exhale output of running the nanoDSL code
 set -e
 LIB=$1
